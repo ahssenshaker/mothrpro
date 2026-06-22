@@ -256,6 +256,42 @@ select:focus{border-color:var(--accent)}
 
 @keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{max-height:34vh;border-left:0;border-bottom:1px solid var(--border)}.admin-grid,.image-preview-row,.platform-grid{grid-template-columns:1fr}.admin-panel{padding:8px}.admin-shell{max-height:96vh}}
+
+/* ADMIN DASHBOARD */
+.admin-dash{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.admin-dash.open{display:flex}
+.admin-box{background:var(--s1);border:1px solid var(--border2);border-radius:20px;max-width:860px;width:100%;padding:28px;margin:auto}
+.admin-box h2{font-size:18px;font-weight:800;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.admin-tabs{display:flex;gap:6px;margin-bottom:20px}
+.admin-tab{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.admin-tab.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px}
+.admin-table th{text-align:right;padding:10px 12px;color:var(--muted2);font-weight:600;border-bottom:1px solid var(--border);font-size:11px}
+.admin-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+.admin-table tr:hover td{background:var(--s2)}
+.plan-badge-pro{background:rgba(99,179,237,.15);color:var(--accent);border:1px solid rgba(99,179,237,.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
+.plan-badge-free{background:rgba(100,116,139,.1);color:var(--muted2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px}
+.admin-action-btn{padding:4px 10px;border-radius:6px;border:none;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-activate{background:rgba(104,211,145,.15);color:var(--green);border:1px solid rgba(104,211,145,.3)}
+.btn-activate:hover{background:rgba(104,211,145,.3)}
+.btn-revoke{background:rgba(252,129,74,.1);color:var(--red);border:1px solid rgba(252,129,74,.3)}
+.btn-revoke:hover{background:rgba(252,129,74,.2)}
+.admin-search{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;outline:none;margin-bottom:14px;box-sizing:border-box}
+.admin-search:focus{border-color:var(--accent)}
+.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.admin-stat{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.admin-stat-num{font-size:24px;font-weight:800;color:#fff}
+.admin-stat-label{font-size:11px;color:var(--muted2);margin-top:4px}
+.admin-add-form{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px}
+.admin-add-form h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px}
+.admin-form-row{display:flex;gap:10px;align-items:center}
+.admin-form-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none}
+.admin-form-row input:focus{border-color:var(--accent)}
+.btn-add-sub{background:var(--accent);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.admin-msg{font-size:12px;margin-top:10px;min-height:16px}
+.admin-msg.ok{color:var(--green)}
+.admin-msg.err{color:var(--red)}
+.admin-close-btn{background:var(--s2);color:var(--muted2);border:1px solid var(--border);border-radius:10px;padding:8px 18px;font-family:inherit;font-size:13px;cursor:pointer;margin-top:16px}
 </style>
 </head>
 <body>
@@ -293,6 +329,7 @@ select:focus{border-color:var(--accent)}
   <div class="user-bar-actions">
     <span class="user-bar-plan free" id="userPlanBadge">مجاني</span>
     <button class="user-bar-upgrade" id="upgradeBtn" onclick="openUpgrade()">⭐ ترقية للبرو</button>
+    <button id="adminDashBtn" style="display:none;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:5px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer" onclick="openAdminDash()">⚙️ الأدمن</button>
     <button class="user-bar-logout" onclick="handleLogout()">خروج</button>
   </div>
 </div>
@@ -646,6 +683,10 @@ function showDashboard() {
   const badge = document.getElementById('userPlanBadge');
   const upgradeBtn = document.getElementById('upgradeBtn');
   
+  // Show admin button if admin
+  const adminBtn = document.getElementById('adminDashBtn');
+  if (adminBtn) adminBtn.style.display = currentUser.email === ADMIN_EMAIL ? '' : 'none';
+
   if (userPlan === 'pro') {
     badge.textContent = '⭐ برو';
     badge.className = 'user-bar-plan';
@@ -1466,5 +1507,45 @@ window.openModal = function(id) {
 };
 
 </script>
+
+<!-- ADMIN DASHBOARD MODAL -->
+<div class="admin-dash" id="adminDash">
+  <div class="admin-box">
+    <h2>⚙️ لوحة الأدمن <span style="font-size:12px;color:var(--muted2);font-weight:400">مؤثر برو</span></h2>
+    
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="admin-stat-num" id="statTotal">-</div><div class="admin-stat-label">إجمالي المستخدمين</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="statPro">-</div><div class="admin-stat-label">مشتركون برو</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="statFree">-</div><div class="admin-stat-label">مستخدمون مجانيون</div></div>
+    </div>
+
+    <div class="admin-add-form">
+      <h3>➕ تفعيل مشترك جديد</h3>
+      <div class="admin-form-row">
+        <input type="email" id="addSubEmail" placeholder="البريد الإلكتروني" dir="ltr">
+        <button class="btn-add-sub" onclick="adminActivateSub()">تفعيل برو</button>
+      </div>
+      <div class="admin-msg" id="addSubMsg"></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="adminFilterSubs('all',this)">الكل</button>
+      <button class="admin-tab" onclick="adminFilterSubs('pro',this)">برو</button>
+      <button class="admin-tab" onclick="adminFilterSubs('free',this)">مجاني</button>
+    </div>
+
+    <input class="admin-search" type="text" placeholder="🔍 ابحث بالإيميل..." oninput="adminSearchSubs(this.value)">
+    
+    <div style="overflow-x:auto">
+      <table class="admin-table">
+        <thead><tr><th>البريد</th><th>الخطة</th><th>تاريخ التفعيل</th><th>إجراء</th></tr></thead>
+        <tbody id="adminSubsTable"><tr><td colspan="4" style="text-align:center;color:var(--muted2);padding:20px">جاري التحميل...</td></tr></tbody>
+      </table>
+    </div>
+
+    <button class="admin-close-btn" onclick="closeAdminDash()">✕ إغلاق</button>
+  </div>
+</div>
+
 </body>
 </html>
