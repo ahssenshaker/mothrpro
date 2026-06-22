@@ -307,7 +307,6 @@ select:focus{border-color:var(--accent)}
       <div class="upgrade-feature"><span>✓</span><span>روابط مباشرة للحسابات</span></div>
       <div class="upgrade-feature"><span>✓</span><span>إحصاءات التفاعل والجمهور</span></div>
       <div class="upgrade-feature"><span>✓</span><span>توزيع الجمهور بالعمر والجنس</span></div>
-      <div class="upgrade-feature"><span>✓</span><span>تصدير CSV</span></div>
     </div>
     <div class="upgrade-price">299 ر.س</div>
     <div class="upgrade-price-sub">دفعة واحدة — وصول مدى الحياة</div>
@@ -449,7 +448,6 @@ select:focus{border-color:var(--accent)}
       <div class="admin-actions">
         <button class="btn admin-fab" onclick="startAddInfluencer()">＋ مؤثر جديد</button>
         <button class="btn btn-csv" onclick="triggerExcelImport()">📥 استيراد Excel</button>
-        <button class="btn btn-csv" data-export-csv onclick="exportCSV(this)">📤 تصدير CSV</button>
         <button class="btn btn-download" onclick="downloadUpdatedHTML()">💾 تنزيل النسخة</button>
         <button class="btn btn-danger-soft" onclick="resetLocalDashboardData()">🧹 تصفير</button>
       </div>
@@ -684,6 +682,11 @@ function closeUpgrade() { document.getElementById('upgradeModal').classList.remo
 // PRO RESTRICTIONS
 // ═══════════════════════════════════════════
 function applyProRestrictions() {
+  // Hide admin panel button for non-admins
+  const isAdmin = currentUser && currentUser.email === 'ahssenshaker@gmail.com';
+  document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], .btn-admin, #adminBtn').forEach(el => {
+    if (!isAdmin) el.style.display = 'none';
+  });
   if (userPlan === 'pro') return;
   
   // Hide CSV export
@@ -1076,7 +1079,8 @@ function handlePinPrimary(){
     err.textContent='الإجابة غير صحيحة.';return;
   }
 }
-function openAdminPanel(){document.getElementById('adminPanel').classList.add('open');document.getElementById('adminPanel').setAttribute('aria-hidden','false');renderAdminList();if(!document.getElementById('fId').value)startAddInfluencer(false)}
+function openAdminPanel(){
+  if(!currentUser || currentUser.email !== 'ahssenshaker@gmail.com'){return;}document.getElementById('adminPanel').classList.add('open');document.getElementById('adminPanel').setAttribute('aria-hidden','false');renderAdminList();if(!document.getElementById('fId').value)startAddInfluencer(false)}
 
 function showAdminToast(msg){const t=document.getElementById('adminToast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 function openAdmin(){if(!ADMIN_SESSION){showPinGate(()=>openAdminPanel());return;}openAdminPanel()}
