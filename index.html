@@ -312,6 +312,7 @@ select:focus{border-color:var(--accent)}
       <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">دخول</button>
     </div>
     <div class="auth-msg" id="authMsg"></div>
+    <div style="text-align:center;margin-top:10px"><a href="#" onclick="sendResetPassword(event)" style="font-size:12px;color:var(--muted2);text-decoration:none" id="forgotLink">نسيت كلمة المرور؟</a></div>
     <hr class="auth-divider">
     <div class="auth-features">
       <div>✓ <span>عرض أسماء وتخصصات المؤثرين</span> — مجاني</div>
@@ -623,14 +624,15 @@ async function handleAuth() {
     } else {
       result = await supa.auth.signUp({ email, password });
       if (result.error) {
-        const msg = result.error.message;
-        // Already registered
-        if (msg.includes('already registered') || msg.includes('User already registered')) {
-          setAuthMsg('هذا البريد مسجل مسبقاً — <a href="#" onclick="sendResetPassword(event)" style="color:var(--accent);text-decoration:underline">نسيت كلمة المرور؟</a>', 'error');
-          document.getElementById('_resetEmail').value = email;
-        } else {
-          setAuthMsg(msg, 'error');
-        }
+        setAuthMsg(result.error.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'إنشاء حساب';
+        return;
+      }
+      // Supabase returns user with identities=[] if email already exists
+      if (result.data?.user && result.data.user.identities && result.data.user.identities.length === 0) {
+        document.getElementById('_resetEmail').value = email;
+        setAuthMsg('هذا البريد مسجل مسبقاً — <a href="#" onclick="sendResetPassword(event)" style="color:var(--accent);text-decoration:underline">أعد تعيين كلمة المرور</a>', 'error');
         btn.disabled = false;
         btn.textContent = 'إنشاء حساب';
         return;
@@ -1054,7 +1056,7 @@ function exportCSV(btn){
     URL.revokeObjectURL(a.href);
     showAdminToast('تم تصدير البيانات بصيغة CSV');
   }catch(err){alert('خطأ: '+err.message);}
-  if(btn){btn.textContent=oldText||'📤 تصدير CSV';btn.disabled=false;}
+  if(btn){btn.textContent=oldText||'📤 Export';btn.disabled=false;}
 }
 
 
@@ -1593,6 +1595,103 @@ window.openModal = function(id) {
     <button class="admin-close-btn" onclick="closeAdminDash()">✕ إغلاق</button>
   </div>
 </div>
+
+
+<script>
+// ═══════════════════════════════════════════
+// ADMIN DASHBOARD JS
+// ═══════════════════════════════════════════
+const ADMIN_EMAIL = 'ahssenshaker@gmail.com';
+let allSubsData = [];
+
+function openAdminDash() {
+  if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+  ADMIN_SESSION = true;
+  document.getElementById('adminDash').classList.add('open');
+  loadAdminSubs();
+}
+
+function closeAdminDash() {
+  document.getElementById('adminDash').classList.remove('open');
+}
+
+async function loadAdminSubs() {
+  try {
+    const { data, error } = await supa.from('subscribers').select('*').order('activated_at', { ascending: false });
+    if (error) throw error;
+    allSubsData = data || [];
+    renderAdminStats();
+    renderAdminTable(allSubsData);
+  } catch(e) {
+    document.getElementById('adminSubsTable').innerHTML = '<tr><td colspan="4" style="color:var(--red);text-align:center;padding:20px">خطأ: ' + e.message + '</td></tr>';
+  }
+}
+
+function renderAdminStats() {
+  const pro = allSubsData.filter(s => s.plan === 'pro').length;
+  document.getElementById('statTotal').textContent = allSubsData.length;
+  document.getElementById('statPro').textContent = pro;
+  document.getElementById('statFree').textContent = allSubsData.length - pro;
+}
+
+function renderAdminTable(data) {
+  const tbody = document.getElementById('adminSubsTable');
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
+  tbody.innerHTML = data.map(s => {
+    const isPro = s.plan === 'pro';
+    const date = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
+    return `<tr>
+      <td dir="ltr">${s.email || '-'}</td>
+      <td><span class="${isPro ? 'plan-badge-pro' : 'plan-badge-free'}">${isPro ? '⭐ برو' : 'مجاني'}</span></td>
+      <td>${date}</td>
+      <td>${isPro
+        ? `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`
+        : `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`
+      }</td>
+    </tr>`;
+  }).join('');
+}
+
+function adminFilterSubs(filter, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = filter === 'all' ? allSubsData : allSubsData.filter(s => filter === 'pro' ? s.plan === 'pro' : s.plan !== 'pro');
+  renderAdminTable(filtered);
+}
+
+function adminSearchSubs(q) {
+  renderAdminTable(allSubsData.filter(s => (s.email || '').toLowerCase().includes(q.toLowerCase())));
+}
+
+async function adminActivateSub() {
+  const email = document.getElementById('addSubEmail').value.trim();
+  const msg = document.getElementById('addSubMsg');
+  if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
+  msg.textContent = 'جاري التفعيل...'; msg.className = 'admin-msg';
+  try {
+    const { data: { users } } = await supa.auth.admin.listUsers();
+    const user = users?.find(u => u.email === email);
+    if (!user) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
+    await supa.from('subscribers').upsert({ id: user.id, email, plan: 'pro', activated_at: new Date().toISOString(), expires_at: null });
+    msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
+    document.getElementById('addSubEmail').value = '';
+    if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
+    await loadAdminSubs();
+  } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
+}
+
+async function adminActivateById(id, email) {
+  if (!confirm('تفعيل برو لـ ' + email + '؟')) return;
+  await supa.from('subscribers').upsert({ id, email, plan: 'pro', activated_at: new Date().toISOString(), expires_at: null });
+  await loadAdminSubs();
+}
+
+async function adminRevokeSub(id, email) {
+  if (!confirm('إلغاء برو لـ ' + email + '؟')) return;
+  await supa.from('subscribers').update({ plan: 'free' }).eq('id', id);
+  await loadAdminSubs();
+}
+</script>
 
 </body>
 </html>
