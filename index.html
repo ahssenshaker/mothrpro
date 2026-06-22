@@ -305,7 +305,8 @@ select:focus{border-color:var(--accent)}
       <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">حساب جديد</button>
     </div>
-    <div id="authForm">
+    <input type="hidden" id="_resetEmail">
+      <div id="authForm">
       <div class="auth-field"><label>البريد الإلكتروني</label><input type="email" id="authEmail" placeholder="example@email.com" dir="ltr"></div>
       <div class="auth-field"><label>كلمة المرور</label><input type="password" id="authPassword" placeholder="••••••••" dir="ltr"></div>
       <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">دخول</button>
@@ -608,22 +609,38 @@ async function handleAuth() {
     let result;
     if (authMode === 'login') {
       result = await supa.auth.signInWithPassword({ email, password });
+      if (result.error) {
+        const msg = result.error.message;
+        if (msg === 'Invalid login credentials') {
+          setAuthMsg('البريد أو كلمة المرور غير صحيحة', 'error');
+        } else {
+          setAuthMsg(msg, 'error');
+        }
+        btn.disabled = false;
+        btn.textContent = 'دخول';
+        return;
+      }
     } else {
       result = await supa.auth.signUp({ email, password });
-    }
-    
-    if (result.error) {
-      setAuthMsg(result.error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : result.error.message, 'error');
-      btn.disabled = false;
-      btn.textContent = authMode==='login' ? 'دخول' : 'إنشاء حساب';
-      return;
-    }
-    
-    if (authMode === 'signup' && result.data?.user && !result.data.session) {
-      setAuthMsg('تم إرسال رسالة تأكيد للبريد الإلكتروني ✓', 'success');
-      btn.disabled = false;
-      btn.textContent = 'إنشاء حساب';
-      return;
+      if (result.error) {
+        const msg = result.error.message;
+        // Already registered
+        if (msg.includes('already registered') || msg.includes('User already registered')) {
+          setAuthMsg('هذا البريد مسجل مسبقاً — <a href="#" onclick="sendResetPassword(event)" style="color:var(--accent);text-decoration:underline">نسيت كلمة المرور؟</a>', 'error');
+          document.getElementById('_resetEmail').value = email;
+        } else {
+          setAuthMsg(msg, 'error');
+        }
+        btn.disabled = false;
+        btn.textContent = 'إنشاء حساب';
+        return;
+      }
+      if (result.data?.user && !result.data.session) {
+        setAuthMsg('تم إرسال رسالة تأكيد للبريد الإلكتروني ✓', 'success');
+        btn.disabled = false;
+        btn.textContent = 'إنشاء حساب';
+        return;
+      }
     }
     
     // Logged in
@@ -636,6 +653,20 @@ async function handleAuth() {
     setAuthMsg('حدث خطأ، يرجى المحاولة مرة أخرى', 'error');
     btn.disabled = false;
     btn.textContent = authMode==='login' ? 'دخول' : 'إنشاء حساب';
+  }
+}
+
+async function sendResetPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('_resetEmail').value || document.getElementById('authEmail').value.trim();
+  if (!email) return;
+  const { error } = await supa.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://moatherpro.vercel.app'
+  });
+  if (error) {
+    setAuthMsg('خطأ: ' + error.message, 'error');
+  } else {
+    setAuthMsg('✅ تم إرسال رابط إعادة تعيين كلمة المرور للبريد', 'success');
   }
 }
 
@@ -682,24 +713,40 @@ function showDashboard() {
   
   const badge = document.getElementById('userPlanBadge');
   const upgradeBtn = document.getElementById('upgradeBtn');
-  
-  // Show admin button if admin
-  const adminBtn = document.getElementById('adminDashBtn');
-  if (adminBtn) adminBtn.style.display = currentUser.email === ADMIN_EMAIL ? '' : 'none';
+  const isAdmin = currentUser.email === ADMIN_EMAIL;
 
-  if (userPlan === 'pro') {
-    badge.textContent = '⭐ برو';
-    badge.className = 'user-bar-plan';
-    upgradeBtn.style.display = 'none';
-  } else {
-    badge.textContent = 'مجاني';
-    badge.className = 'user-bar-plan free';
-    upgradeBtn.style.display = '';
+  // Admin button — only for admin
+  const adminBtn = document.getElementById('adminDashBtn');
+  if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
+
+  updatePlanBadge(isAdmin);
+  if (userPlan !== 'pro' && !isAdmin) {
+    setTimeout(() => openUpgrade(), 1200);
   }
   
   // Initialize dashboard
   init();
   applyProRestrictions();
+}
+
+function updatePlanBadge(isAdmin) {
+  const badge = document.getElementById('userPlanBadge');
+  const upgradeBtn = document.getElementById('upgradeBtn');
+  if (!badge) return;
+  isAdmin = isAdmin !== undefined ? isAdmin : (currentUser && currentUser.email === ADMIN_EMAIL);
+  if (isAdmin) {
+    badge.textContent = '👑 أدمن';
+    badge.className = 'user-bar-plan';
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+  } else if (userPlan === 'pro') {
+    badge.textContent = '⭐ برو';
+    badge.className = 'user-bar-plan';
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+  } else {
+    badge.textContent = 'مجاني';
+    badge.className = 'user-bar-plan free';
+    if (upgradeBtn) upgradeBtn.style.display = '';
+  }
 }
 
 async function handleLogout() {
@@ -723,9 +770,9 @@ function closeUpgrade() { document.getElementById('upgradeModal').classList.remo
 // PRO RESTRICTIONS
 // ═══════════════════════════════════════════
 function applyProRestrictions() {
-  // Hide admin panel button for non-admins
-  const isAdmin = currentUser && currentUser.email === 'ahssenshaker@gmail.com';
-  document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], .btn-admin, #adminBtn').forEach(el => {
+  const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+  // Hide all original admin panel triggers for non-admins
+  document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], [onclick*="openAdmin"], .btn-admin, #adminBtn').forEach(el => {
     if (!isAdmin) el.style.display = 'none';
   });
   if (userPlan === 'pro') return;
