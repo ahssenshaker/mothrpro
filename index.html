@@ -1676,9 +1676,23 @@ function closeAdminDash() {
 
 async function loadAdminSubs() {
   try {
-    const { data, error } = await supa.from('subscribers').select('*').order('activated_at', { ascending: false });
-    if (error) throw error;
-    allSubsData = data || [];
+    // Get all auth users
+    const { data: { users }, error: usersErr } = await supa.auth.admin.listUsers();
+    if (usersErr) throw usersErr;
+
+    // Get all subscribers records
+    const { data: subs } = await supa.from('subscribers').select('*');
+    const subsMap = {};
+    (subs || []).forEach(s => { subsMap[s.id] = s; });
+
+    // Merge: every auth user gets a row
+    allSubsData = (users || []).map(u => ({
+      id: u.id,
+      email: u.email,
+      plan: subsMap[u.id]?.plan || 'free',
+      activated_at: subsMap[u.id]?.activated_at || u.created_at,
+    }));
+
     renderAdminStats();
     renderAdminTable(allSubsData);
   } catch(e) {
