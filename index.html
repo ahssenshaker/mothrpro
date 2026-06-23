@@ -1746,20 +1746,21 @@ async function adminActivateSub() {
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
   msg.textContent = 'جاري التفعيل...'; msg.className = 'admin-msg';
   try {
-    const { data: { users } } = await supa.auth.admin.listUsers();
-    const user = users?.find(u => u.email === email);
-    if (!user) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
-    await supa.from('subscribers').upsert({ id: user.id, email, plan: 'pro', activated_at: new Date().toISOString(), expires_at: null });
+    // Find user in subscribers table directly
+    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
+    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
+    await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', sub.id);
     msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
     document.getElementById('addSubEmail').value = '';
     if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
+    setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
     await loadAdminSubs();
   } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
 }
 
 async function adminActivateById(id, email) {
   if (!confirm('تفعيل برو لـ ' + email + '؟')) return;
-  await supa.from('subscribers').upsert({ id, email, plan: 'pro', activated_at: new Date().toISOString(), expires_at: null });
+  await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', id);
   await loadAdminSubs();
 }
 
