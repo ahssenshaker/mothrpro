@@ -722,7 +722,7 @@ async function doSendReset() {
   btn.textContent = 'جاري الإرسال...';
   try {
     const { error } = await supa.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://moatherpro.vercel.app'
+      redirectTo: 'https://moatherpro.com'
     });
     msg.textContent = '✅ تم الإرسال — تحقق من بريدك الإلكتروني';
     msg.className = 'reset-msg ok';
