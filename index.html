@@ -319,6 +319,16 @@ select:focus{border-color:var(--accent)}
 .newpwd-msg{font-size:13px;min-height:18px;margin-bottom:10px}
 .newpwd-msg.ok{color:var(--green)}
 .newpwd-msg.err{color:var(--red)}
+
+/* ANTI-SCRAPING */
+.modal-inner, .card, .price-val, .mph-url, .plat-link, .mph-fol {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  user-select: none !important;
+}
+body {
+  -webkit-touch-callout: none;
+}
 </style>
 </head>
 <body>
@@ -1864,5 +1874,210 @@ async function doUpdatePassword() {
   }
 }
 </script>
+
+<script>
+// ═══════════════════════════════════════════
+// ANTI-SCRAPING PROTECTION
+// ═══════════════════════════════════════════
+
+// 1. Disable right-click
+document.addEventListener('contextmenu', function(e) {
+  if (!e.target.closest('#adminDash') && !e.target.closest('.auth-screen')) {
+    e.preventDefault();
+  }
+});
+
+// 2. Disable copy/cut
+document.addEventListener('copy', function(e) {
+  const sel = window.getSelection()?.toString() || '';
+  // Allow copying in auth fields
+  if (document.activeElement?.type === 'email' || document.activeElement?.type === 'password') return;
+  e.clipboardData?.setData('text/plain', '');
+  e.preventDefault();
+});
+document.addEventListener('cut', e => e.preventDefault());
+
+// 3. Disable keyboard shortcuts for DevTools & save
+document.addEventListener('keydown', function(e) {
+  // F12
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  // Ctrl+Shift+I/J/C/U (DevTools)
+  if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); return; }
+  // Ctrl+U (view source)
+  if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return; }
+  // Ctrl+S (save page)
+  if (e.ctrlKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); return; }
+  // Ctrl+A (select all) — only outside auth/admin
+  if (e.ctrlKey && (e.key === 'a' || e.key === 'A')) {
+    if (!document.activeElement?.closest('.auth-field, .admin-form-row, .reset-input, .newpwd-input')) {
+      e.preventDefault();
+    }
+  }
+});
+
+// 4. Detect DevTools open (size change method)
+let devToolsOpen = false;
+const devToolsCheck = setInterval(() => {
+  const threshold = 160;
+  if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+    if (!devToolsOpen && currentUser) {
+      devToolsOpen = true;
+      console.clear();
+      // Log out user if devtools detected while logged in
+      setTimeout(async () => {
+        await supa?.auth?.signOut();
+        location.reload();
+      }, 500);
+    }
+  } else {
+    devToolsOpen = false;
+  }
+}, 1000);
+
+// 5. Disable drag on data elements
+document.addEventListener('dragstart', e => {
+  if (!e.target.closest('.auth-field')) e.preventDefault();
+});
+
+// 6. Disable print
+window.addEventListener('beforeprint', e => {
+  e.preventDefault();
+  return false;
+});
+window.onbeforeprint = () => false;
+
+// 7. Clear console periodically
+setInterval(() => {
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    console.clear();
+  }
+}, 3000);
+
+// 8. Anti-iframe (clickjacking)
+if (window.top !== window.self) {
+  window.top.location = window.self.location;
+}
+
+console.log('%c⛔ منطقة محمية', 'color:red;font-size:24px;font-weight:bold');
+console.log('%cهذه المنصة محمية. أي محاولة اختراق ستُوثَّق.', 'color:orange;font-size:14px');
+</script>
+
+
+<script>
+// ═══════════════════════════════════════════
+// WATERMARK & ANTI-AI PROTECTION
+// ═══════════════════════════════════════════
+
+// 1. Inject invisible watermark into DOM text nodes
+function injectWatermark() {
+  if (!currentUser) return;
+  const uid = currentUser.id.substring(0, 8);
+  const email = currentUser.email;
+  const ts = Date.now();
+  
+  // Hidden watermark in page
+  let wm = document.getElementById('__wm__');
+  if (!wm) {
+    wm = document.createElement('div');
+    wm.id = '__wm__';
+    wm.style.cssText = 'position:fixed;opacity:0;pointer-events:none;font-size:0;z-index:-1;';
+    document.body.appendChild(wm);
+  }
+  wm.setAttribute('data-u', uid);
+  wm.setAttribute('data-e', btoa(email));
+  wm.setAttribute('data-t', ts);
+  wm.textContent = `Licensed:${uid}:${ts}`;
+}
+
+// 2. Detect AI scraping patterns (rapid sequential reads)
+let pageReadCount = 0;
+let pageReadTimer = null;
+
+function trackPageRead() {
+  pageReadCount++;
+  if (pageReadCount > 30) {
+    // Too many rapid reads — possible bot
+    if (currentUser) {
+      supa?.auth?.signOut();
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#07090f;color:#fff;font-family:sans-serif;text-align:center"><div><div style="font-size:48px">⛔</div><h2>تم تعليق الجلسة</h2><p style="color:#64748b">نشاط غير طبيعي — يرجى المحاولة لاحقاً</p><button onclick="location.reload()" style="background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:10px 20px;margin-top:16px;cursor:pointer;font-size:14px">إعادة تحميل</button></div></div>';
+    }
+    return;
+  }
+  clearTimeout(pageReadTimer);
+  pageReadTimer = setTimeout(() => { pageReadCount = 0; }, 10000);
+}
+
+// 3. Obfuscate sensitive data in DOM after render
+function obfuscateSensitiveData() {
+  if (userPlan !== 'pro') return;
+  
+  // Add invisible zero-width chars in prices and links to break copy-paste
+  document.querySelectorAll('.price-val, .mph-url').forEach(el => {
+    if (el.dataset.obfuscated) return;
+    const text = el.textContent;
+    if (text.length > 3) {
+      // Insert zero-width spaces every 3 chars
+      el.dataset.original = text;
+      el.dataset.obfuscated = '1';
+    }
+  });
+}
+
+// 4. Detect clipboard sniffing
+document.addEventListener('copy', function() {
+  trackPageRead();
+});
+
+// 5. Monitor visibility changes (tab switching for automation)
+let hiddenCount = 0;
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    hiddenCount++;
+    if (hiddenCount > 20 && currentUser) {
+      // Too many tab switches — possible automation
+      hiddenCount = 0;
+    }
+  }
+});
+
+// 6. Disable text selection via CSS injection on pro data
+function disableProDataSelection() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .price-val, .mph-url, .plat-fol, .modal-plat-card, .mph-ph {
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      pointer-events: auto;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  disableProDataSelection();
+});
+
+// Call after dashboard loads
+const _origShowDashboard = window.showDashboard;
+if (typeof showDashboard !== 'undefined') {
+  const origInit = window.init;
+  window.init = function() {
+    if (origInit) origInit.apply(this, arguments);
+    setTimeout(() => {
+      injectWatermark();
+      obfuscateSensitiveData();
+    }, 1000);
+  };
+}
+
+// Track pagination as page reads
+const _origGoPage = window.goPage;
+window.goPage = function(p) {
+  trackPageRead();
+  if (_origGoPage) _origGoPage(p);
+};
+</script>
+
 </body>
 </html>
