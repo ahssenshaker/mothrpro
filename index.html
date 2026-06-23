@@ -384,13 +384,14 @@ body {
       <div class="upgrade-feature"><span>✓</span><span>إحصاءات التفاعل والجمهور</span></div>
       <div class="upgrade-feature"><span>✓</span><span>توزيع الجمهور بالعمر والجنس</span></div>
     </div>
-    <div class="upgrade-price">299 ر.س</div>
-    <div class="upgrade-price-sub">دفعة واحدة — وصول مدى الحياة</div>
+    <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px">299 ر.س</div>
+    <div class="upgrade-price">149 ر.س</div>
+    <div class="upgrade-price-sub">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
     <a href="https://moatherpro.lemonsqueezy.com/checkout/buy/3bf5bad0-3450-4b28-b2ed-dd8f34c1e455?checkout[email]=" id="lsCheckoutBtn"
        target="_blank"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
        onclick="attachEmailToCheckout(this)">
-      💳 ادفع الآن — 299 ر.س
+      💳 ادفع الآن — 149 ر.س
     </a>
     <div style="font-size:11px;color:var(--muted2);margin-bottom:16px;line-height:1.7">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
@@ -1601,12 +1602,20 @@ const _origCardHTML = cardHTML;
 window.cardHTML = function(d) {
   let html = _origCardHTML(d);
   if (userPlan !== 'pro') {
-    // Replace actual platform links with blur
-    html = html.replace(/<a class="plat-link[^"]*" href="[^"]*"[^>]*>([^<]*)<\/a>/g, 
-      '<span class="plat-link p-tw" style="filter:blur(4px);cursor:default;pointer-events:none">████████</span>');
-    // Blur follower numbers per platform
-    html = html.replace(/class="plat-fol">[^<]+<\/span>/g, 
-      'class="plat-fol" style="filter:blur(4px)">███K</span>');
+    // Hide platform links completely — keep only icon + name, no URL
+    html = html.replace(/<a class="plat-link([^"]*)" href="[^"]*"([^>]*)>([^<]*)<\/a>/g,
+      '<span class="plat-link$1" style="cursor:default;pointer-events:none;opacity:.7">$3</span>');
+    // Hide follower numbers completely
+    html = html.replace(/class="plat-fol">[^<]+<\/span>/g,
+      'class="plat-fol" style="visibility:hidden">0</span>');
+    // Hide total followers
+    html = html.replace(/class="card-followers">[^<]+<\/span>/g,
+      'class="card-followers" style="visibility:hidden">0</span>');
+    // Hide tier/range label
+    html = html.replace(/class="tier-badge[^"]*">[^<]*<\/span>/g,
+      'class="tier-badge" style="visibility:hidden"> </span>');
+    html = html.replace(/class="range-label">[^<]*<\/span>/g,
+      'class="range-label" style="visibility:hidden"> </span>');
   }
   return html;
 };
@@ -1616,15 +1625,27 @@ const _origOpenModal = openModal;
 window.openModal = function(id) {
   _origOpenModal(id);
   if (userPlan !== 'pro') {
-    // Blur prices and URLs in modal
+    // Hide sensitive data in modal
     setTimeout(() => {
-      document.querySelectorAll('.mph-url, .price-val, .visit-btn').forEach(el => {
-        el.style.filter = 'blur(5px)';
+      // Hide URLs
+      document.querySelectorAll('.mph-url, .visit-btn').forEach(el => {
+        el.style.visibility = 'hidden';
         el.style.pointerEvents = 'none';
+      });
+      // Hide prices
+      document.querySelectorAll('.price-val').forEach(el => {
+        el.style.filter = 'blur(8px)';
+        el.style.userSelect = 'none';
+        el.style.pointerEvents = 'none';
+      });
+      // Hide follower counts
+      document.querySelectorAll('.mph-fol, .mph-ph').forEach(el => {
+        el.style.filter = 'blur(8px)';
         el.style.userSelect = 'none';
       });
-      document.querySelectorAll('.mph-fol').forEach(el => {
-        el.style.filter = 'blur(5px)';
+      // Hide engagement stats
+      document.querySelectorAll('.stat-val, .eng-val').forEach(el => {
+        el.style.filter = 'blur(8px)';
       });
       document.querySelectorAll('.prices-grid').forEach(el => {
         el.style.position = 'relative';
