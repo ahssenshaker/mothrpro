@@ -2,6 +2,8 @@
   "version": 2,
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/thankyou.html", "dest": "/thankyou.html" },
+    { "src": "/thankyou", "dest": "/thankyou.html" },
     { "src": "/landing.html", "dest": "/landing.html" },
     { "src": "/landing", "dest": "/landing.html" },
     { "src": "^/$", "dest": "/index.html" },
