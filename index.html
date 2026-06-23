@@ -1836,24 +1836,43 @@ async function adminRevokeSub(id, email) {
 // ═══════════════════════════════════════
 (async function handleRecovery() {
   const hash = window.location.hash;
-  if (!hash.includes('type=recovery') && !hash.includes('access_token')) return;
+  if (!hash.includes('access_token')) return;
 
-  // Parse tokens from URL hash
   const params = new URLSearchParams(hash.substring(1));
   const accessToken = params.get('access_token');
   const refreshToken = params.get('refresh_token');
+  const type = params.get('type');
 
-  if (accessToken) {
-    try {
-      await supa.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
-      // Clear hash from URL
-      history.replaceState(null, '', window.location.pathname);
-      // Show new password modal
+  if (!accessToken) return;
+
+  try {
+    await supa.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+    history.replaceState(null, '', window.location.pathname);
+
+    if (type === 'recovery') {
+      // Password reset — show new password modal
       document.getElementById('newPwdModal').classList.add('open');
       document.getElementById('authScreen').style.display = 'none';
-    } catch(e) {
-      console.error('Recovery error:', e);
+    } else if (type === 'signup') {
+      // Email confirmation — log in directly
+      const { data: { session } } = await supa.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        await registerUserIfNew(currentUser);
+        await loadUserPlan();
+        showDashboard();
+      }
+    } else {
+      // Other types — just log in
+      const { data: { session } } = await supa.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        await loadUserPlan();
+        showDashboard();
+      }
     }
+  } catch(e) {
+    console.error('Auth redirect error:', e);
   }
 })();
 
