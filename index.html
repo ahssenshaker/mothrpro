@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مؤثر برو — دليل المؤثرين الموثّق 2025</title>
+<title>مؤثر برو — منصة تحليل وبحث المؤثرين 2025</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* AUTH SCREEN */
@@ -347,7 +347,7 @@ body {
 <div id="authScreen" class="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">🌟 مؤثر برو</div>
-    <div class="auth-sub">دليل المؤثرين الموثّق 2025 · 356 مؤثر</div>
+    <div class="auth-sub">منصة تحليل وبحث المؤثرين 2025 · 356 مؤثر</div>
     <div class="auth-tabs">
       <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">حساب جديد</button>
@@ -368,7 +368,7 @@ body {
     <hr class="auth-divider">
     <div class="auth-features">
       <div>✓ <span>عرض أسماء وتخصصات المؤثرين</span> — مجاني</div>
-      <div>🔒 <span>الأرقام والأسعار والروابط</span> — اشتراك برو</div>
+      <div>🔒 <span>تحليلات التفاعل والأداء</span> — اشتراك برو</div>
       <div>🔒 <span>بيانات الجمهور والمناطق</span> — اشتراك برو</div>
     </div>
   </div>
@@ -392,9 +392,9 @@ body {
 <div class="upgrade-modal" id="upgradeModal">
   <div class="upgrade-box">
     <div class="upgrade-title">⭐ مؤثر برو</div>
-    <div class="upgrade-sub">احصل على وصول كامل لجميع بيانات المؤثرين</div>
+    <div class="upgrade-sub">احصل على وصول كامل لتحليلات وبيانات المؤثرين</div>
     <div class="upgrade-features">
-      <div class="upgrade-feature"><span>✓</span><span>أسعار جميع المؤثرين لكل منصة</span></div>
+      <div class="upgrade-feature"><span>✓</span><span>تحليلات أداء المؤثرين لكل منصة</span></div>
       <div class="upgrade-feature"><span>✓</span><span>روابط مباشرة للحسابات</span></div>
       <div class="upgrade-feature"><span>✓</span><span>إحصاءات التفاعل والجمهور</span></div>
       <div class="upgrade-feature"><span>✓</span><span>توزيع الجمهور بالعمر والجنس</span></div>
@@ -402,7 +402,13 @@ body {
     <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px">299 ر.س</div>
     <div class="upgrade-price">149 ر.س</div>
     <div class="upgrade-price-sub">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
-    <a href="https://payhip.com/b/ZSaHw?checkout[email]=" id="lsCheckoutBtn"
+    <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:right">
+      <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px">⚠️ مهم قبل الدفع</div>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.7">
+        استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.
+      </div>
+    </div>
+    <a href="https://payhip.com/b/moatherpro" id="lsCheckoutBtn"
        target="_blank"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
        onclick="attachEmailToCheckout(this)">
@@ -410,7 +416,7 @@ body {
     </a>
     <div style="font-size:11px;color:var(--muted2);margin-bottom:16px;line-height:1.7">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
-      يدعم Visa / Mastercard / Apple Pay
+      يدعم Visa / Mastercard / PayPal
     </div>
     <button class="upgrade-close" onclick="closeUpgrade()">إغلاق</button>
   </div>
@@ -419,8 +425,8 @@ body {
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted2);font-size:13px">جاري تحميل 356 مؤثر موثّق...</div></div>
 
 <div class="header">
-  <div class="logo-text">🌟 مؤثر برو — دليل المؤثرين الموثّق 2025</div>
-  <div class="header-sub">356 مؤثر موثّق · 351 موثّق + 5 محدث/مضاف بروابط مؤكدة</div>
+  <div class="logo-text">🌟 مؤثر برو — منصة تحليل وبحث المؤثرين 2025</div>
+  <div class="header-sub">356 مؤثر · بيانات تحليلية موثّقة + روابط مؤكدة</div>
   <div class="stats-bar">
     <div class="stat-pill"><div class="stat-num" id="sTotal">—</div><div class="stat-lbl">الكل</div></div>
     <div class="stat-pill" onclick="filterByTier('ألفا')"><div class="stat-num" style="color:var(--alpha)" id="sAlpha">—</div><div class="stat-lbl">🔥 ألفا</div></div>
@@ -861,11 +867,21 @@ async function handleLogout() {
   document.getElementById('userBar').style.display = 'none';
 }
 
-function openUpgrade() { document.getElementById('upgradeModal').classList.add('open'); }
+function openUpgrade() {
+  document.getElementById('upgradeModal').classList.add('open');
+  const emailEl = document.getElementById('checkoutEmailDisplay');
+  if (emailEl && currentUser && currentUser.email) {
+    emailEl.textContent = currentUser.email;
+    emailEl.parentElement.innerHTML = emailEl.parentElement.innerHTML.replace(
+      'استخدم نفس البريد الإلكتروني',
+      'استخدم <strong style="color:#fff">' + currentUser.email + '</strong> —'
+    );
+  }
+}
 
 function attachEmailToCheckout(el) {
   const email = currentUser?.email || '';
-  const base = 'https://payhip.com/b/ZSaHw';
+  const base = 'https://whop.com/moather-pro/moatherprocheckout/';
   el.href = base + '?checkout[email]=' + encodeURIComponent(email);
 }
 function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
