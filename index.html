@@ -402,7 +402,7 @@ body {
     <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px">299 ر.س</div>
     <div class="upgrade-price">149 ر.س</div>
     <div class="upgrade-price-sub">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
-    <a href="https://moatherpro.lemonsqueezy.com/checkout/buy/3bf5bad0-3450-4b28-b2ed-dd8f34c1e455?checkout[email]=" id="lsCheckoutBtn"
+    <a href="https://whop.com/moather-pro/moatherprocheckout/" id="lsCheckoutBtn"
        target="_blank"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
        onclick="attachEmailToCheckout(this)">
@@ -865,7 +865,7 @@ function openUpgrade() { document.getElementById('upgradeModal').classList.add('
 
 function attachEmailToCheckout(el) {
   const email = currentUser?.email || '';
-  const base = 'https://moatherpro.lemonsqueezy.com/checkout/buy/3bf5bad0-3450-4b28-b2ed-dd8f34c1e455';
+  const base = 'https://whop.com/moather-pro/moatherprocheckout/';
   el.href = base + '?checkout[email]=' + encodeURIComponent(email);
 }
 function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
