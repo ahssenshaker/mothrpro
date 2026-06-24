@@ -402,13 +402,13 @@ body {
     <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px">299 ر.س</div>
     <div class="upgrade-price">149 ر.س</div>
     <div class="upgrade-price-sub">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
-    <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:right">
+    <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:right" id="emailWarningBox">
       <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px">⚠️ مهم قبل الدفع</div>
-      <div style="font-size:12px;color:var(--muted2);line-height:1.7">
+      <div style="font-size:12px;color:var(--muted2);line-height:1.7" id="emailWarningText">
         استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.
       </div>
     </div>
-    <a href="https://payhip.com/b/moatherpro" id="lsCheckoutBtn"
+    <a href="https://payhip.com/b/ZSaHw" id="lsCheckoutBtn"
        target="_blank"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
        onclick="attachEmailToCheckout(this)">
@@ -426,7 +426,7 @@ body {
 
 <div class="header">
   <div class="logo-text">🌟 مؤثر برو — منصة تحليل وبحث المؤثرين 2025</div>
-  <div class="header-sub">356 مؤثر · بيانات تحليلية موثّقة + روابط مؤكدة</div>
+  <div class="header-sub">بيانات تحليلية موثّقة + روابط مؤكدة</div>
   <div class="stats-bar">
     <div class="stat-pill"><div class="stat-num" id="sTotal">—</div><div class="stat-lbl">الكل</div></div>
     <div class="stat-pill" onclick="filterByTier('ألفا')"><div class="stat-num" style="color:var(--alpha)" id="sAlpha">—</div><div class="stat-lbl">🔥 ألفا</div></div>
@@ -869,19 +869,15 @@ async function handleLogout() {
 
 function openUpgrade() {
   document.getElementById('upgradeModal').classList.add('open');
-  const emailEl = document.getElementById('checkoutEmailDisplay');
-  if (emailEl && currentUser && currentUser.email) {
-    emailEl.textContent = currentUser.email;
-    emailEl.parentElement.innerHTML = emailEl.parentElement.innerHTML.replace(
-      'استخدم نفس البريد الإلكتروني',
-      'استخدم <strong style="color:#fff">' + currentUser.email + '</strong> —'
-    );
+  const textEl = document.getElementById('emailWarningText');
+  if (textEl && currentUser && currentUser.email) {
+    textEl.innerHTML = 'استخدم <strong style="color:#fff">' + currentUser.email + '</strong> نفس البريد الإلكتروني المسجّل هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.';
   }
 }
 
 function attachEmailToCheckout(el) {
   const email = currentUser?.email || '';
-  const base = 'https://whop.com/moather-pro/moatherprocheckout/';
+  const base = 'https://payhip.com/b/ZSaHw';
   el.href = base + '?checkout[email]=' + encodeURIComponent(email);
 }
 function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
