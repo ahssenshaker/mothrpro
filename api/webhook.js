@@ -9,46 +9,74 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const signature = req.body.signature
-  const apiKey = process.env.PAYHIP_API_KEY
+  // Payhip security: verify using PAYHIP_API_KEY sent as Bearer token
+  // OR verify the payhip_token field in the body
+  const authHeader = req.headers['authorization'] || ''
+  const bodyToken  = req.body?.payhip_token || ''
+  const apiKey     = process.env.PAYHIP_API_KEY || ''
 
-  const expected = crypto
-    .createHmac('sha256', apiKey)
-    .update(JSON.stringify(req.body))
-    .digest('hex')
+  const validAuth  = authHeader === `Bearer ${apiKey}`
+  const validToken = bodyToken  === apiKey
 
-  if (signature !== expected) {
-    return res.status(401).json({ error: 'Invalid signature' })
+  if (!validAuth && !validToken) {
+    console.error('Webhook auth failed', { authHeader, bodyToken })
+    return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const { type, email } = req.body
+  // Payhip sends: type, email, product_id, etc.
+  const { type, email, buyer_email } = req.body
+  const userEmail = (email || buyer_email || '').toLowerCase().trim()
 
-  if (type === 'paid' || type === 'subscription.created') {
-    // Find user in subscribers table
+  console.log('Payhip webhook received:', { type, userEmail })
+
+  if (!userEmail) {
+    return res.status(400).json({ error: 'No email in payload' })
+  }
+
+  // ─── PAYMENT / SALE ───────────────────────────────────────────────
+  if (
+    type === 'paid'                  ||
+    type === 'payment_complete'      ||
+    type === 'new_sale'              ||
+    type === 'subscription.created'
+  ) {
     const { data: sub } = await supabase
       .from('subscribers')
       .select('id')
-      .eq('email', email)
+      .eq('email', userEmail)
       .single()
 
     if (sub) {
       await supabase
         .from('subscribers')
         .update({ plan: 'pro', activated_at: new Date().toISOString() })
-        .eq('email', email)
+        .eq('email', userEmail)
+      console.log('✅ Activated pro for', userEmail)
     } else {
-      // User paid before creating account — save as pending
+      // دفع قبل إنشاء الحساب — يُخزَّن كـ pending
       await supabase
         .from('subscribers')
-        .insert({ id: crypto.randomUUID(), email, plan: 'pending', activated_at: new Date().toISOString() })
+        .insert({
+          id: crypto.randomUUID(),
+          email: userEmail,
+          plan: 'pending',
+          activated_at: new Date().toISOString()
+        })
+      console.log('⏳ Saved as pending for', userEmail)
     }
   }
 
-  if (type === 'subscription.deleted') {
+  // ─── REFUND / CANCELLATION ────────────────────────────────────────
+  if (
+    type === 'refund'                ||
+    type === 'subscription.deleted'  ||
+    type === 'subscription.cancelled'
+  ) {
     await supabase
       .from('subscribers')
       .update({ plan: 'free' })
-      .eq('email', email)
+      .eq('email', userEmail)
+    console.log('🔴 Revoked pro for', userEmail)
   }
 
   return res.status(200).json({ ok: true })
