@@ -1,86 +1,57 @@
-import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
+import crypto from 'crypto'
 
-const SUPABASE_URL = 'https://pvafqzhowebbmahbonfm.supabase.co';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const WEBHOOK_SECRET = process.env.LS_WEBHOOK_SECRET || '007240';
-
-const supa = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+)
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).end()
 
-  // Verify signature
-  const rawBody = await getRawBody(req);
-  const signature = req.headers['x-signature'];
-  const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET).update(rawBody).digest('hex');
-  
-  if (hmac !== signature) {
-    console.error('Invalid webhook signature');
-    return res.status(401).json({ error: 'Invalid signature' });
+  const signature = req.body.signature
+  const apiKey = process.env.PAYHIP_API_KEY
+
+  const expected = crypto
+    .createHmac('sha256', apiKey)
+    .update(JSON.stringify(req.body))
+    .digest('hex')
+
+  if (signature !== expected) {
+    return res.status(401).json({ error: 'Invalid signature' })
   }
 
-  const payload = JSON.parse(rawBody.toString());
-  const eventName = payload.meta?.event_name;
+  const { type, email } = req.body
 
-  // Only handle successful orders
-  if (eventName !== 'order_created') return res.status(200).json({ ok: true });
+  if (type === 'paid' || type === 'subscription.created') {
+    // Find user in subscribers table
+    const { data: sub } = await supabase
+      .from('subscribers')
+      .select('id')
+      .eq('email', email)
+      .single()
 
-  const order = payload.data?.attributes;
-  const variantId = payload.data?.relationships?.order_items?.data?.[0]?.id;
-  
-  // Get customer email
-  const customerEmail = order?.user_email;
-  if (!customerEmail) return res.status(200).json({ ok: true });
-
-  // Check variant matches our product
-  const status = order?.status;
-  if (status !== 'paid') return res.status(200).json({ ok: true });
-
-  try {
-    // Find user by email in Supabase auth
-    const { data: users, error: userError } = await supa.auth.admin.listUsers();
-    if (userError) throw userError;
-
-    const user = users.users.find(u => u.email === customerEmail);
-
-    if (user) {
-      // User exists — activate pro
-      await supa.from('subscribers').upsert({
-        id: user.id,
-        email: customerEmail,
-        plan: 'pro',
-        activated_at: new Date().toISOString(),
-        expires_at: null // one-time payment = no expiry
-      });
-      console.log(`✅ Activated pro for ${customerEmail}`);
+    if (sub) {
+      await supabase
+        .from('subscribers')
+        .update({ plan: 'pro', activated_at: new Date().toISOString() })
+        .eq('email', email)
     } else {
-      // User doesn't have account yet — save pending activation
-      await supa.from('subscribers').upsert({
-        id: crypto.randomUUID(),
-        email: customerEmail,
-        plan: 'pending',
-        activated_at: new Date().toISOString(),
-        expires_at: null
-      });
-      console.log(`⏳ Pending activation for ${customerEmail} (no account yet)`);
+      // User paid before creating account — save as pending
+      await supabase
+        .from('subscribers')
+        .insert({ id: crypto.randomUUID(), email, plan: 'pending', activated_at: new Date().toISOString() })
     }
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error('Webhook error:', err);
-    return res.status(500).json({ error: err.message });
   }
+
+  if (type === 'subscription.deleted') {
+    await supabase
+      .from('subscribers')
+      .update({ plan: 'free' })
+      .eq('email', email)
+  }
+
+  return res.status(200).json({ ok: true })
 }
 
-// Helper to get raw body
-function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
-  });
-}
-
-export const config = { api: { bodyParser: false } };
+export const config = { api: { bodyParser: true } }
