@@ -408,7 +408,7 @@ body {
         استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.
       </div>
     </div>
-    <a href="https://payhip.com/b/ZSaHw" id="lsCheckoutBtn"
+    <a href="https://payhip.com/b/8wLE9" id="lsCheckoutBtn"
        target="_blank"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
        onclick="attachEmailToCheckout(this)">
@@ -877,7 +877,7 @@ function openUpgrade() {
 
 function attachEmailToCheckout(el) {
   const email = currentUser?.email || '';
-  const base = 'https://payhip.com/b/ZSaHw';
+  const base = 'https://payhip.com/b/8wLE9';
   el.href = base + '?checkout[email]=' + encodeURIComponent(email);
 }
 function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
