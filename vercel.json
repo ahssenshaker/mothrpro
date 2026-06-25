@@ -6,7 +6,7 @@
     { "src": "/thankyou", "dest": "/thankyou.html" },
     { "src": "/privacy", "dest": "/privacy.html" },
     { "src": "/privacy", "dest": "/privacy.html" },
-    { "src": "/refund", "dest": "/refund.html" },
+    { "src": "/refund.html", "dest": "/refund.html" },
     { "src": "/refund", "dest": "/refund.html" },
     { "src": "/landing.html", "dest": "/landing.html" },
     { "src": "/landing", "dest": "/landing.html" },
