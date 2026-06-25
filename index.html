@@ -339,6 +339,36 @@ body {
 .google-btn:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 .auth-or { display:flex; align-items:center; gap:10px; margin-bottom:14px; color:var(--muted2); font-size:12px; }
 .auth-or::before, .auth-or::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* CUSTOM HEADER LAYOUT */
+.header{
+display:flex !important;
+align-items:center;
+justify-content:space-between;
+text-align:initial !important;
+gap:20px;
+}
+.header > img{
+max-width:140px !important;
+width:140px !important;
+height:auto !important;
+order:1;
+margin-right:0 !important;
+}
+.header .stats-bar{
+flex:1;
+display:flex !important;
+justify-content:center !important;
+align-items:center;
+order:2;
+padding-bottom:0 !important;
+}
+.header .logo-text,.header .header-sub{
+order:3;
+text-align:left;
+margin-left:10px;
+}
+
 </style>
 </head>
 <body>
