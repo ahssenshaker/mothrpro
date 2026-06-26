@@ -43,7 +43,9 @@
     background: transparent;
     border-bottom: 1px solid var(--border);
   }
-  .nav-logo { display:inline-flex; align-items:center; }
+  .nav-logo { display:inline-flex; align-items:center; gap:8px; }
+  .nav-logo img { height:56px; width:auto; display:block; flex-shrink:0; }
+  @media(max-width:600px){ .nav-logo img { height:42px; } }
   .nav-cta { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: .2s; }
   .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
 
