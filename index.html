@@ -373,6 +373,43 @@ text-align:left;
 margin-left:10px;
 }
 
+@media(max-width:820px){
+.header{
+flex-direction:column !important;
+flex-wrap:wrap;
+text-align:center !important;
+padding:24px 16px 0 !important;
+gap:6px;
+}
+.header > img{
+order:1;
+margin:0 auto 10px !important;
+max-width:72px !important;
+width:72px !important;
+}
+.header .logo-text,.header .header-sub{
+order:2;
+text-align:center !important;
+margin:0 !important;
+}
+.header .header-sub{
+margin-bottom:14px !important;
+}
+.header .stats-bar{
+order:3;
+flex:none !important;
+width:100%;
+justify-content:center !important;
+}
+}
+
+@media(max-width:420px){
+.header .stat-pill{
+min-width:78px;
+padding:7px 10px;
+}
+}
+
 </style>
 </head>
 <body>
