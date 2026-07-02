@@ -46,11 +46,11 @@ jobs:
 
             const platform = process.env.PLATFORM;
             if (platform === "youtube") {
-              const sels = ["#subscriber-count", "yt-formatted-string#subscriber-count", "[id*=subscriber]"];
-              for (const sel of sels) {
-                const el = await page.$(sel);
-                console.log(sel, "=>", el ? await el.textContent() : "NOT FOUND");
-              }
+              const bodyText = await page.textContent("body");
+              const head = bodyText.slice(0, 2000);
+              const m = head.match(/([\d.,]+\s?[KMB]?)\s*subscribers/i);
+              console.log("subscribers match (first 2000 chars):", m ? m[0] : "NONE");
+              console.log("head sample:", head.slice(0, 500));
             } else if (platform === "twitter") {
               const bodyText = await page.textContent("body");
               console.log("contains \"Followers\":", bodyText.includes("Followers"));
