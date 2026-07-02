@@ -482,10 +482,7 @@
         <div class="pricing-feature"><span class="check">✓</span><span>وصول فوري بعد الدفع</span></div>
       </div>
 
-      <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="pricingCheckoutBtn" class="pricing-cta gumroad-button" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this,'pricingEmbedBox')">🚀 اشترك الآن — 39 دولار</a>
-      <div id="pricingEmbedBox" style="display:none;margin-top:12px">
-        <div class="gumroad-product-embed" data-gumroad-product-id="ssfpxx"><a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true">Loading...</a></div>
-      </div>
+      <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="pricingCheckoutBtn" class="pricing-cta gumroad-button" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this)">🚀 اشترك الآن — 39 دولار</a>
       <div class="pricing-note">يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع</div>
     </div>
   </div>
@@ -527,10 +524,7 @@
     <div style="font-size:48px;margin-bottom:20px;">🚀</div>
     <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:16px;">جاهز تبدأ؟</h2>
     <p style="color:var(--muted);font-size:16px;max-width:460px;margin:0 auto 36px;line-height:1.7;">انضم الآن واحصل على وصول فوري لأقوى دليل مؤثرين في السعودية</p>
-    <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="finalCheckoutBtn" class="btn-primary gumroad-button" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this,'finalEmbedBox')">🎉 39 دولار بدل 299 — سعر الإطلاق</a>
-    <div id="finalEmbedBox" style="display:none;margin-top:16px">
-      <div class="gumroad-product-embed" data-gumroad-product-id="ssfpxx"><a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true">Loading...</a></div>
-    </div>
+    <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="finalCheckoutBtn" class="btn-primary gumroad-button" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this)">🎉 39 دولار بدل 299 — سعر الإطلاق</a>
   </div>
 </section>
 
@@ -552,13 +546,8 @@ function toggleFaq(el) {
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
-function openGumroadPopup(e, el, boxId) {
+function openGumroadPopup(e, el) {
   e.preventDefault();
-  if (window.innerWidth <= 768) {
-    el.style.display = 'none';
-    document.getElementById(boxId).style.display = 'block';
-    return;
-  }
   const w = 500, h = 700;
   const left = (screen.width - w) / 2;
   const top = (screen.height - h) / 2;
@@ -575,6 +564,5 @@ window.addEventListener("message", function(event) {
   } catch (e) {}
 });
 </script>
-<script src="https://gumroad.com/js/gumroad-embed.js" data-async></script>
 </body>
 </html>
