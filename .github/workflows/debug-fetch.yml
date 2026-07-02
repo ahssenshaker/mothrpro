@@ -22,16 +22,26 @@ jobs:
               console.log("status:", res.status, res.statusText);
               const text = await res.text();
               console.log("length:", text.length);
-              const patterns = {
-                subscriberCountText: /"subscriberCountText":\{"simpleText":"([^"]+)"/,
-                subscriberCountAccessibility: /"subscriberCountText":\{"accessibility":\{"accessibilityData":\{"label":"([^"]+)"/,
-                videosCountText: /"videosCountText":\{"runs":\[\{"text":"([^"]+)"/,
-              };
-              for (const [k, re] of Object.entries(patterns)) {
-                const m = text.match(re);
-                console.log(k + ":", m ? m[1] : "NONE");
+
+              const headerIdx = text.indexOf("c4TabbedHeaderRenderer");
+              console.log("c4TabbedHeaderRenderer idx:", headerIdx);
+              if (headerIdx >= 0) {
+                const window = text.slice(headerIdx, headerIdx + 4000);
+                const m1 = window.match(/"subscriberCountText":\{"simpleText":"([^"]+)"/);
+                const m2 = window.match(/"subscriberCountText":\{"accessibility":\{"accessibilityData":\{"label":"([^"]+)"/);
+                const m3 = window.match(/"videoCountText":\{"runs":\[\{"text":"([^"]+)"/);
+                console.log("near-header simpleText:", m1 ? m1[1] : "NONE");
+                console.log("near-header accessibility:", m2 ? m2[1] : "NONE");
+                console.log("near-header videoCountText:", m3 ? m3[1] : "NONE");
               }
-              console.log("contains subscriberCountText string:", text.includes("subscriberCountText"));
+
+              // count how many times subscriberCountText appears total
+              const allMatches = [...text.matchAll(/"subscriberCountText":\{"simpleText":"([^"]+)"/g)];
+              console.log("total simpleText occurrences:", allMatches.length);
+              allMatches.slice(0,5).forEach((m,i)=>console.log("  occurrence "+i+":", m[1]));
+
+              const metaM = text.match(/<meta itemprop="subscriberCount" content="([^"]+)"/);
+              console.log("meta itemprop subscriberCount:", metaM ? metaM[1] : "NONE");
             } catch (e) {
               console.log("FETCH ERROR:", e.message, "CAUSE:", e.cause);
             }
