@@ -2,6 +2,7 @@
   "version": 2,
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/thankyou.html", "dest": "/thankyou.html" },
     { "src": "/thankyou", "dest": "/thankyou.html" },
     { "src": "/privacy.html", "dest": "/privacy.html" },
