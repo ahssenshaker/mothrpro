@@ -1,0 +1,50 @@
+name: Fetch Influencer Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Limit number of records (for testing). Leave empty for all.'
+        required: false
+        default: ''
+      force:
+        description: 'Also re-check records that already have a real image (true/false)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run scraper
+        id: scraper
+        timeout-minutes: 180
+        continue-on-error: true
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
+          node scripts/fetch-influencer-images.mjs $ARGS
+
+      - name: Commit and push results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/influencers/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Fetch real influencer photos/covers from platform pages [automated]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
