@@ -1,0 +1,32 @@
+{
+  "43": {
+    "name": "15 ثانية",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "325": {
+    "name": "دستور",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "387": {
+    "name": "بندريتا",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "200001": {
+    "name": "أبو فلة",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/200001-avatar.jpg",
+    "cover": "assets/influencers/200001-cover.jpg"
+  },
+  "200003": {
+    "name": "دحومي999",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/200003-avatar.jpg",
+    "cover": "assets/influencers/200003-cover.jpg"
+  }
+}
