@@ -6,11 +6,19 @@ on:
       url:
         description: 'URL to inspect'
         required: true
+      platform:
+        description: 'youtube | twitter | snapchat'
+        required: true
+
+permissions:
+  contents: write
 
 jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -34,28 +42,39 @@ jobs:
               console.log("nav warning:", e.message);
             }
             await page.waitForTimeout(4000);
+            console.log("page title:", await page.title());
 
-            const selectors = [
-              "[data-e2e=\"followers-count\"]",
-              "[data-e2e=\"following-count\"]",
-              "[data-e2e=\"likes-count\"]",
-            ];
-            for (const sel of selectors) {
-              try {
+            const platform = process.env.PLATFORM;
+            if (platform === "youtube") {
+              const sels = ["#subscriber-count", "yt-formatted-string#subscriber-count", "[id*=subscriber]"];
+              for (const sel of sels) {
                 const el = await page.$(sel);
-                const text = el ? await el.textContent() : null;
-                console.log(sel, "=>", text);
-              } catch (e) {
-                console.log(sel, "=> ERROR", e.message);
+                console.log(sel, "=>", el ? await el.textContent() : "NOT FOUND");
               }
+            } else if (platform === "twitter") {
+              const bodyText = await page.textContent("body");
+              console.log("contains \"Followers\":", bodyText.includes("Followers"));
+              console.log("contains login wall hint:", bodyText.includes("Log in") || bodyText.includes("Sign up"));
+              const m = bodyText.match(/([\d.,]+[KM]?)\s*Followers/i);
+              console.log("regex followers match:", m ? m[0] : "NONE");
+            } else if (platform === "snapchat") {
+              const bodyText = await page.textContent("body");
+              console.log("body text sample:", bodyText.slice(0, 800));
             }
 
-            // fallback: dump any element with data-e2e attribute containing "count"
-            const all = await page.$$eval("[data-e2e*=count]", els => els.map(e => ({ e2e: e.getAttribute("data-e2e"), text: e.textContent })));
-            console.log("all count-like elements:", JSON.stringify(all));
-
+            await page.screenshot({ path: "debug-screenshot.png" });
             await browser.close();
           })();
           '
         env:
           TARGET_URL: ${{ github.event.inputs.url }}
+          PLATFORM: ${{ github.event.inputs.platform }}
+
+      - name: Commit screenshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add debug-screenshot.png 2>/dev/null || true
+          git commit -m "Debug screenshot [automated]" || echo "nothing to commit"
+          git pull --rebase origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
