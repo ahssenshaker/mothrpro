@@ -1,0 +1,50 @@
+name: Update Follower Stats
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Limit number of records (for testing). Leave empty for all.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright
+        run: |
+          npm install playwright@latest
+          npx playwright install --with-deps chromium
+
+      - name: Run stats updater
+        id: updater
+        timeout-minutes: 180
+        continue-on-error: true
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
+          node scripts/update-follower-stats.mjs $ARGS
+
+      - name: Commit and push results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/influencers/_stats_report.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update follower stats from platform pages [automated]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
