@@ -45,20 +45,19 @@ jobs:
             console.log("page title:", await page.title());
 
             const platform = process.env.PLATFORM;
+            const bodyText = await page.evaluate(() => document.body.innerText);
             if (platform === "youtube") {
-              const bodyText = await page.textContent("body");
               const head = bodyText.slice(0, 2000);
               const m = head.match(/([\d.,]+\s?[KMB]?)\s*subscribers/i);
               console.log("subscribers match (first 2000 chars):", m ? m[0] : "NONE");
               console.log("head sample:", head.slice(0, 500));
             } else if (platform === "twitter") {
-              const bodyText = await page.textContent("body");
               console.log("contains \"Followers\":", bodyText.includes("Followers"));
               console.log("contains login wall hint:", bodyText.includes("Log in") || bodyText.includes("Sign up"));
               const m = bodyText.match(/([\d.,]+[KM]?)\s*Followers/i);
               console.log("regex followers match:", m ? m[0] : "NONE");
+              console.log("head sample:", bodyText.slice(0, 500));
             } else if (platform === "snapchat") {
-              const bodyText = await page.textContent("body");
               console.log("body text sample:", bodyText.slice(0, 800));
             }
 
