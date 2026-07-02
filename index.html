@@ -484,8 +484,8 @@ padding:7px 10px;
        onclick="openGumroadEmbed(event,this)">
       💳 ادفع الآن — 39 دولار
     </a>
-    <div id="gumroadEmbedBox" style="display:none;margin-bottom:12px;text-align:center">
-      <div class="gumroad-product-embed" data-gumroad-product-id="ssfpxx"><a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true">Loading...</a></div>
+    <div id="gumroadEmbedBox" style="display:none;margin-bottom:12px">
+      <iframe id="gumroadEmbedFrame" src="" frameborder="0" scrolling="yes" width="100%" height="450" style="border-radius:12px;border:1px solid var(--border);display:block"></iframe>
     </div>
     <div style="font-size:11px;color:var(--muted2);margin-bottom:16px;line-height:1.7">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
@@ -962,20 +962,26 @@ function openGumroadEmbed(e, el) {
   e.preventDefault();
   el.style.display = 'none';
   const box = document.getElementById('gumroadEmbedBox');
+  const frame = document.getElementById('gumroadEmbedFrame');
   box.style.display = 'block';
-  const embedDiv = box.querySelector('.gumroad-product-embed');
+  let loaded = false;
+  frame.onload = () => { loaded = true; };
+  frame.src = 'https://moatherpro.gumroad.com/l/ssfpxx?wanted=true&as_embed=true';
   setTimeout(() => {
-    if (embedDiv && !embedDiv.querySelector('iframe')) {
+    if (!loaded) {
       box.style.display = 'none';
+      frame.src = '';
       el.style.display = 'block';
       openGumroadDirect(el);
     }
-  }, 4000);
+  }, 5000);
 }
 function closeUpgrade() {
   document.getElementById('upgradeModal').classList.remove('open');
   const box = document.getElementById('gumroadEmbedBox');
   if (box) box.style.display = 'none';
+  const frame = document.getElementById('gumroadEmbedFrame');
+  if (frame) frame.src = '';
   const btn = document.getElementById('lsCheckoutBtn');
   if (btn) btn.style.display = 'block';
 }
@@ -2254,7 +2260,6 @@ window.goPage = function(p) {
   <span style="margin:0 12px">© 2025 مؤثر برو</span>
 </div>
 
-<script src="https://gumroad.com/js/gumroad-embed.js" data-async></script>
 <script>
 window.addEventListener("message", function(event) {
   if (event.origin !== "https://gumroad.com") return;
