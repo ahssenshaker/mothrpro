@@ -26,6 +26,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,6 +34,7 @@ const ROOT = path.resolve(__dirname, '..');
 const INDEX_HTML = path.join(ROOT, 'index.html');
 const IMAGES_DIR = path.join(ROOT, 'assets', 'influencers');
 const REPORT_PATH = path.join(IMAGES_DIR, '_report.json');
+const HASH_REGISTRY_PATH = path.join(IMAGES_DIR, '_image_hashes.json');
 
 const args = process.argv.slice(2);
 const FORCE = args.includes('--force');
@@ -49,6 +51,26 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 
 // Ordered roughly by how likely a public page is to expose an og:image without login.
 const PLATFORM_PRIORITY = ['يوتيوب', 'تيك توك', 'سناب شات', 'انستقرام', 'تويتر/X'];
+
+// Platforms fall back to a generic share-card/logo image (not a real profile
+// photo) when they can't render the actual profile for a bot/logged-out
+// client — e.g. X's "See what's happening" card, Snapchat's ghost logo.
+// These were previously mistaken for real photos and applied to 18 different
+// influencers. Block them by content hash, and also reject any image whose
+// hash we've already assigned to a *different* influencer in this run.
+const KNOWN_GENERIC_IMAGE_HASHES = new Set([
+  '66825c1cd05d51a3fc20e564e4b0b382', // X (Twitter) generic "See what's happening" og:image
+  '6f0f96ef54c421074895bb65722eafe7', // Snapchat generic ghost-logo og:image
+]);
+// hash -> influencer id that first used it; persisted across runs so a
+// generic image discovered today still gets caught if a different run
+// downloads it for someone else next week.
+const seenImageHashes = new Map(
+  fs.existsSync(HASH_REGISTRY_PATH) ? Object.entries(JSON.parse(fs.readFileSync(HASH_REGISTRY_PATH, 'utf8'))) : []
+);
+function saveHashRegistry() {
+  fs.writeFileSync(HASH_REGISTRY_PATH, JSON.stringify(Object.fromEntries(seenImageHashes), null, 2));
+}
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -105,7 +127,7 @@ function extractYoutubeBanner(html) {
   return null;
 }
 
-async function downloadImage(url, destBasePath) {
+async function downloadImage(url, destBasePath, influencerId) {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -116,6 +138,13 @@ async function downloadImage(url, destBasePath) {
     if (!ct.startsWith('image/')) return null;
     const buf = Buffer.from(await res.arrayBuffer());
     if (buf.length < 800) return null; // likely a 1x1 tracking pixel or default placeholder
+
+    const hash = crypto.createHash('md5').update(buf).digest('hex');
+    if (KNOWN_GENERIC_IMAGE_HASHES.has(hash)) return null;
+    const owner = seenImageHashes.get(hash);
+    if (owner !== undefined && owner !== influencerId) return null; // shared across different people = generic, not a real photo
+    seenImageHashes.set(hash, influencerId);
+
     const ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }[ct] || 'jpg';
     const finalPath = `${destBasePath}.${ext}`;
     fs.writeFileSync(finalPath, buf);
@@ -174,7 +203,7 @@ async function main() {
       if (!imgUrl) continue;
 
       if (wantAvatar) {
-        const avPath = await downloadImage(imgUrl, path.join(IMAGES_DIR, `${d.id}-avatar`));
+        const avPath = await downloadImage(imgUrl, path.join(IMAGES_DIR, `${d.id}-avatar`), d.id);
         if (avPath) {
           foundAvatar = path.relative(ROOT, avPath).replace(/\\/g, '/');
           source = key;
@@ -185,7 +214,7 @@ async function main() {
         if (key === 'يوتيوب') {
           const bannerUrl = extractYoutubeBanner(pageHtml);
           if (bannerUrl) {
-            const cvPath = await downloadImage(bannerUrl, path.join(IMAGES_DIR, `${d.id}-cover`));
+            const cvPath = await downloadImage(bannerUrl, path.join(IMAGES_DIR, `${d.id}-cover`), d.id);
             if (cvPath) foundCover = path.relative(ROOT, cvPath).replace(/\\/g, '/');
           }
         }
@@ -212,6 +241,7 @@ async function main() {
     if (processed % CHECKPOINT_EVERY === 0) {
       saveData(original, data);
       fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
+      saveHashRegistry();
       console.log(`--- checkpoint saved (${processed}/${targets.length}) ---`);
     }
 
@@ -220,6 +250,7 @@ async function main() {
 
   saveData(original, data);
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
+  saveHashRegistry();
 
   console.log('\nDone.');
   console.log(`Avatars found: ${changedAvatar} / ${targets.length}`);
