@@ -960,6 +960,11 @@ function openGumroadDirect(el) {
 }
 function openGumroadEmbed(e, el) {
   e.preventDefault();
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    openGumroadDirect(el);
+    return;
+  }
   el.style.display = 'none';
   const box = document.getElementById('gumroadEmbedBox');
   const frame = document.getElementById('gumroadEmbedFrame');

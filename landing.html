@@ -561,6 +561,11 @@ function openGumroadDirect(el) {
 }
 function openGumroadEmbed(e, el, boxId) {
   e.preventDefault();
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    openGumroadDirect(el);
+    return;
+  }
   el.style.display = 'none';
   const box = document.getElementById(boxId);
   const frame = box.querySelector('iframe');
