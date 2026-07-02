@@ -26,6 +26,11 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install Playwright
+        run: |
+          npm install playwright@latest
+          npx playwright install --with-deps chromium
+
       - name: Run scraper
         id: scraper
         timeout-minutes: 180

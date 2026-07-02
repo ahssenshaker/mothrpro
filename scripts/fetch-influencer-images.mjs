@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
  * Run this on a machine with normal internet access (NOT inside the sandboxed
- * Claude Code cloud session, which has no outbound network access).
+ * Claude Code cloud session, which has no outbound network access). Requires
+ * the `playwright` package with the chromium browser installed
+ * (`npx playwright install chromium`).
  *
  * Usage:
  *   cd mothrpro
@@ -10,24 +12,22 @@
  *   node scripts/fetch-influencer-images.mjs --limit=20  # test on first 20 records only
  *
  * For every influencer whose avatar/cover is still the cartoon placeholder
- * (assets/avatar-*.svg / assets/cover-*.svg), it visits their platform pages
- * (YouTube, TikTok, Snapchat, Instagram, X/Twitter — in that order, most
- * scrapable first), grabs the og:image (profile photo) and, for YouTube, the
- * channel banner (used as the cover). Downloaded files are saved under
- * assets/influencers/ and index.html is updated + a backup is written first.
+ * (assets/avatar-*.svg / assets/cover-*.svg), it opens their platform pages
+ * (YouTube, TikTok, Snapchat, X/Twitter, Instagram — in that order, most
+ * scrapable first) in a real headless browser and extracts the profile
+ * photo (and, where available, a distinct cover/banner). A real browser is
+ * required: TikTok and X only render their markup via client-side JS, so a
+ * plain HTTP fetch gets an empty shell for them. Instagram still forces a
+ * login wall even to a real browser, so it's skipped.
  *
- * Notes:
- *  - Instagram and X/Twitter usually require a login to view a profile, so
- *    they will often fail — that's expected, not a bug. YouTube/TikTok/
- *    Snapchat public pages are much more likely to work.
- *  - This can take a while for 356 records (network-bound). Progress is
- *    checkpointed to index.html every CHECKPOINT_EVERY records, so it's safe
- *    to stop and re-run — already-fixed records are skipped automatically.
+ * Downloaded files are saved under assets/influencers/ and index.html is
+ * updated + a backup is written first.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -44,27 +44,25 @@ const LIMIT = (() => {
 })();
 
 const CHECKPOINT_EVERY = 15;
-const REQUEST_TIMEOUT_MS = 15000;
-const DELAY_BETWEEN_REQUESTS_MS = 900;
+const NAV_TIMEOUT_MS = 30000;
+const DOWNLOAD_TIMEOUT_MS = 15000;
+const SETTLE_MS = 3500;
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-// Ordered roughly by how likely a public page is to expose an og:image without login.
-const PLATFORM_PRIORITY = ['يوتيوب', 'تيك توك', 'سناب شات', 'انستقرام', 'تويتر/X'];
+// Skips Instagram: it forces a login wall even to a real headless browser.
+const PLATFORM_PRIORITY = ['يوتيوب', 'تيك توك', 'سناب شات', 'تويتر/X'];
 
 // Platforms fall back to a generic share-card/logo image (not a real profile
 // photo) when they can't render the actual profile for a bot/logged-out
 // client — e.g. X's "See what's happening" card, Snapchat's ghost logo.
-// These were previously mistaken for real photos and applied to 18 different
-// influencers. Block them by content hash, and also reject any image whose
-// hash we've already assigned to a *different* influencer in this run.
+// Block them by content hash, and also reject any image whose hash we've
+// already assigned to a *different* influencer (a real personal photo
+// should never be byte-identical between two different people).
 const KNOWN_GENERIC_IMAGE_HASHES = new Set([
   '66825c1cd05d51a3fc20e564e4b0b382', // X (Twitter) generic "See what's happening" og:image
   '6f0f96ef54c421074895bb65722eafe7', // Snapchat generic ghost-logo og:image
 ]);
-// hash -> influencer id that first used it; persisted across runs so a
-// generic image discovered today still gets caught if a different run
-// downloads it for someone else next week.
 const seenImageHashes = new Map(
   fs.existsSync(HASH_REGISTRY_PATH) ? Object.entries(JSON.parse(fs.readFileSync(HASH_REGISTRY_PATH, 'utf8'))) : []
 );
@@ -81,26 +79,8 @@ function isCartoon(url) {
 function orderPlatformKeys(platforms) {
   const keys = Object.keys(platforms || {});
   const known = PLATFORM_PRIORITY.filter(k => keys.includes(k));
-  const rest = keys.filter(k => !PLATFORM_PRIORITY.includes(k));
+  const rest = keys.filter(k => !PLATFORM_PRIORITY.includes(k) && k !== 'انستقرام');
   return [...known, ...rest];
-}
-
-async function fetchPage(url) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': UA, 'Accept-Language': 'ar,en-US;q=0.9,en;q=0.8' },
-      redirect: 'follow',
-      signal: controller.signal,
-    });
-    if (!res.ok) return null;
-    return await res.text();
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
 }
 
 function extractMetaImage(html) {
@@ -127,10 +107,39 @@ function extractYoutubeBanner(html) {
   return null;
 }
 
+// Visits a platform page with a real browser and returns {avatarUrl, coverUrl}.
+async function extractImages(page, url, platformKey) {
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: NAV_TIMEOUT_MS });
+  } catch {
+    return { avatarUrl: null, coverUrl: null };
+  }
+  await page.waitForTimeout(SETTLE_MS);
+
+  const html = await page.content();
+  let avatarUrl = extractMetaImage(html);
+  let coverUrl = null;
+
+  if (platformKey === 'يوتيوب') {
+    coverUrl = extractYoutubeBanner(html);
+  } else if (platformKey === 'تيك توك' && !avatarUrl) {
+    avatarUrl = await page.evaluate(() => {
+      const el = document.querySelector('[data-e2e="user-avatar"] img') || document.querySelector('span[class*="AvatarLarge"] img');
+      return el ? el.src : null;
+    }).catch(() => null);
+  } else if (platformKey === 'تويتر/X') {
+    const imgSrcs = await page.evaluate(() => Array.from(document.querySelectorAll('img')).map(img => img.src)).catch(() => []);
+    if (!avatarUrl) avatarUrl = imgSrcs.find(src => /profile_images/.test(src)) || null;
+    coverUrl = imgSrcs.find(src => /profile_banners/.test(src)) || null;
+  }
+
+  return { avatarUrl, coverUrl };
+}
+
 async function downloadImage(url, destBasePath, influencerId) {
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS);
     const res = await fetch(url, { headers: { 'User-Agent': UA }, signal: controller.signal });
     clearTimeout(timer);
     if (!res.ok) return null;
@@ -183,6 +192,7 @@ async function main() {
   const targets = data.filter(d => FORCE || isCartoon(d.avatar) || isCartoon(d.cover)).slice(0, LIMIT);
   console.log(`${targets.length} / ${data.length} records to process (force=${FORCE})`);
 
+  const browser = await chromium.launch();
   const report = fs.existsSync(REPORT_PATH) ? JSON.parse(fs.readFileSync(REPORT_PATH, 'utf8')) : {};
   let changedAvatar = 0, changedCover = 0, processed = 0;
 
@@ -196,14 +206,16 @@ async function main() {
       const url = d.platforms[key]?.url;
       if (!url || !/^https?:\/\//i.test(url)) continue;
 
-      const pageHtml = await fetchPage(url);
-      if (!pageHtml) continue;
+      const page = await browser.newPage({ viewport: { width: 500, height: 1000 }, userAgent: UA });
+      let images;
+      try {
+        images = await extractImages(page, url, key);
+      } finally {
+        await page.close();
+      }
 
-      const imgUrl = extractMetaImage(pageHtml);
-      if (!imgUrl) continue;
-
-      if (wantAvatar) {
-        const avPath = await downloadImage(imgUrl, path.join(IMAGES_DIR, `${d.id}-avatar`), d.id);
+      if (wantAvatar && images.avatarUrl) {
+        const avPath = await downloadImage(images.avatarUrl, path.join(IMAGES_DIR, `${d.id}-avatar`), d.id);
         if (avPath) {
           foundAvatar = path.relative(ROOT, avPath).replace(/\\/g, '/');
           source = key;
@@ -211,12 +223,9 @@ async function main() {
       }
 
       if (wantCover) {
-        if (key === 'يوتيوب') {
-          const bannerUrl = extractYoutubeBanner(pageHtml);
-          if (bannerUrl) {
-            const cvPath = await downloadImage(bannerUrl, path.join(IMAGES_DIR, `${d.id}-cover`), d.id);
-            if (cvPath) foundCover = path.relative(ROOT, cvPath).replace(/\\/g, '/');
-          }
+        if (images.coverUrl) {
+          const cvPath = await downloadImage(images.coverUrl, path.join(IMAGES_DIR, `${d.id}-cover`), d.id);
+          if (cvPath) foundCover = path.relative(ROOT, cvPath).replace(/\\/g, '/');
         }
         if (!foundCover && foundAvatar) {
           // No distinct banner available on this platform; reuse the profile photo as the cover.
@@ -228,7 +237,6 @@ async function main() {
       }
 
       if (foundAvatar || foundCover) break; // stop trying other platforms once we got something
-      await sleep(DELAY_BETWEEN_REQUESTS_MS);
     }
 
     if (foundAvatar) { d.avatar = foundAvatar; changedAvatar++; }
@@ -244,10 +252,9 @@ async function main() {
       saveHashRegistry();
       console.log(`--- checkpoint saved (${processed}/${targets.length}) ---`);
     }
-
-    await sleep(DELAY_BETWEEN_REQUESTS_MS);
   }
 
+  await browser.close();
   saveData(original, data);
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
   saveHashRegistry();
