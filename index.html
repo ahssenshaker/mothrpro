@@ -484,6 +484,9 @@ padding:7px 10px;
        onclick="openGumroadPopup(event,this)">
       💳 ادفع الآن — 39 دولار
     </a>
+    <div id="gumroadEmbedBox" style="display:none;margin-bottom:12px;text-align:center">
+      <div class="gumroad-product-embed" data-gumroad-product-id="ssfpxx"><a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true">Loading...</a></div>
+    </div>
     <div style="font-size:11px;color:var(--muted2);margin-bottom:16px;line-height:1.7">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
       يدعم Visa / Mastercard / PayPal
@@ -947,6 +950,11 @@ function openUpgrade() {
 
 function openGumroadPopup(e, el) {
   e.preventDefault();
+  if (window.innerWidth <= 768) {
+    el.style.display = 'none';
+    document.getElementById('gumroadEmbedBox').style.display = 'block';
+    return;
+  }
   const email = currentUser?.email || '';
   const base = 'https://moatherpro.gumroad.com/l/ssfpxx?wanted=true';
   const url = base + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '');
@@ -956,7 +964,13 @@ function openGumroadPopup(e, el) {
   const popup = window.open(url, 'gumroad_checkout', `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`);
   if (!popup) window.location.href = url;
 }
-function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
+function closeUpgrade() {
+  document.getElementById('upgradeModal').classList.remove('open');
+  const box = document.getElementById('gumroadEmbedBox');
+  if (box) box.style.display = 'none';
+  const btn = document.getElementById('lsCheckoutBtn');
+  if (btn) btn.style.display = 'block';
+}
 
 // ═══════════════════════════════════════════
 // PRO RESTRICTIONS
@@ -2228,6 +2242,7 @@ window.goPage = function(p) {
   <span style="margin:0 12px">© 2025 مؤثر برو</span>
 </div>
 
+<script src="https://gumroad.com/js/gumroad-embed.js" data-async></script>
 <script>
 window.addEventListener("message", function(event) {
   if (event.origin !== "https://gumroad.com") return;
