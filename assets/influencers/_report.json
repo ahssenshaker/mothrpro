@@ -1,27 +1,93 @@
 {
+  "10": {
+    "name": "عبدالعزيز الرشيد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/10-avatar.jpg",
+    "cover": "assets/influencers/10-cover.jpg"
+  },
+  "13": {
+    "name": "أحمد الشهري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/13-avatar.jpg",
+    "cover": "assets/influencers/13-cover.jpg"
+  },
+  "14": {
+    "name": "رغد دايز",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/14-avatar.jpg",
+    "cover": "assets/influencers/14-cover.jpg"
+  },
+  "16": {
+    "name": "ملاك الحسيني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/16-avatar.jpg",
+    "cover": "assets/influencers/16-cover.jpg"
+  },
+  "18": {
+    "name": "رغد محمد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/18-avatar.jpg",
+    "cover": "assets/influencers/18-cover.jpg"
+  },
+  "19": {
+    "name": "لطيفة تركي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/19-avatar.jpg",
+    "cover": "assets/influencers/19-cover.jpg"
+  },
+  "20": {
+    "name": "عبدالعزيز العقلا",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/20-avatar.jpg",
+    "cover": "assets/influencers/20-cover.jpg"
+  },
   "21": {
     "name": "نايف حمدان",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/21-avatar.jpg",
+    "cover": "assets/influencers/21-cover.jpg"
   },
   "23": {
     "name": "مختصر سنابات المشاهير",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/23-avatar.jpg",
+    "cover": "assets/influencers/23-cover.jpg"
   },
   "25": {
     "name": "محمد  عبدالرحمن",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/25-avatar.jpg",
+    "cover": "assets/influencers/25-cover.jpg"
+  },
+  "26": {
+    "name": "عز بن فهد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/26-avatar.jpg",
+    "cover": "assets/influencers/26-cover.jpg"
   },
   "27": {
     "name": "ابراهيم باشا",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/27-avatar.jpg",
+    "cover": "assets/influencers/27-cover.jpg"
+  },
+  "28": {
+    "name": "عبدالرحمن السدحان",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/28-avatar.jpg",
+    "cover": "assets/influencers/28-cover.jpg"
+  },
+  "29": {
+    "name": "أمل",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/29-avatar.jpg",
+    "cover": "assets/influencers/29-cover.jpg"
+  },
+  "30": {
+    "name": "فاطمة الأنصاري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/30-avatar.jpg",
+    "cover": "assets/influencers/30-cover.jpg"
   },
   "31": {
     "name": "عبير الغيث",
@@ -29,41 +95,161 @@
     "avatar": null,
     "cover": null
   },
+  "32": {
+    "name": "افنان الباتل",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/32-avatar.jpg",
+    "cover": "assets/influencers/32-cover.jpg"
+  },
   "33": {
     "name": "افنان النملة",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/33-avatar.jpg",
+    "cover": "assets/influencers/33-cover.jpg"
   },
   "34": {
     "name": "وعد التركي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/34-avatar.jpg",
+    "cover": "assets/influencers/34-cover.jpg"
+  },
+  "35": {
+    "name": "جود عزيز",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/35-avatar.jpg",
+    "cover": "assets/influencers/35-cover.jpg"
   },
   "36": {
     "name": "مروج الرحيلي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/36-avatar.jpg",
+    "cover": "assets/influencers/36-cover.jpg"
+  },
+  "37": {
+    "name": "أخبار السعودية",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/37-avatar.jpg",
+    "cover": "assets/influencers/37-cover.jpg"
   },
   "38": {
     "name": "شوق محمد",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/38-avatar.jpg",
+    "cover": "assets/influencers/38-cover.jpg"
+  },
+  "39": {
+    "name": "المشاهير العرب",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/39-avatar.png",
+    "cover": "assets/influencers/39-cover.png"
+  },
+  "40": {
+    "name": "راكان الشايع",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/40-avatar.jpg",
+    "cover": "assets/influencers/40-cover.jpg"
+  },
+  "41": {
+    "name": "أبوعابد",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/41-avatar.jpg",
+    "cover": "assets/influencers/41-cover.jpg"
+  },
+  "42": {
+    "name": "حياة الحربي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/42-avatar.jpg",
+    "cover": "assets/influencers/42-cover.jpg"
   },
   "43": {
     "name": "15 ثانية",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/43-avatar.jpg",
+    "cover": "assets/influencers/43-cover.jpg"
+  },
+  "44": {
+    "name": "أحمد البارقي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/44-avatar.jpg",
+    "cover": "assets/influencers/44-cover.jpg"
+  },
+  "46": {
+    "name": "عبدالله الخريف",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/46-avatar.png",
+    "cover": "assets/influencers/46-cover.png"
+  },
+  "49": {
+    "name": "يارا النملة",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/49-avatar.jpg",
+    "cover": "assets/influencers/49-cover.jpg"
   },
   "52": {
     "name": "الشيف حصة",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "58": {
+    "name": "حمدي الفريدي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/58-avatar.jpg",
+    "cover": "assets/influencers/58-cover.jpg"
+  },
+  "59": {
+    "name": "نجلاء الودعاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/59-avatar.jpg",
+    "cover": "assets/influencers/59-cover.jpg"
+  },
+  "60": {
+    "name": "فارس البشيري",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/60-avatar.png",
+    "cover": "assets/influencers/60-cover.png"
+  },
+  "61": {
+    "name": "وعد محمد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/61-avatar.jpg",
+    "cover": "assets/influencers/61-cover.jpg"
+  },
+  "63": {
+    "name": "دونا الحسين",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/63-avatar.jpg",
+    "cover": "assets/influencers/63-cover.jpg"
+  },
+  "64": {
+    "name": "عبدالقادر الشهراني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/64-avatar.jpg",
+    "cover": "assets/influencers/64-cover.jpg"
+  },
+  "65": {
+    "name": "مشعل الاسباني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/65-avatar.jpg",
+    "cover": "assets/influencers/65-cover.jpg"
+  },
+  "69": {
+    "name": "طارق الحربي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/69-avatar.jpg",
+    "cover": "assets/influencers/69-cover.jpg"
+  },
+  "70": {
+    "name": "فهد البقمي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/70-avatar.jpg",
+    "cover": "assets/influencers/70-cover.jpg"
+  },
+  "71": {
+    "name": "أبو حصة - بدر",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/71-avatar.jpg",
+    "cover": "assets/influencers/71-cover.jpg"
   },
   "73": {
     "name": "حصة الغماس",
@@ -73,27 +259,39 @@
   },
   "74": {
     "name": "ام سعود",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/74-avatar.jpg",
+    "cover": "assets/influencers/74-cover.jpg"
+  },
+  "77": {
+    "name": "برجك اليوم",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/77-avatar.jpg",
+    "cover": "assets/influencers/77-cover.jpg"
   },
   "80": {
     "name": "منال البكر",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/80-avatar.jpg",
+    "cover": "assets/influencers/80-cover.jpg"
   },
   "81": {
     "name": "فرح القفاري",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/81-avatar.jpg",
+    "cover": "assets/influencers/81-cover.jpg"
   },
   "92": {
     "name": "اودي الزبن",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/92-avatar.jpg",
+    "cover": "assets/influencers/92-cover.jpg"
+  },
+  "94": {
+    "name": "ايناس الحنطي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/94-avatar.jpg",
+    "cover": "assets/influencers/94-cover.jpg"
   },
   "95": {
     "name": "اماني الحنطي",
@@ -101,89 +299,227 @@
     "avatar": null,
     "cover": null
   },
+  "118": {
+    "name": "عهود ناصر الزهراني",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "125": {
+    "name": "عفاف عبد الله",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/125-avatar.jpg",
+    "cover": "assets/influencers/125-cover.jpg"
+  },
+  "142": {
+    "name": "العنود سعد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "145": {
+    "name": "منيف الخمشي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/145-avatar.jpg",
+    "cover": "assets/influencers/145-cover.jpg"
+  },
   "156": {
     "name": "عباس أبو كاميليا",
     "source": null,
     "avatar": null,
     "cover": null
   },
+  "176": {
+    "name": "فارس فهد الحميد",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/176-avatar.jpg",
+    "cover": "assets/influencers/176-cover.jpg"
+  },
   "187": {
     "name": "عبدالمجيد المطيويع",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/187-avatar.jpg",
+    "cover": "assets/influencers/187-cover.jpg"
+  },
+  "190": {
+    "name": "عبدالله العلاوي",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/190-avatar.jpg",
+    "cover": "assets/influencers/190-cover.jpg"
+  },
+  "221": {
+    "name": "سيف القرشي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/221-avatar.jpg",
+    "cover": "assets/influencers/221-cover.jpg"
+  },
+  "222": {
+    "name": "سناب قول",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/222-avatar.jpg",
+    "cover": "assets/influencers/222-cover.jpg"
+  },
+  "223": {
+    "name": "محمد عدنان",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/223-avatar.jpg",
+    "cover": "assets/influencers/223-cover.jpg"
+  },
+  "224": {
+    "name": "كورة شو",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/224-avatar.jpg",
+    "cover": "assets/influencers/224-cover.jpg"
+  },
+  "230": {
+    "name": "منبر الهلال",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/230-avatar.jpg",
+    "cover": "assets/influencers/230-cover.jpg"
+  },
+  "232": {
+    "name": "بندر المشرافي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/232-avatar.jpg",
+    "cover": "assets/influencers/232-cover.jpg"
   },
   "235": {
     "name": "جريدة الرياض",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/235-avatar.jpg",
+    "cover": "assets/influencers/235-cover.jpg"
   },
   "238": {
     "name": "طرفه عبدالله",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/238-avatar.jpg",
+    "cover": "assets/influencers/238-cover.jpg"
   },
   "239": {
     "name": "هبه الحسين",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/239-avatar.jpg",
+    "cover": "assets/influencers/239-cover.jpg"
+  },
+  "240": {
+    "name": "مجلة قوانين",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/240-avatar.png",
+    "cover": "assets/influencers/240-cover.png"
   },
   "276": {
     "name": "عهود محمد",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/276-avatar.jpg",
+    "cover": "assets/influencers/276-cover.jpg"
   },
   "277": {
     "name": "معاذ الفداغي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/277-avatar.jpg",
+    "cover": "assets/influencers/277-cover.jpg"
   },
   "278": {
     "name": "هشام باعشن",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/278-avatar.jpg",
+    "cover": "assets/influencers/278-cover.jpg"
   },
   "279": {
     "name": "عبير الماضي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/279-avatar.jpg",
+    "cover": "assets/influencers/279-cover.jpg"
   },
   "280": {
     "name": "رانسي القحطاني",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/280-avatar.jpg",
+    "cover": "assets/influencers/280-cover.jpg"
   },
   "281": {
     "name": "مها مكس",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/281-avatar.jpg",
+    "cover": "assets/influencers/281-cover.jpg"
+  },
+  "285": {
+    "name": "مرااايم",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/285-avatar.jpg",
+    "cover": "assets/influencers/285-cover.jpg"
+  },
+  "286": {
+    "name": "جود",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/286-avatar.jpg",
+    "cover": "assets/influencers/286-cover.jpg"
+  },
+  "287": {
+    "name": "Donia Dagreeri",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "313": {
+    "name": "سلطانه سعود",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/313-avatar.jpg",
+    "cover": "assets/influencers/313-cover.jpg"
   },
   "315": {
     "name": "أرسطو",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/315-avatar.jpg",
+    "cover": "assets/influencers/315-cover.jpg"
+  },
+  "317": {
+    "name": "خلود العتيبي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/317-avatar.jpg",
+    "cover": "assets/influencers/317-cover.jpg"
+  },
+  "323": {
+    "name": "نايف العنزي | هستور",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/323-avatar.jpg",
+    "cover": "assets/influencers/323-cover.jpg"
   },
   "325": {
     "name": "دستور",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/325-avatar.jpg",
+    "cover": "assets/influencers/325-cover.jpg"
+  },
+  "329": {
+    "name": "رند ورفيف الشهيلي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/329-avatar.jpg",
+    "cover": "assets/influencers/329-cover.jpg"
+  },
+  "332": {
+    "name": "رود المالكي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/332-avatar.jpg",
+    "cover": "assets/influencers/332-cover.jpg"
+  },
+  "334": {
+    "name": "سالم القحطاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/334-avatar.jpg",
+    "cover": "assets/influencers/334-cover.jpg"
+  },
+  "335": {
+    "name": "ساره القحطاني",
     "source": null,
     "avatar": null,
     "cover": null
   },
-  "334": {
-    "name": "سالم القحطاني",
-    "source": null,
-    "avatar": null,
-    "cover": null
+  "336": {
+    "name": "طارق العواد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/336-avatar.jpg",
+    "cover": "assets/influencers/336-cover.jpg"
   },
   "339": {
     "name": "شيراز",
@@ -193,21 +529,33 @@
   },
   "341": {
     "name": "عبدالعزيز الزير",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/341-avatar.jpg",
+    "cover": "assets/influencers/341-cover.jpg"
+  },
+  "343": {
+    "name": "ضحى سليمان",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/343-avatar.jpg",
+    "cover": "assets/influencers/343-cover.jpg"
+  },
+  "349": {
+    "name": "لولو السعيد",
     "source": null,
     "avatar": null,
     "cover": null
   },
   "350": {
     "name": "لولي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/350-avatar.jpg",
+    "cover": "assets/influencers/350-cover.jpg"
   },
   "351": {
     "name": "تغطيات الرياض",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/351-avatar.jpg",
+    "cover": "assets/influencers/351-cover.jpg"
   },
   "352": {
     "name": "مس نوره",
@@ -215,11 +563,23 @@
     "avatar": null,
     "cover": null
   },
-  "356": {
-    "name": "عبدالله التميمي",
+  "353": {
+    "name": "وفاء الحربي",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "354": {
+    "name": "مساء الرياض",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/354-avatar.jpg",
+    "cover": "assets/influencers/354-cover.jpg"
+  },
+  "356": {
+    "name": "عبدالله التميمي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/356-avatar.jpg",
+    "cover": "assets/influencers/356-cover.jpg"
   },
   "357": {
     "name": "رضا خالد العتيبي",
@@ -229,9 +589,9 @@
   },
   "364": {
     "name": "ابتسام محمد",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/364-avatar.jpg",
+    "cover": "assets/influencers/364-cover.jpg"
   },
   "365": {
     "name": "رحاب",
@@ -239,8 +599,44 @@
     "avatar": null,
     "cover": null
   },
+  "369": {
+    "name": "الهنوف",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "370": {
+    "name": "نوره الزهراني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/370-avatar.jpg",
+    "cover": "assets/influencers/370-cover.jpg"
+  },
+  "374": {
+    "name": "حول المدينة",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/374-avatar.jpg",
+    "cover": "assets/influencers/374-cover.jpg"
+  },
+  "376": {
+    "name": "رغدة",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "382": {
+    "name": "انهار",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
   "387": {
     "name": "بندريتا",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/387-avatar.jpg",
+    "cover": "assets/influencers/387-cover.jpg"
+  },
+  "395": {
+    "name": "نورة المالكي",
     "source": null,
     "avatar": null,
     "cover": null
@@ -253,9 +649,9 @@
   },
   "400": {
     "name": "سلوم بطي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/400-avatar.jpg",
+    "cover": "assets/influencers/400-cover.jpg"
   },
   "477": {
     "name": "خالد العنزي",
@@ -263,20 +659,56 @@
     "avatar": null,
     "cover": null
   },
-  "496": {
-    "name": "اسماء الشمري",
+  "482": {
+    "name": "مزيون قيمز",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/482-avatar.jpg",
+    "cover": "assets/influencers/482-cover.jpg"
+  },
+  "491": {
+    "name": "أمل العمار",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "496": {
+    "name": "اسماء الشمري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/496-avatar.jpg",
+    "cover": "assets/influencers/496-cover.jpg"
   },
   "513": {
     "name": "عبدالله الجميري",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/513-avatar.jpg",
+    "cover": "assets/influencers/513-cover.jpg"
+  },
+  "523": {
+    "name": "محمد بن عبدالرحمن ال سعود",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/523-avatar.png",
+    "cover": "assets/influencers/523-cover.png"
   },
   "525": {
     "name": "عزيز وليد",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/525-avatar.jpg",
+    "cover": "assets/influencers/525-cover.jpg"
+  },
+  "528": {
+    "name": "سلطان حبادي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/528-avatar.jpg",
+    "cover": "assets/influencers/528-cover.jpg"
+  },
+  "529": {
+    "name": "نيفو",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/529-avatar.jpg",
+    "cover": "assets/influencers/529-cover.jpg"
+  },
+  "537": {
+    "name": "طوركي وعبدالله",
     "source": null,
     "avatar": null,
     "cover": null
@@ -287,14 +719,194 @@
     "avatar": null,
     "cover": null
   },
+  "547": {
+    "name": "هنا الحدث",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/547-avatar.jpg",
+    "cover": "assets/influencers/547-cover.jpg"
+  },
+  "549": {
+    "name": "غدي البارقي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/549-avatar.jpg",
+    "cover": "assets/influencers/549-cover.jpg"
+  },
   "551": {
     "name": "عثمان بن هزاع",
     "source": null,
     "avatar": null,
     "cover": null
   },
+  "552": {
+    "name": "فؤاد عبدالعزيز",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/552-avatar.jpg",
+    "cover": "assets/influencers/552-cover.jpg"
+  },
+  "554": {
+    "name": "روز الهيلا",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/554-avatar.jpg",
+    "cover": "assets/influencers/554-cover.jpg"
+  },
+  "555": {
+    "name": "رنا",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "556": {
+    "name": "يحيى سعد الودعاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/556-avatar.jpg",
+    "cover": "assets/influencers/556-cover.jpg"
+  },
+  "558": {
+    "name": "رندا تركستاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/558-avatar.jpg",
+    "cover": "assets/influencers/558-cover.jpg"
+  },
+  "559": {
+    "name": "ياسمين الشريف",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/559-avatar.jpg",
+    "cover": "assets/influencers/559-cover.jpg"
+  },
+  "561": {
+    "name": "اوزيكس",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "562": {
+    "name": "لبنى الدوسري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/562-avatar.jpg",
+    "cover": "assets/influencers/562-cover.jpg"
+  },
+  "567": {
+    "name": "توتا الأسمري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/567-avatar.jpg",
+    "cover": "assets/influencers/567-cover.jpg"
+  },
+  "569": {
+    "name": "ديم القو",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/569-avatar.png",
+    "cover": "assets/influencers/569-cover.png"
+  },
+  "572": {
+    "name": "وفاء محمد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "574": {
+    "name": "غيداءًمحمد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/574-avatar.jpg",
+    "cover": "assets/influencers/574-cover.jpg"
+  },
   "575": {
     "name": "افنان المرغلاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/575-avatar.jpg",
+    "cover": "assets/influencers/575-cover.jpg"
+  },
+  "576": {
+    "name": "محمد فلود",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/576-avatar.jpg",
+    "cover": "assets/influencers/576-cover.jpg"
+  },
+  "577": {
+    "name": "ندى حمبظاظة",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/577-avatar.jpg",
+    "cover": "assets/influencers/577-cover.jpg"
+  },
+  "582": {
+    "name": "سهام صالح",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/582-avatar.jpg",
+    "cover": "assets/influencers/582-cover.jpg"
+  },
+  "583": {
+    "name": "نادية عبدالله القرني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/583-avatar.jpg",
+    "cover": "assets/influencers/583-cover.jpg"
+  },
+  "584": {
+    "name": "هاجر العبدالله",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "585": {
+    "name": "شيف هنوده",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "587": {
+    "name": "ريفا عبدالله",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/587-avatar.jpg",
+    "cover": "assets/influencers/587-cover.jpg"
+  },
+  "588": {
+    "name": "فوز الشهري",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/588-avatar.jpg",
+    "cover": "assets/influencers/588-cover.jpg"
+  },
+  "589": {
+    "name": "ندى العمري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/589-avatar.jpg",
+    "cover": "assets/influencers/589-cover.jpg"
+  },
+  "590": {
+    "name": "لجين حسن",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "592": {
+    "name": "بنت نجد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/592-avatar.jpg",
+    "cover": "assets/influencers/592-cover.jpg"
+  },
+  "594": {
+    "name": "سناب الشرقية",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/594-avatar.jpg",
+    "cover": "assets/influencers/594-cover.jpg"
+  },
+  "597": {
+    "name": "عبير عمر",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "600": {
+    "name": "لينا",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/600-avatar.jpg",
+    "cover": "assets/influencers/600-cover.jpg"
+  },
+  "601": {
+    "name": "عبير المقرن",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "602": {
+    "name": "وئام المشيقح",
     "source": null,
     "avatar": null,
     "cover": null
@@ -305,17 +917,155 @@
     "avatar": null,
     "cover": null
   },
+  "604": {
+    "name": "رميساء",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/604-avatar.jpg",
+    "cover": "assets/influencers/604-cover.jpg"
+  },
+  "607": {
+    "name": "عبدالله جميل",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/607-avatar.jpg",
+    "cover": "assets/influencers/607-cover.jpg"
+  },
+  "608": {
+    "name": "كورة بريك",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/608-avatar.png",
+    "cover": "assets/influencers/608-cover.png"
+  },
   "610": {
     "name": "ماجد هاشم الرشدان",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/610-avatar.jpg",
+    "cover": "assets/influencers/610-cover.jpg"
+  },
+  "611": {
+    "name": "عبدالله صلاح باخشوين",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/611-avatar.jpg",
+    "cover": "assets/influencers/611-cover.jpg"
+  },
+  "613": {
+    "name": "وليد | فنادق الشرقية",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/613-avatar.jpg",
+    "cover": "assets/influencers/613-cover.jpg"
+  },
+  "618": {
+    "name": "أمينة العلي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/618-avatar.jpg",
+    "cover": "assets/influencers/618-cover.jpg"
+  },
+  "620": {
+    "name": "عبير عثمان",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/620-avatar.jpg",
+    "cover": "assets/influencers/620-cover.jpg"
+  },
+  "623": {
+    "name": "خالد فهد العبيد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/623-avatar.jpg",
+    "cover": "assets/influencers/623-cover.jpg"
+  },
+  "624": {
+    "name": "كريمه",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/624-avatar.jpg",
+    "cover": "assets/influencers/624-cover.jpg"
+  },
+  "626": {
+    "name": "ريم عبدالعزيز",
     "source": null,
     "avatar": null,
     "cover": null
   },
-  "611": {
-    "name": "عبدالله صلاح باخشوين",
+  "628": {
+    "name": "محمد الرشيدي",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "629": {
+    "name": "فاطمه بالحداد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/629-avatar.jpg",
+    "cover": "assets/influencers/629-cover.jpg"
+  },
+  "630": {
+    "name": "بلوقر وردة",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/630-avatar.jpg",
+    "cover": "assets/influencers/630-cover.jpg"
+  },
+  "631": {
+    "name": "نايف يجرب",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "635": {
+    "name": "عبدالعزيز كركدان",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/635-avatar.jpg",
+    "cover": "assets/influencers/635-cover.jpg"
+  },
+  "637": {
+    "name": "ماريا الزهراني",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "639": {
+    "name": "احمد بن محسن",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/639-avatar.jpg",
+    "cover": "assets/influencers/639-cover.jpg"
+  },
+  "640": {
+    "name": "د/ رانيا رجب",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/640-avatar.jpg",
+    "cover": "assets/influencers/640-cover.jpg"
+  },
+  "641": {
+    "name": "سناء",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/641-avatar.jpg",
+    "cover": "assets/influencers/641-cover.jpg"
+  },
+  "643": {
+    "name": "بيجر",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/643-avatar.jpg",
+    "cover": "assets/influencers/643-cover.jpg"
+  },
+  "644": {
+    "name": "اغصان",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/644-avatar.jpg",
+    "cover": "assets/influencers/644-cover.jpg"
+  },
+  "645": {
+    "name": "كازان",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/645-avatar.png",
+    "cover": "assets/influencers/645-cover.png"
+  },
+  "646": {
+    "name": "سعد الغنامي",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/646-avatar.png",
+    "cover": "assets/influencers/646-cover.png"
+  },
+  "647": {
+    "name": "لينا فهد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/647-avatar.jpg",
+    "cover": "assets/influencers/647-cover.jpg"
   },
   "649": {
     "name": "حنان بندر",
@@ -323,11 +1073,131 @@
     "avatar": null,
     "cover": null
   },
+  "650": {
+    "name": "نهى نبيل",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/650-avatar.jpg",
+    "cover": "assets/influencers/650-cover.jpg"
+  },
+  "651": {
+    "name": "عبدالرحمن بخش",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/651-avatar.jpg",
+    "cover": "assets/influencers/651-cover.jpg"
+  },
+  "653": {
+    "name": "جهينة الحميدان",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "655": {
+    "name": "طارق الزعاق",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/655-avatar.jpg",
+    "cover": "assets/influencers/655-cover.jpg"
+  },
+  "657": {
+    "name": "في الزويد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "658": {
+    "name": "هيلدا ياسين",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/658-avatar.jpg",
+    "cover": "assets/influencers/658-cover.jpg"
+  },
+  "665": {
+    "name": "عشق",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/665-avatar.jpg",
+    "cover": "assets/influencers/665-cover.jpg"
+  },
+  "666": {
+    "name": "أورجوان ماليباري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "667": {
+    "name": "ياسر الشهراني",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/667-avatar.png",
+    "cover": "assets/influencers/667-cover.png"
+  },
+  "669": {
+    "name": "صفية مختار",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/669-avatar.jpg",
+    "cover": "assets/influencers/669-cover.jpg"
+  },
+  "673": {
+    "name": "يسرى عبدالله عيسى",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "675": {
+    "name": "صالحه",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/675-avatar.jpg",
+    "cover": "assets/influencers/675-cover.jpg"
+  },
+  "676": {
+    "name": "هتون",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "677": {
+    "name": "مهند زهير",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/677-avatar.jpg",
+    "cover": "assets/influencers/677-cover.jpg"
+  },
+  "688": {
+    "name": "نسمه",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "690": {
+    "name": "اصاله بن حريب",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/690-avatar.jpg",
+    "cover": "assets/influencers/690-cover.jpg"
+  },
+  "691": {
+    "name": "عبير",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "693": {
+    "name": "مرام العتيبي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "695": {
+    "name": "ندى بلوقر",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/695-avatar.jpg",
+    "cover": "assets/influencers/695-cover.jpg"
+  },
   "700": {
     "name": "أحمد الفرحان",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "701": {
+    "name": "وصايف القحطاني",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/701-avatar.jpg",
+    "cover": "assets/influencers/701-cover.jpg"
   },
   "702": {
     "name": "أوقست",
@@ -335,17 +1205,53 @@
     "avatar": null,
     "cover": null
   },
+  "703": {
+    "name": "Reeme.days",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/703-avatar.jpg",
+    "cover": "assets/influencers/703-cover.jpg"
+  },
   "704": {
     "name": "هندا العجمي",
     "source": null,
     "avatar": null,
     "cover": null
   },
-  "722": {
-    "name": "د. لمار",
+  "713": {
+    "name": "فهد الزهراني",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "714": {
+    "name": "فارس الرشيد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "717": {
+    "name": "فهد النماصي",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/717-avatar.png",
+    "cover": "assets/influencers/717-cover.png"
+  },
+  "718": {
+    "name": "حسام الشماسي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/718-avatar.jpg",
+    "cover": "assets/influencers/718-cover.jpg"
+  },
+  "721": {
+    "name": "ساره القحطاني",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "722": {
+    "name": "د. لمار",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/722-avatar.jpg",
+    "cover": "assets/influencers/722-cover.jpg"
   },
   "723": {
     "name": "شهد التويجري",
@@ -353,20 +1259,128 @@
     "avatar": null,
     "cover": null
   },
+  "724": {
+    "name": "عيد الفهري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
   "726": {
     "name": "وليد ابراهيم",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/726-avatar.jpg",
+    "cover": "assets/influencers/726-cover.jpg"
+  },
+  "728": {
+    "name": "اسماء",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "730": {
+    "name": "ميعاد العسيري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/730-avatar.jpg",
+    "cover": "assets/influencers/730-cover.jpg"
+  },
+  "732": {
+    "name": "بشاير الشهري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/732-avatar.jpg",
+    "cover": "assets/influencers/732-cover.jpg"
+  },
+  "733": {
+    "name": "امل الياس",
     "source": null,
     "avatar": null,
     "cover": null
   },
   "734": {
     "name": "عذاري  صالح",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/734-avatar.jpg",
+    "cover": "assets/influencers/734-cover.jpg"
+  },
+  "735": {
+    "name": "خلف الجوعان",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/735-avatar.jpg",
+    "cover": "assets/influencers/735-cover.jpg"
+  },
+  "736": {
+    "name": "عبدالله القفاري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/736-avatar.jpg",
+    "cover": "assets/influencers/736-cover.jpg"
+  },
+  "739": {
+    "name": "هند محمد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "740": {
+    "name": "نائله جاد",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/740-avatar.jpg",
+    "cover": "assets/influencers/740-cover.jpg"
+  },
+  "741": {
+    "name": "عقاري محترف",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/741-avatar.jpg",
+    "cover": "assets/influencers/741-cover.jpg"
+  },
+  "742": {
+    "name": "فيصل الخالدي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "744": {
+    "name": "محمد التويجري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "748": {
+    "name": "فيصل بن محمد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "750": {
+    "name": "صالحه الغامدي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "754": {
+    "name": "بشرى المشاري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "756": {
+    "name": "سناب هذا السعودي",
     "source": null,
     "avatar": null,
     "cover": null
   },
   "757": {
     "name": "نورة الشلاحي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "759": {
+    "name": "خلود محمد",
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/759-avatar.jpg",
+    "cover": "assets/influencers/759-cover.jpg"
+  },
+  "760": {
+    "name": "البدور",
     "source": null,
     "avatar": null,
     "cover": null
@@ -383,14 +1397,110 @@
     "avatar": null,
     "cover": null
   },
-  "771": {
-    "name": "الشيف اسومه",
+  "764": {
+    "name": "يوسف بابطين",
     "source": null,
     "avatar": null,
     "cover": null
   },
+  "765": {
+    "name": "علي القحطاني",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "767": {
+    "name": "غادة البطي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/767-avatar.jpg",
+    "cover": "assets/influencers/767-cover.jpg"
+  },
+  "768": {
+    "name": "تركي الغنمي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/768-avatar.jpg",
+    "cover": "assets/influencers/768-cover.jpg"
+  },
+  "771": {
+    "name": "الشيف اسومه",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/771-avatar.jpg",
+    "cover": "assets/influencers/771-cover.jpg"
+  },
+  "772": {
+    "name": "عبدالملك السلمي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "774": {
+    "name": "طارق ناصر السويح",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/774-avatar.jpg",
+    "cover": "assets/influencers/774-cover.jpg"
+  },
   "780": {
     "name": "بدور",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/780-avatar.jpg",
+    "cover": "assets/influencers/780-cover.jpg"
+  },
+  "782": {
+    "name": "هيفاء البطي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/782-avatar.jpg",
+    "cover": "assets/influencers/782-cover.jpg"
+  },
+  "793": {
+    "name": "سات الرياض",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "834": {
+    "name": "تغطيات آيفا",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "844": {
+    "name": "فاطمة عادل",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/844-avatar.jpg",
+    "cover": "assets/influencers/844-cover.jpg"
+  },
+  "847": {
+    "name": "تغطيات ساره",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "849": {
+    "name": "تاق",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "852": {
+    "name": "أصالة التراث",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/852-avatar.jpg",
+    "cover": "assets/influencers/852-cover.jpg"
+  },
+  "853": {
+    "name": "حليمه الشريف",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "855": {
+    "name": "صافيه محمد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "856": {
+    "name": "هدى الكبسي",
     "source": null,
     "avatar": null,
     "cover": null
@@ -401,11 +1511,101 @@
     "avatar": null,
     "cover": null
   },
+  "860": {
+    "name": "عبدالله الخضيري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "861": {
+    "name": "احمد العامر",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/861-avatar.jpg",
+    "cover": "assets/influencers/861-cover.jpg"
+  },
+  "865": {
+    "name": "شيخه عبد الرحمن",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/865-avatar.jpg",
+    "cover": "assets/influencers/865-cover.jpg"
+  },
+  "870": {
+    "name": "جولي",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/870-avatar.jpg",
+    "cover": "assets/influencers/870-cover.jpg"
+  },
   "879": {
     "name": "وليد عبدالله",
     "source": "تويتر/X",
     "avatar": "assets/influencers/879-avatar.png",
     "cover": "assets/influencers/879-cover.png"
+  },
+  "884": {
+    "name": "نورا بنت خالد",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "903": {
+    "name": "أريج محمد",
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/903-avatar.png",
+    "cover": "assets/influencers/903-cover.png"
+  },
+  "905": {
+    "name": "ورد عبدالعزيز",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/905-avatar.jpg",
+    "cover": "assets/influencers/905-cover.jpg"
+  },
+  "907": {
+    "name": "دارين اسكندر",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/907-avatar.jpg",
+    "cover": "assets/influencers/907-cover.jpg"
+  },
+  "911": {
+    "name": "سارا الشهري",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "915": {
+    "name": "فعاليات الرياض",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "916": {
+    "name": "سَم رفيوز",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "920": {
+    "name": "نوفا القرني",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "921": {
+    "name": "تغطيات الرياض ايثار",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "922": {
+    "name": "ناي",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "923": {
+    "name": "_iiicloud",
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "924": {
     "name": "( فهد ) الرياض ترندز",
@@ -419,11 +1619,23 @@
     "avatar": null,
     "cover": null
   },
-  "929": {
-    "name": "الفريدة",
+  "926": {
+    "name": "نيو تريند",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/926-avatar.jpg",
+    "cover": "assets/influencers/926-cover.jpg"
+  },
+  "928": {
+    "name": "موضي المقاطي",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "929": {
+    "name": "الفريدة",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/929-avatar.jpg",
+    "cover": "assets/influencers/929-cover.jpg"
   },
   "930": {
     "name": "اسامه محمد",
@@ -431,11 +1643,35 @@
     "avatar": null,
     "cover": null
   },
+  "931": {
+    "name": "منى سالم",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "932": {
+    "name": "رنا",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "949": {
+    "name": "نورة الشراري",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/949-avatar.jpg",
+    "cover": "assets/influencers/949-cover.jpg"
+  },
   "959": {
     "name": "عبدالاله العمري",
     "source": null,
     "avatar": null,
     "cover": null
+  },
+  "970": {
+    "name": "دارين البايض",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/970-avatar.jpg",
+    "cover": "assets/influencers/970-cover.jpg"
   },
   "971": {
     "name": "جدة نايت",
@@ -451,21 +1687,21 @@
   },
   "982": {
     "name": "منى الجريسي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/982-avatar.jpg",
+    "cover": "assets/influencers/982-cover.jpg"
   },
   "986": {
     "name": "وسام الجنوب",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/986-avatar.jpg",
+    "cover": "assets/influencers/986-cover.jpg"
   },
   "988": {
     "name": "خلود محمد",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/988-avatar.jpg",
+    "cover": "assets/influencers/988-cover.jpg"
   },
   "990": {
     "name": "غادة العزمان",
@@ -475,6 +1711,24 @@
   },
   "991": {
     "name": "بشاير الخضير",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "1001": {
+    "name": "عبير سلطان",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "1003": {
+    "name": "فوز الشريف",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1003-avatar.jpg",
+    "cover": "assets/influencers/1003-cover.jpg"
+  },
+  "1004": {
+    "name": "عبير علي",
     "source": null,
     "avatar": null,
     "cover": null
@@ -505,9 +1759,15 @@
   },
   "1012": {
     "name": "حصه البقمي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1012-avatar.jpg",
+    "cover": "assets/influencers/1012-cover.jpg"
+  },
+  "1013": {
+    "name": "البندري عبدالله",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1013-avatar.jpg",
+    "cover": "assets/influencers/1013-cover.jpg"
   },
   "1016": {
     "name": "تغطيات | هـنـو",
@@ -685,15 +1945,21 @@
   },
   "1105": {
     "name": "أميرة المطيري",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1105-avatar.jpg",
+    "cover": "assets/influencers/1105-cover.jpg"
+  },
+  "1106": {
+    "name": "زهراء طالب",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1106-avatar.jpg",
+    "cover": "assets/influencers/1106-cover.jpg"
   },
   "1107": {
     "name": "امل المطيري",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1107-avatar.jpg",
+    "cover": "assets/influencers/1107-cover.jpg"
   },
   "1108": {
     "name": "زهره الشهري",
@@ -721,15 +1987,15 @@
   },
   "1112": {
     "name": "كيان",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1112-avatar.jpg",
+    "cover": "assets/influencers/1112-cover.jpg"
   },
   "1113": {
     "name": "الكادي ( دلال الحارثي)",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1113-avatar.png",
+    "cover": "assets/influencers/1113-cover.png"
   },
   "1115": {
     "name": "بشرى البقمي",
@@ -771,6 +2037,24 @@
     "name": "الوفاء والطيب",
     "source": "يوتيوب",
     "avatar": "assets/influencers/1125-avatar.jpg",
+    "cover": "assets/influencers/1125-cover.jpg"
+  },
+  "1131": {
+    "name": "نور آل قيس",
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1131-avatar.jpg",
+    "cover": "assets/influencers/1131-cover.jpg"
+  },
+  "1133": {
+    "name": "eman gabba",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "1159": {
+    "name": "العطا للتغطيات",
+    "source": null,
+    "avatar": null,
     "cover": null
   },
   "1168": {
@@ -793,9 +2077,9 @@
   },
   "1173": {
     "name": "نرجس العوامي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1173-avatar.jpg",
+    "cover": "assets/influencers/1173-cover.jpg"
   },
   "1181": {
     "name": "ريڤيو الرياض",
@@ -805,6 +2089,18 @@
   },
   "1182": {
     "name": "باب الرياض",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "1183": {
+    "name": "روز",
+    "source": null,
+    "avatar": null,
+    "cover": null
+  },
+  "1187": {
+    "name": "A’mmal",
     "source": null,
     "avatar": null,
     "cover": null
