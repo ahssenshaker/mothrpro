@@ -27,8 +27,12 @@ jobs:
               console.log("contains og:image string:", text.includes("og:image"));
               const m = text.match(/<meta[^>]+property=["\x27]og:image[^"\x27]*["\x27][^>]*>/i);
               console.log("og:image tag match:", m ? m[0] : "NONE");
-              console.log("--- first 1500 chars ---");
-              console.log(text.slice(0, 1500));
+              console.log("contains SIGI_STATE:", text.includes("SIGI_STATE"));
+              console.log("contains avatarLarger:", text.includes("avatarLarger"));
+              const am = text.match(/"avatarLarger":"([^"]+)"/);
+              console.log("avatarLarger match:", am ? am[1] : "NONE");
+              const sm = text.match(/"avatarMedium":"([^"]+)"/);
+              console.log("avatarMedium match:", sm ? sm[1] : "NONE");
             } catch (e) {
               console.log("FETCH ERROR:", e.message);
             }
