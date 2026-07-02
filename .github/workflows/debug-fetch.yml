@@ -26,7 +26,7 @@ jobs:
               const buf = Buffer.from(await res.arrayBuffer());
               console.log("actual bytes:", buf.length);
             } catch (e) {
-              console.log("FETCH ERROR:", e.message);
+              console.log("FETCH ERROR:", e.message, "CAUSE:", e.cause);
             }
           })();
           '
