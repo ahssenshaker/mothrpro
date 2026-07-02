@@ -175,9 +175,9 @@
   },
   "46": {
     "name": "عبدالله الخريف",
-    "source": "تويتر/X",
-    "avatar": "assets/influencers/46-avatar.png",
-    "cover": "assets/influencers/46-cover.png"
+    "source": null,
+    "avatar": null,
+    "cover": "assets/influencers/46-cover.jpg"
   },
   "49": {
     "name": "يارا النملة",
@@ -523,9 +523,9 @@
   },
   "339": {
     "name": "شيراز",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/339-avatar.jpg",
+    "cover": "assets/influencers/339-cover.jpg"
   },
   "341": {
     "name": "عبدالعزيز الزير",
@@ -775,9 +775,9 @@
   },
   "561": {
     "name": "اوزيكس",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/561-avatar.jpg",
+    "cover": "assets/influencers/561-cover.jpg"
   },
   "562": {
     "name": "لبنى الدوسري",
@@ -871,9 +871,9 @@
   },
   "590": {
     "name": "لجين حسن",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/590-avatar.jpg",
+    "cover": "assets/influencers/590-cover.jpg"
   },
   "592": {
     "name": "بنت نجد",
@@ -1123,9 +1123,9 @@
   },
   "667": {
     "name": "ياسر الشهراني",
-    "source": "تويتر/X",
-    "avatar": "assets/influencers/667-avatar.png",
-    "cover": "assets/influencers/667-cover.png"
+    "source": null,
+    "avatar": null,
+    "cover": "assets/influencers/667-cover.jpg"
   },
   "669": {
     "name": "صفية مختار",
@@ -1393,9 +1393,9 @@
   },
   "762": {
     "name": "أفراح الغامدي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/762-avatar.jpg",
+    "cover": "assets/influencers/762-cover.jpg"
   },
   "764": {
     "name": "يوسف بابطين",
