@@ -7,10 +7,15 @@ on:
         description: 'URL to screenshot'
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -27,22 +32,31 @@ jobs:
           const { chromium } = require("playwright");
           (async () => {
             const browser = await chromium.launch();
-            const page = await browser.newPage({ viewport: { width: 500, height: 900 }, userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" });
+            const page = await browser.newPage({ viewport: { width: 500, height: 1000 }, userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" });
+            let navError = null;
             try {
-              await page.goto(process.env.TARGET_URL, { waitUntil: "networkidle", timeout: 30000 });
+              await page.goto(process.env.TARGET_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
             } catch (e) {
+              navError = e.message;
               console.log("nav warning:", e.message);
             }
-            await page.waitForTimeout(3000);
-            await page.screenshot({ path: "screenshot.png" });
-            console.log("done");
+            await page.waitForTimeout(5000);
+            const title = await page.title();
+            console.log("page title:", title);
+            console.log("nav error:", navError);
+            await page.screenshot({ path: "debug-screenshot.png" });
+            const fs = require("fs");
+            console.log("file size:", fs.statSync("debug-screenshot.png").size);
             await browser.close();
           })();
           '
         env:
           TARGET_URL: ${{ github.event.inputs.url }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: screenshot
-          path: screenshot.png
+      - name: Commit screenshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add debug-screenshot.png
+          git commit -m "Debug screenshot [automated]"
+          git push origin HEAD:${{ github.ref_name }}
