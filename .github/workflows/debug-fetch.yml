@@ -4,18 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'URL to screenshot'
+        description: 'URL to inspect'
         required: true
-
-permissions:
-  contents: write
 
 jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -26,37 +21,41 @@ jobs:
           npm install playwright@latest >/dev/null 2>&1
           npx playwright install --with-deps chromium
 
-      - name: Screenshot page
+      - name: Inspect DOM
         run: |
           node -e '
           const { chromium } = require("playwright");
           (async () => {
             const browser = await chromium.launch();
             const page = await browser.newPage({ viewport: { width: 500, height: 1000 }, userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" });
-            let navError = null;
             try {
               await page.goto(process.env.TARGET_URL, { waitUntil: "domcontentloaded", timeout: 30000 });
             } catch (e) {
-              navError = e.message;
               console.log("nav warning:", e.message);
             }
-            await page.waitForTimeout(5000);
-            const title = await page.title();
-            console.log("page title:", title);
-            console.log("nav error:", navError);
-            await page.screenshot({ path: "debug-screenshot.png" });
-            const fs = require("fs");
-            console.log("file size:", fs.statSync("debug-screenshot.png").size);
+            await page.waitForTimeout(4000);
+
+            const selectors = [
+              "[data-e2e=\"followers-count\"]",
+              "[data-e2e=\"following-count\"]",
+              "[data-e2e=\"likes-count\"]",
+            ];
+            for (const sel of selectors) {
+              try {
+                const el = await page.$(sel);
+                const text = el ? await el.textContent() : null;
+                console.log(sel, "=>", text);
+              } catch (e) {
+                console.log(sel, "=> ERROR", e.message);
+              }
+            }
+
+            // fallback: dump any element with data-e2e attribute containing "count"
+            const all = await page.$$eval("[data-e2e*=count]", els => els.map(e => ({ e2e: e.getAttribute("data-e2e"), text: e.textContent })));
+            console.log("all count-like elements:", JSON.stringify(all));
+
             await browser.close();
           })();
           '
         env:
           TARGET_URL: ${{ github.event.inputs.url }}
-
-      - name: Commit screenshot
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add debug-screenshot.png
-          git commit -m "Debug screenshot [automated]"
-          git push origin HEAD:${{ github.ref_name }}
