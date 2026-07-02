@@ -702,7 +702,7 @@ padding:7px 10px;
 // ═══════════════════════════════════════════
 const SUPA_URL = 'https://pvafqzhowebbmahbonfm.supabase.co';
 const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk';
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { flowType: 'implicit' } });
 
 let currentUser = null;
 let userPlan = 'free'; // 'free' or 'pro'

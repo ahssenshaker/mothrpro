@@ -198,7 +198,7 @@ for (let i = 0; i < 60; i++) {
 <script>
 const SUPA_URL = 'https://pvafqzhowebbmahbonfm.supabase.co';
 const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk';
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { flowType: 'implicit' } });
 
 let checkCount = 0;
 let checkInterval;
