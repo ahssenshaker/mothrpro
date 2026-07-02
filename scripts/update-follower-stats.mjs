@@ -83,13 +83,25 @@ async function extractFollowers(page, platformKey) {
   }
 
   if (platformKey === 'سناب شات') {
-    const text = (await page.evaluate(() => document.body.innerText)).slice(0, 1500);
-    const m = text.match(/([\d.,]+\s?[KMB]?)\s*followers/i);
-    return m ? parseCount(m[1].trim()) : null;
+    // The count sits in the profile header near the very top ("3.4M followers ·
+    // Last updated ..."). Match line-by-line so digits from unrelated content
+    // further down (spotlight view counts etc.) can never glue into the match —
+    // that bug once produced "followers" counts in the billions for 8 records.
+    const lines = (await page.evaluate(() => document.body.innerText)).split('\n').slice(0, 30);
+    for (const line of lines) {
+      const m = line.match(/^\s*([\d.,]+\s?[KMB]?)\s*followers\b/i);
+      if (m) return parseCount(m[1].trim());
+    }
+    return null;
   }
 
   return null;
 }
+
+// No individual creator has anywhere near this many followers on one platform
+// (the most-followed account on Earth is ~650M). Anything above it is a
+// parsing artifact, not data.
+const MAX_PLAUSIBLE_FOLLOWERS = 500_000_000;
 
 function loadData() {
   const html = fs.readFileSync(INDEX_HTML, 'utf8');
@@ -143,7 +155,7 @@ async function main() {
         await page.close();
       }
 
-      if (count && count > 0) {
+      if (count && count > 0 && count <= MAX_PLAUSIBLE_FOLLOWERS) {
         d.platforms[key].followersNum = count;
         d.platforms[key].followers = formatCount(count);
         perPlatform[key] = count;
