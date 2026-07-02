@@ -1,0 +1,38 @@
+name: Debug Fetch
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to diagnose'
+        required: true
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and inspect
+        run: |
+          node -e '
+          const url = process.env.TARGET_URL;
+          const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+          (async () => {
+            try {
+              const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Language": "ar,en-US;q=0.9,en;q=0.8" }, redirect: "follow" });
+              console.log("status:", res.status, res.statusText);
+              console.log("final url:", res.url);
+              console.log("content-type:", res.headers.get("content-type"));
+              const text = await res.text();
+              console.log("length:", text.length);
+              console.log("contains og:image string:", text.includes("og:image"));
+              const m = text.match(/<meta[^>]+property=["\x27]og:image[^"\x27]*["\x27][^>]*>/i);
+              console.log("og:image tag match:", m ? m[0] : "NONE");
+              console.log("--- first 1500 chars ---");
+              console.log(text.slice(0, 1500));
+            } catch (e) {
+              console.log("FETCH ERROR:", e.message);
+            }
+          })();
+          '
+        env:
+          TARGET_URL: ${{ github.event.inputs.url }}
