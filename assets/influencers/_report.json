@@ -141,7 +141,7 @@
     "name": "المشاهير العرب",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/39-cover.jpg"
+    "cover": null
   },
   "40": {
     "name": "راكان الشايع",
@@ -207,7 +207,7 @@
     "name": "فارس البشيري",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/60-cover.jpg"
+    "cover": null
   },
   "61": {
     "name": "وعد محمد",
@@ -405,7 +405,7 @@
     "name": "مجلة قوانين",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/240-cover.jpg"
+    "cover": null
   },
   "276": {
     "name": "عهود محمد",
@@ -687,7 +687,7 @@
     "name": "محمد بن عبدالرحمن ال سعود",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/523-cover.jpg"
+    "cover": null
   },
   "525": {
     "name": "عزيز وليد",
@@ -933,7 +933,7 @@
     "name": "كورة بريك",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/608-cover.jpg"
+    "cover": null
   },
   "610": {
     "name": "ماجد هاشم الرشدان",
@@ -1053,13 +1053,13 @@
     "name": "كازان",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/645-cover.jpg"
+    "cover": null
   },
   "646": {
     "name": "سعد الغنامي",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/646-cover.jpg"
+    "cover": null
   },
   "647": {
     "name": "لينا فهد",
@@ -1233,7 +1233,7 @@
     "name": "فهد النماصي",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/717-cover.jpg"
+    "cover": null
   },
   "718": {
     "name": "حسام الشماسي",
@@ -1539,7 +1539,7 @@
     "name": "وليد عبدالله",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/879-cover.jpg"
+    "cover": null
   },
   "884": {
     "name": "نورا بنت خالد",
@@ -2173,9 +2173,9 @@
   },
   "1783000246782": {
     "name": "أسيل عمران",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246782-avatar.jpg",
-    "cover": "assets/influencers/1783000246782-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246783": {
     "name": "مشهور الدبيان",
@@ -2227,15 +2227,15 @@
   },
   "1783000246791": {
     "name": "روان عبدالوهاب",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246791-avatar.jpg",
-    "cover": "assets/influencers/1783000246791-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246792": {
     "name": "محمد الغامدي",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246792-avatar.jpg",
-    "cover": "assets/influencers/1783000246792-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246793": {
     "name": "نوف العنزي",
@@ -2365,9 +2365,9 @@
   },
   "1783000246814": {
     "name": "ماجد الراشد",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246814-avatar.jpg",
-    "cover": "assets/influencers/1783000246814-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246815": {
     "name": "هنا الشهري",
@@ -2419,21 +2419,21 @@
   },
   "1783000246823": {
     "name": "هالة عبدالله",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246823-avatar.jpg",
-    "cover": "assets/influencers/1783000246823-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246824": {
     "name": "نجود الرميحي",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246824-avatar.jpg",
-    "cover": "assets/influencers/1783000246824-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246825": {
     "name": "أنس إسكندر",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246825-avatar.jpg",
-    "cover": "assets/influencers/1783000246825-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246826": {
     "name": "فيراس المبارك",
@@ -2515,15 +2515,15 @@
   },
   "1783000246839": {
     "name": "بيسان إسماعيل",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246839-avatar.jpg",
-    "cover": "assets/influencers/1783000246839-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246840": {
     "name": "نور ستارز",
-    "source": "يوتيوب",
-    "avatar": "assets/influencers/1783000246840-avatar.jpg",
-    "cover": "assets/influencers/1783000246840-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246841": {
     "name": "جومانة خان",
@@ -2533,9 +2533,9 @@
   },
   "1783000246842": {
     "name": "فاريال فيري",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246842-avatar.jpg",
-    "cover": "assets/influencers/1783000246842-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246843": {
     "name": "زيبا جولي",
@@ -2557,15 +2557,15 @@
   },
   "1783000246846": {
     "name": "نور عريضة",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246846-avatar.jpg",
-    "cover": "assets/influencers/1783000246846-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246847": {
     "name": "إلهام الفضالة",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246847-avatar.jpg",
-    "cover": "assets/influencers/1783000246847-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246848": {
     "name": "رون بن حسين",
@@ -2575,15 +2575,15 @@
   },
   "1783000246849": {
     "name": "أحمد الخفاجي",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246849-avatar.jpg",
-    "cover": "assets/influencers/1783000246849-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246850": {
     "name": "أنس بوخش",
     "source": null,
     "avatar": null,
-    "cover": "assets/influencers/1783000246850-cover.jpg"
+    "cover": null
   },
   "1783000246851": {
     "name": "شيرين العسكر",
@@ -2599,15 +2599,15 @@
   },
   "1783000246853": {
     "name": "منى الشامسي",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246853-avatar.jpg",
-    "cover": "assets/influencers/1783000246853-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246854": {
     "name": "لطيفة المكتوم",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246854-avatar.png",
-    "cover": "assets/influencers/1783000246854-cover.png"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246855": {
     "name": "أحمد الهاشمي",
@@ -2647,9 +2647,9 @@
   },
   "1783000246861": {
     "name": "أحمد شحادة",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246861-avatar.jpg",
-    "cover": "assets/influencers/1783000246861-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246862": {
     "name": "ميتو UAE",
@@ -2689,9 +2689,9 @@
   },
   "1783000246868": {
     "name": "دانا العلي",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246868-avatar.jpg",
-    "cover": "assets/influencers/1783000246868-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246869": {
     "name": "جاسم رجب",
@@ -2869,9 +2869,9 @@
   },
   "1783000246898": {
     "name": "أحمد البحراني",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246898-avatar.jpg",
-    "cover": "assets/influencers/1783000246898-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246899": {
     "name": "مريم النعيمي",
@@ -2923,9 +2923,9 @@
   },
   "1783000246907": {
     "name": "خليفة القطري",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246907-avatar.jpg",
-    "cover": "assets/influencers/1783000246907-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246908": {
     "name": "أميرة الكواري",
@@ -3073,9 +3073,9 @@
   },
   "1783000246932": {
     "name": "محمد الصقر",
-    "source": "تيك توك",
-    "avatar": "assets/influencers/1783000246932-avatar.jpg",
-    "cover": "assets/influencers/1783000246932-cover.jpg"
+    "source": null,
+    "avatar": null,
+    "cover": null
   },
   "1783000246933": {
     "name": "أمل الزهراني",
