@@ -875,7 +875,9 @@ async function loadUserPlan() {
       .eq('id', currentUser.id)
       .single();
     
-    if (data && data.plan === 'pro') {
+    if (data && data.plan === 'admin') {
+      userPlan = 'admin';
+    } else if (data && data.plan === 'pro') {
       const expired = data.expires_at && new Date(data.expires_at) < new Date();
       userPlan = expired ? 'free' : 'pro';
     } else {
@@ -893,7 +895,7 @@ function showDashboard() {
   
   const badge = document.getElementById('userPlanBadge');
   const upgradeBtn = document.getElementById('upgradeBtn');
-  const isAdmin = currentUser.email === ADMIN_EMAIL;
+  const isAdmin = currentUser.email === ADMIN_EMAIL || userPlan === 'admin';
 
   // Admin button — only for admin
   const adminBtn = document.getElementById('adminDashBtn');
@@ -913,7 +915,7 @@ function updatePlanBadge(isAdmin) {
   const badge = document.getElementById('userPlanBadge');
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (!badge) return;
-  isAdmin = isAdmin !== undefined ? isAdmin : (currentUser && currentUser.email === ADMIN_EMAIL);
+  isAdmin = isAdmin !== undefined ? isAdmin : ((currentUser && currentUser.email === ADMIN_EMAIL) || userPlan === 'admin');
   if (isAdmin) {
     badge.textContent = '👑 أدمن';
     badge.className = 'user-bar-plan';
@@ -962,11 +964,17 @@ function closeUpgrade() { document.getElementById('upgradeModal').classList.remo
 // PRO RESTRICTIONS
 // ═══════════════════════════════════════════
 function applyProRestrictions() {
-  const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+  const isAdmin = (currentUser && currentUser.email === ADMIN_EMAIL) || userPlan === 'admin';
   // Hide all original admin panel triggers for non-admins
   document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], [onclick*="openAdmin"], .btn-admin, #adminBtn').forEach(el => {
     if (!isAdmin) el.style.display = 'none';
   });
+  // Hide per-card edit buttons for non-admins
+  if (!isAdmin) {
+    let s = document.getElementById('hide-admin-card-actions');
+    if (!s) { s = document.createElement('style'); s.id = 'hide-admin-card-actions'; document.head.appendChild(s); }
+    s.textContent = '.card-admin-actions { display: none !important; }';
+  }
   if (userPlan === 'pro') return;
   
   // Hide CSV export
@@ -1788,6 +1796,15 @@ window.openModal = function(id) {
       <div class="admin-msg" id="addSubMsg"></div>
     </div>
 
+    <div class="admin-add-form" style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;margin-top:4px">
+      <h3>👑 إضافة أدمن جديد</h3>
+      <div class="admin-form-row">
+        <input type="email" id="addAdminEmail" placeholder="البريد الإلكتروني" dir="ltr">
+        <button class="btn-add-sub" style="background:linear-gradient(135deg,#7c3aed,#a855f7)" onclick="adminAddAdmin()">إضافة أدمن</button>
+      </div>
+      <div class="admin-msg" id="addAdminMsg"></div>
+    </div>
+
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="adminFilterSubs('all',this)">الكل</button>
       <button class="admin-tab" onclick="adminFilterSubs('pro',this)">برو</button>
@@ -1816,7 +1833,7 @@ const ADMIN_EMAIL = 'ahssenshaker@gmail.com';
 let allSubsData = [];
 
 function openAdminDash() {
-  if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+  if (!currentUser || (currentUser.email !== ADMIN_EMAIL && userPlan !== 'admin')) return;
   ADMIN_SESSION = true;
   document.getElementById('adminDash').classList.add('open');
   loadAdminSubs();
@@ -1850,15 +1867,24 @@ function renderAdminTable(data) {
   if (!data.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
   tbody.innerHTML = data.map(s => {
     const isPro = s.plan === 'pro';
+    const isAdminUser = s.plan === 'admin';
     const date = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
+    let planBadge, actionBtn;
+    if (isAdminUser) {
+      planBadge = `<span class="plan-badge-pro" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">👑 أدمن</span>`;
+      actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء الأدمن</button>`;
+    } else if (isPro) {
+      planBadge = `<span class="plan-badge-pro">⭐ برو</span>`;
+      actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`;
+    } else {
+      planBadge = `<span class="plan-badge-free">مجاني</span>`;
+      actionBtn = `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`;
+    }
     return `<tr>
       <td dir="ltr">${s.email || '-'}</td>
-      <td><span class="${isPro ? 'plan-badge-pro' : 'plan-badge-free'}">${isPro ? '⭐ برو' : 'مجاني'}</span></td>
+      <td>${planBadge}</td>
       <td>${date}</td>
-      <td>${isPro
-        ? `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`
-        : `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`
-      }</td>
+      <td>${actionBtn}</td>
     </tr>`;
   }).join('');
 }
@@ -1902,6 +1928,22 @@ async function adminRevokeSub(id, email) {
   if (!confirm('إلغاء برو لـ ' + email + '؟')) return;
   await supa.from('subscribers').update({ plan: 'free' }).eq('id', id);
   await loadAdminSubs();
+}
+
+async function adminAddAdmin() {
+  const email = document.getElementById('addAdminEmail').value.trim();
+  const msg = document.getElementById('addAdminMsg');
+  if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
+  msg.textContent = 'جاري الإضافة...'; msg.className = 'admin-msg';
+  try {
+    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
+    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
+    await supa.from('subscribers').update({ plan: 'admin' }).eq('id', sub.id);
+    msg.textContent = '✅ تم إضافة ' + email + ' كأدمن'; msg.className = 'admin-msg ok';
+    document.getElementById('addAdminEmail').value = '';
+    setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
+    await loadAdminSubs();
+  } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
 }
 </script>
 
@@ -2226,10 +2268,46 @@ window.goPage = function(p) {
 };
 </script>
 
-<div style="text-align:center;padding:16px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:#64748b">
-  <a href="/privacy.html" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الخصوصية</a>
-  <a href="/refund.html" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الاسترداد</a>
-  <span style="margin:0 12px">© 2025 مؤثر برو</span>
+<div style="text-align:center;padding:20px 16px 16px;border-top:1px solid rgba(255,255,255,0.07)">
+  <div style="display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+    <!-- Snapchat -->
+    <a href="https://www.snapchat.com/add/moatherpro" target="_blank" rel="noopener" title="Snapchat" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#FFFC00';this.style.borderColor='#FFFC00'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.206 1c2.924 0 5.698 1.713 6.777 4.354.289.706.37 1.507.37 2.286 0 .605-.044 1.208-.094 1.809l.047.023c.356.175.74.26 1.135.26.744 0 1.479-.27 2.007-.756.072-.065.164-.097.258-.097.19 0 .362.147.362.347 0 .055-.014.11-.042.159-.33.579-1.013.974-1.74 1.133a5.065 5.065 0 0 1-1.045.112c.017.092.017.187.017.284 0 1.47-1.065 2.676-2.495 2.944-.082.016-.166.023-.25.023-.527 0-1.018-.213-1.4-.548-.38-.335-.87-.548-1.39-.548-.52 0-1.01.213-1.39.548-.382.335-.873.548-1.4.548-.084 0-.168-.007-.25-.023C11.64 13.575 10.575 12.37 10.575 10.9c0-.097 0-.192.017-.284a5.065 5.065 0 0 1-1.045-.112c-.727-.159-1.41-.554-1.74-1.133a.35.35 0 0 1-.042-.159c0-.2.172-.347.362-.347.094 0 .186.032.258.097.528.486 1.263.756 2.007.756.395 0 .779-.085 1.135-.26l.047-.023c-.05-.601-.094-1.204-.094-1.809 0-.779.081-1.58.37-2.286C12.508 2.713 9.734 1 12.206 1z"/></svg>
+    </a>
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/moatherpro" target="_blank" rel="noopener" title="LinkedIn" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#0A66C2';this.style.borderColor='#0A66C2'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/moatherpro" target="_blank" rel="noopener" title="Instagram" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#E1306C';this.style.borderColor='#E1306C'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+    </a>
+    <!-- X (Twitter) -->
+    <a href="https://x.com/moatherpro" target="_blank" rel="noopener" title="X" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#fff';this.style.borderColor='#fff'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.738l7.747-8.858L1.999 2.25H8.08l4.26 5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <!-- YouTube -->
+    <a href="https://www.youtube.com/@moatherpro" target="_blank" rel="noopener" title="YouTube" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#FF0000';this.style.borderColor='#FF0000'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+    <!-- TikTok -->
+    <a href="https://www.tiktok.com/@moatherpro" target="_blank" rel="noopener" title="TikTok" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#fff';this.style.borderColor='#fff'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.79 1.52V6.76a4.85 4.85 0 0 1-1.02-.07z"/></svg>
+    </a>
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/moatherpro" target="_blank" rel="noopener" title="Facebook" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#1877F2';this.style.borderColor='#1877F2'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <!-- Telegram -->
+    <a href="https://t.me/moatherpro" target="_blank" rel="noopener" title="Telegram" style="color:#64748b;text-decoration:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);transition:color .2s,border-color .2s" onmouseover="this.style.color='#26A5E4';this.style.borderColor='#26A5E4'" onmouseout="this.style.color='#64748b';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    </a>
+  </div>
+  <div style="font-size:12px;color:#64748b">
+    <a href="https://moatherpro.com/privacy" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الخصوصية</a>
+    <a href="/refund.html" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الاسترداد</a>
+    <span style="margin:0 12px">© 2025 مؤثر برو</span>
+  </div>
 </div>
 
 <script>
