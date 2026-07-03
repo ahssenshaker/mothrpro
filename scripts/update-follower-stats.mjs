@@ -43,6 +43,15 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 
 const SUPPORTED_PLATFORMS = ['يوتيوب', 'تيك توك', 'تويتر/X', 'سناب شات'];
 
+// (influencer id -> [platform keys]) whose stored URL was proven to point at
+// the wrong account. Skip them entirely — scraping them yields the wrong
+// person's numbers.
+const URL_BLOCKLIST_PATH = path.join(ROOT, 'assets', 'influencers', '_url_blocklist.json');
+const urlBlocklist = fs.existsSync(URL_BLOCKLIST_PATH) ? JSON.parse(fs.readFileSync(URL_BLOCKLIST_PATH, 'utf8')) : {};
+function isBlocked(id, platformKey) {
+  return (urlBlocklist[String(id)] || []).includes(platformKey);
+}
+
 function parseCount(str) {
   if (!str) return null;
   const m = str.replace(/,/g, '').match(/^([\d.]+)\s*([KMB])?$/i);
@@ -141,6 +150,7 @@ async function main() {
     const perPlatform = {};
 
     for (const key of SUPPORTED_PLATFORMS) {
+      if (isBlocked(d.id, key)) continue;
       const url = d.platforms?.[key]?.url;
       if (!url || !/^https?:\/\//i.test(url)) continue;
 

@@ -70,6 +70,15 @@ function saveHashRegistry() {
   fs.writeFileSync(HASH_REGISTRY_PATH, JSON.stringify(Object.fromEntries(seenImageHashes), null, 2));
 }
 
+// (influencer id -> [platform keys]) whose stored URL was proven to point at
+// the wrong account (someone else entirely). Never fetch anything from them —
+// a photo pulled from a wrong account is the wrong person's photo.
+const URL_BLOCKLIST_PATH = path.join(IMAGES_DIR, '_url_blocklist.json');
+const urlBlocklist = fs.existsSync(URL_BLOCKLIST_PATH) ? JSON.parse(fs.readFileSync(URL_BLOCKLIST_PATH, 'utf8')) : {};
+function isBlocked(id, platformKey) {
+  return (urlBlocklist[String(id)] || []).includes(platformKey);
+}
+
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function isCartoon(url) {
@@ -203,6 +212,7 @@ async function main() {
     let foundAvatar = null, foundCover = null, source = null;
 
     for (const key of orderPlatformKeys(d.platforms)) {
+      if (isBlocked(d.id, key)) continue;
       const url = d.platforms[key]?.url;
       if (!url || !/^https?:\/\//i.test(url)) continue;
 
