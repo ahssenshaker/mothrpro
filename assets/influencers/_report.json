@@ -2145,7 +2145,7 @@
     "name": "أحمد الشقيري",
     "source": null,
     "avatar": null,
-    "cover": null
+    "cover": "assets/influencers/1783000246777-cover.jpg"
   },
   "1783000246778": {
     "name": "بدر الزهراني",
@@ -2521,9 +2521,9 @@
   },
   "1783000246840": {
     "name": "نور ستارز",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/1783000246840-avatar.jpg",
+    "cover": "assets/influencers/1783000246840-cover.jpg"
   },
   "1783000246841": {
     "name": "جومانة خان",
