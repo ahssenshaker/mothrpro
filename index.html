@@ -273,8 +273,9 @@ select:focus{border-color:var(--accent)}
 .btn-download:hover{background:rgba(246,199,77,.18)}
 .btn-danger-soft{background:rgba(252,129,129,.08);color:var(--red);border:1px solid rgba(252,129,129,.2)}
 .btn-danger-soft:hover{background:rgba(252,129,129,.14)}
-.card-admin-actions{position:absolute;top:8px;left:8px;display:flex;gap:6px;z-index:5;opacity:0;transition:.2s}
-.card:hover .card-admin-actions{opacity:1}
+.card-admin-actions{position:absolute;top:8px;left:8px;display:none;gap:6px;z-index:5;opacity:0;transition:.2s}
+body.is-admin .card-admin-actions{display:flex}
+body.is-admin .card:hover .card-admin-actions{opacity:1}
 .card-edit-btn{background:rgba(7,9,15,.78);backdrop-filter:blur(10px);border:1px solid var(--border2);color:var(--accent);border-radius:8px;padding:5px 8px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}
 .admin-panel{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);z-index:1200;display:none;align-items:stretch;justify-content:center;padding:18px}
 .admin-panel.open{display:flex}
@@ -1015,6 +1016,7 @@ async function handleLogout() {
   document.getElementById('userBar').style.display = 'none';
   document.getElementById('grid').innerHTML = '';
   document.getElementById('pagination').innerHTML = '';
+  document.body.classList.remove('is-admin');
 }
 
 function openUpgrade() {
@@ -1047,12 +1049,8 @@ function applyProRestrictions() {
   document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], [onclick*="openAdmin"], .btn-admin, #adminBtn').forEach(el => {
     if (!isAdmin) el.style.display = 'none';
   });
-  // Hide per-card edit buttons for non-admins
-  if (!isAdmin) {
-    let s = document.getElementById('hide-admin-card-actions');
-    if (!s) { s = document.createElement('style'); s.id = 'hide-admin-card-actions'; document.head.appendChild(s); }
-    s.textContent = '.card-admin-actions { display: none !important; }';
-  }
+  // Show card edit buttons only for admin via body class
+  document.body.classList.toggle('is-admin', isAdmin);
   if (userPlan === 'pro') return;
   
   // Hide CSV export
@@ -1256,7 +1254,7 @@ function cardHTML(d){
   const newBadge=isNew?`<span class="badge b-new">✨ جديد</span>`:'';
   const fp=d.followersGender===2?70:d.followersGender===1?30:50;
   return `<div class="card${d.source==='verified'?' is-added':''}" onclick="openModal(${d.id})">
-    ${userPlan==='admin'?`<div class="card-admin-actions"><button class="card-edit-btn" onclick="event.stopPropagation();editInfluencer(${d.id})">تعديل</button></div>`:''}
+    <div class="card-admin-actions"><button class="card-edit-btn" onclick="event.stopPropagation();editInfluencer(${d.id})">تعديل</button></div>
     ${cvEl}<div class="card-body">
     <div class="card-top">${avEl}<div class="card-namebox"><div class="card-name">${d.name}</div><div class="card-spec">${d.specialization||d.intro||''}</div></div></div>
     <div class="card-badges">${newBadge}${TBADGE[d.tier]||''}${addedBadge}${reg}${cats}</div>
