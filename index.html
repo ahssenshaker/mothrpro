@@ -620,9 +620,9 @@ padding:7px 10px;
       <option value="verified">✔ محدث/مضاف مؤكد</option>
     </select>
     <div class="price-range-wrap" title="فلتر نطاق السعر (ر.س)">
-      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()">
+      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
       <span>–</span>
-      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()">
+      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
       <span style="font-size:10px">ر.س</span>
     </div>
     <select id="sortBy" onchange="applyFilters()">
@@ -1882,6 +1882,17 @@ function toggleTheme(){
   if(btn)btn.textContent=next==='dark'?'🌙':'☀️';
   localStorage.setItem('theme',next);
 }
+function showPriceFilterGate(){
+  const existing=document.getElementById('priceGateToast');
+  if(existing)return;
+  const toast=document.createElement('div');
+  toast.id='priceGateToast';
+  toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--accent);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:14px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.35);min-width:280px;max-width:90vw';
+  toast.innerHTML=`<span style="font-size:22px">🔒</span><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">ميزة حصرية للمشتركين</div><div style="font-size:11px;color:var(--muted2)">فلتر السعر متاح لخطة البرو فقط</div></div><button onclick="document.getElementById('priceGateToast').remove();closeModal();setTimeout(openUpgrade,100)" style="background:var(--accent);color:var(--bg);border:none;border-radius:8px;padding:7px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">ترقية ↑</button>`;
+  document.body.appendChild(toast);
+  setTimeout(()=>{if(toast.parentNode)toast.remove();},4000);
+}
+
 function initTheme(){
   const saved=localStorage.getItem('theme')||'dark';
   document.documentElement.dataset.theme=saved;
