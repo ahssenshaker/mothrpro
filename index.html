@@ -1786,7 +1786,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
 const _origCardHTML = cardHTML;
 window.cardHTML = function(d) {
   let html = _origCardHTML(d);
-  if (userPlan !== 'pro') {
+  if (userPlan === 'free') {
     // Hide platform links completely — keep only icon + name, no URL
     html = html.replace(/<a class="plat-link([^"]*)" href="[^"]*"([^>]*)>([^<]*)<\/a>/g,
       '<span class="plat-link$1" style="cursor:default;pointer-events:none;opacity:.7">$3</span>');
@@ -1809,7 +1809,7 @@ window.cardHTML = function(d) {
 const _origOpenModal = openModal;
 window.openModal = function(id) {
   _origOpenModal(id);
-  if (userPlan !== 'pro') {
+  if (userPlan === 'free') {
     // Hide sensitive data in modal
     setTimeout(() => {
       // Hide URLs
