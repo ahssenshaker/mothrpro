@@ -1831,20 +1831,9 @@ const _origCardHTML = cardHTML;
 window.cardHTML = function(d) {
   let html = _origCardHTML(d);
   if (userPlan === 'free') {
-    // Hide platform links completely — keep only icon + name, no URL
+    // Hide platform links — keep only icon + name, no clickable URL
     html = html.replace(/<a class="plat-link([^"]*)" href="[^"]*"([^>]*)>([^<]*)<\/a>/g,
       '<span class="plat-link$1" style="cursor:default;pointer-events:none;opacity:.7">$3</span>');
-    // Hide follower numbers completely
-    html = html.replace(/class="plat-fol">[^<]+<\/span>/g,
-      'class="plat-fol" style="visibility:hidden">0</span>');
-    // Hide total followers
-    html = html.replace(/class="card-followers">[^<]+<\/span>/g,
-      'class="card-followers" style="visibility:hidden">0</span>');
-    // Hide tier/range label
-    html = html.replace(/class="tier-badge[^"]*">[^<]*<\/span>/g,
-      'class="tier-badge" style="visibility:hidden"> </span>');
-    html = html.replace(/class="range-label">[^<]*<\/span>/g,
-      'class="range-label" style="visibility:hidden"> </span>');
   }
   return html;
 };
@@ -1866,15 +1855,6 @@ window.openModal = function(id) {
         el.style.filter = 'blur(8px)';
         el.style.userSelect = 'none';
         el.style.pointerEvents = 'none';
-      });
-      // Hide follower counts
-      document.querySelectorAll('.mph-fol, .mph-ph').forEach(el => {
-        el.style.filter = 'blur(8px)';
-        el.style.userSelect = 'none';
-      });
-      // Hide engagement stats
-      document.querySelectorAll('.stat-val, .eng-val').forEach(el => {
-        el.style.filter = 'blur(8px)';
       });
       document.querySelectorAll('.prices-grid').forEach(el => {
         el.style.position = 'relative';
