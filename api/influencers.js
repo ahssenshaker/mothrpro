@@ -29,24 +29,21 @@ async function resolveUserPlan(authHeader) {
   }
 }
 
-// Strip sensitive fields for free users
+// Strip sensitive fields for free users — keep follower counts and stats visible
 function censorRecord(record) {
   const out = { ...record }
-  out.totalFollowers = null
-  out.totalFormatted = null
-  out.tier = null
-  out.rangeLabel = null
   if (out.platforms && typeof out.platforms === 'object') {
     const platforms = {}
     Object.keys(out.platforms).forEach(name => {
+      const p = out.platforms[name] || {}
       platforms[name] = {
-        followers: null,
-        followersNum: null,
+        followers: p.followers,
+        followersNum: p.followersNum,
         url: null,
-        avgLikes: null,
-        avgComments: null,
-        engagementRate: null,
-        postsPerWeek: null,
+        avgLikes: p.avgLikes,
+        avgComments: p.avgComments,
+        engagementRate: p.engagementRate,
+        postsPerWeek: p.postsPerWeek,
         prices: null
       }
     })
