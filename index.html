@@ -187,8 +187,11 @@ select:focus{border-color:var(--accent)}
 .ps .k{font-size:9px;color:var(--muted2);margin-top:2px}
 .prices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:10px 14px}
 .price-item{background:var(--s3);border-radius:8px;padding:8px 10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.price-item.est{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.06)}
 .price-type{font-size:11px;color:var(--muted2)}
-.price-val{font-size:13px;font-weight:700;color:var(--green);direction:ltr}
+.price-val{font-size:13px;font-weight:700;color:var(--green);direction:ltr;display:flex;align-items:center;gap:5px}
+.est-tag{font-size:9px;font-weight:600;color:#f6b730;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.35);border-radius:4px;padding:1px 5px;white-space:nowrap}
+.est-notice{display:flex;align-items:center;gap:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:8px 12px;margin:8px 14px 2px;font-size:11px;color:var(--muted2)}
 .intro-box{background:var(--s2);border-radius:10px;padding:12px;font-size:13px;color:var(--muted2);line-height:1.7;border:1px solid var(--border)}
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px}
 .tag{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--muted2)}
@@ -1265,6 +1268,42 @@ function cardHTML(d){
     </div></div>`;
 }
 
+function estimatePrices(platform,followersNum){
+  const f=Number(followersNum)||0;
+  const a=f>=5000000,mg=f>=1000000,mc=f>=100000;
+  if(platform==='سناب شات'){
+    if(a)return{'تغطية مع حضور':200000,'تغطية بدون حضور':120000};
+    if(mg)return{'تغطية مع حضور':70000,'تغطية بدون حضور':40000};
+    if(mc)return{'تغطية مع حضور':18000,'تغطية بدون حضور':10000};
+    return{'تغطية مع حضور':4000,'تغطية بدون حضور':2500};
+  }
+  if(platform==='انستقرام'){
+    if(a)return{'فيديو/ريلز':150000,'صورة':80000,'ستورى':40000};
+    if(mg)return{'فيديو/ريلز':45000,'صورة':22000,'ستورى':12000};
+    if(mc)return{'فيديو/ريلز':9000,'صورة':4500,'ستورى':2500};
+    return{'فيديو/ريلز':1800,'صورة':900,'ستورى':450};
+  }
+  if(platform==='يوتيوب'){
+    if(a)return{'إعلان مباشر':350000,'إعلان غير مباشر':150000};
+    if(mg)return{'إعلان مباشر':80000,'إعلان غير مباشر':35000};
+    if(mc)return{'إعلان مباشر':18000,'إعلان غير مباشر':8000};
+    return{'إعلان مباشر':4000,'إعلان غير مباشر':2000};
+  }
+  if(platform==='تيك توك'){
+    if(a)return{'فيديو مباشر':100000,'فيديو غير مباشر':50000};
+    if(mg)return{'فيديو مباشر':30000,'فيديو غير مباشر':15000};
+    if(mc)return{'فيديو مباشر':7000,'فيديو غير مباشر':3500};
+    return{'فيديو مباشر':1500,'فيديو غير مباشر':800};
+  }
+  if(platform==='تويتر/X'){
+    if(a)return{'تغريدة':18000,'إعادة تغريدة':8000};
+    if(mg)return{'تغريدة':6000,'إعادة تغريدة':3000};
+    if(mc)return{'تغريدة':1500,'إعادة تغريدة':700};
+    return{'تغريدة':400,'إعادة تغريدة':200};
+  }
+  return{};
+}
+
 function openModal(id){
   const d=DATA.find(x=>x.id===id);if(!d)return;
   const plats=Object.entries(d.platforms);
@@ -1277,8 +1316,13 @@ function openModal(id){
     if(p.avgComments)st.push(`<div class="ps"><div class="v">${p.avgComments}</div><div class="k">متوسط التعليقات</div></div>`);
     if(p.engagementRate)st.push(`<div class="ps"><div class="v">${p.engagementRate}</div><div class="k">جودة الجمهور</div></div>`);
     if(p.postsPerWeek)st.push(`<div class="ps"><div class="v">${p.postsPerWeek}</div><div class="k">منشور/أسبوع</div></div>`);
-    const pr=Object.entries(p.prices||{}).map(([t,v])=>`<div class="price-item"><span class="price-type">${t}</span><span class="price-val">${Number(v).toLocaleString()} ر.س</span></div>`).join('');
-    return `<div class="modal-plat-card"><div class="mph"><div class="mph-left"><span style="font-size:22px">${PI[n]||'🔗'}</span><div><div class="mph-name">${n}</div><div class="mph-url">${p.url}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="mph-fol">${p.followers}</div><a class="visit-btn" href="${p.url}" target="_blank">زيارة ↗</a></div></div>${st.length?`<div class="plat-stats-row">${st.join('')}</div>`:''}${pr?`<div class="prices-grid">${pr}</div>`:''}</div>`;
+    const realPrices=p.prices||{};
+    const hasReal=Object.keys(realPrices).length>0;
+    const dispPrices=hasReal?realPrices:estimatePrices(n,p.followersNum);
+    const isEst=!hasReal&&Object.keys(dispPrices).length>0;
+    const estNotice=isEst?`<div class="est-notice">📊 أسعار تقديرية بناءً على حجم المتابعين — للاستفسار تواصل مع المؤثر مباشرة</div>`:'';
+    const pr=Object.entries(dispPrices).map(([t,v])=>`<div class="price-item${isEst?' est':''}"><span class="price-type">${t}</span><span class="price-val">${Number(v).toLocaleString()} ر.س${isEst?'<span class="est-tag">تقديري</span>':''}</span></div>`).join('');
+    return `<div class="modal-plat-card"><div class="mph"><div class="mph-left"><span style="font-size:22px">${PI[n]||'🔗'}</span><div><div class="mph-name">${n}</div><div class="mph-url">${p.url}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="mph-fol">${p.followers}</div><a class="visit-btn" href="${p.url}" target="_blank">زيارة ↗</a></div></div>${st.length?`<div class="plat-stats-row">${st.join('')}</div>`:''}${pr?`${estNotice}<div class="prices-grid">${pr}</div>`:''}</div>`;
   }).join('');
   const tagsH=(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
   const agesH=(d.followersAges||[]).map(a=>`<span class="age-pill">${a}</span>`).join('');
