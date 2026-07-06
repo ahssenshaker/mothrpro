@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var l=localStorage.getItem('lang')||'ar';document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';})()</script>
 <title>شكراً لك — مؤثر برو</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&display=swap');
@@ -96,9 +97,13 @@
   .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.4); }
 
   .logo { font-size: 16px; font-weight: 800; color: var(--muted2); margin-top: 28px; }
+  .lang-toggle-fixed{position:fixed;top:16px;inset-inline-end:16px;z-index:100;background:rgba(17,23,32,.85);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;border-radius:8px;padding:6px 12px;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;backdrop-filter:blur(10px);transition:.2s}
+  .lang-toggle-fixed:hover{border-color:#63b3ed;color:#63b3ed}
 </style>
 </head>
 <body>
+
+<button class="lang-toggle-fixed" id="tyLangBtn" onclick="toggleLang()">EN</button>
 
 <div class="container">
   <div class="success-icon">✅</div>
@@ -237,6 +242,23 @@ setTimeout(() => {
   checkInterval = setInterval(checkActivation, 10000);
   checkActivation();
 }, 5000);
+
+function toggleLang(){
+  var l=localStorage.getItem('lang')||'ar';
+  var nl=l==='ar'?'en':'ar';
+  localStorage.setItem('lang',nl);
+  document.documentElement.lang=nl;
+  document.documentElement.dir=nl==='ar'?'rtl':'ltr';
+  document.body.style.direction=nl==='ar'?'rtl':'ltr';
+  var btn=document.getElementById('tyLangBtn');
+  if(btn)btn.textContent=nl==='ar'?'EN':'ع';
+}
+(function(){
+  var l=localStorage.getItem('lang')||'ar';
+  var btn=document.getElementById('tyLangBtn');
+  if(btn)btn.textContent=l==='ar'?'EN':'ع';
+  document.body.style.direction=l==='ar'?'rtl':'ltr';
+})();
 </script>
 
 </body>
