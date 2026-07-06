@@ -40,13 +40,11 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 16px 40px;
     display: flex; align-items: center; justify-content: space-between;
-    background: rgba(7,9,15,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: transparent;
     border-bottom: 1px solid var(--border);
   }
   .nav-logo { display:inline-flex; align-items:center; gap:8px; overflow:hidden; }
-  .nav-logo img { height:56px; width:auto; display:block; flex-shrink:0; }
+  .nav-logo img { height:56px; width:auto; display:block; flex-shrink:0; filter: brightness(0) invert(1); }
   @media(max-width:600px){ .nav-logo img { height:38px; max-width:160px; object-fit:contain; } }
   .nav-cta { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: .2s; }
   .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
@@ -254,6 +252,7 @@
     flex-wrap: wrap; gap: 16px;
     font-size: 13px; color: var(--muted2);
   }
+  footer img { filter: brightness(0) invert(1); }
 
   /* ═══ RESPONSIVE ═══ */
   @media(max-width: 640px) {
