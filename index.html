@@ -57,14 +57,14 @@
 .upgrade-modal.open{display:flex}
 .upgrade-box-wrap{position:relative;max-width:480px;width:100%}
 .upgrade-x{position:absolute;top:-12px;left:-12px;width:32px;height:32px;border-radius:50%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;padding:0;font-family:inherit}
-.upgrade-box{background:var(--s1);border:1px solid var(--border2);border-radius:22px;width:100%;padding:36px;text-align:center;max-height:calc(100dvh - 40px);overflow-y:auto}
-.upgrade-title{font-size:24px;font-weight:800;color:#fff;margin-bottom:6px}
-.upgrade-sub{color:var(--muted2);font-size:14px;margin-bottom:24px;line-height:1.7}
-.upgrade-features{background:var(--s2);border-radius:14px;padding:18px;margin-bottom:24px;text-align:right}
-.upgrade-feature{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;color:var(--text)}
-.upgrade-feature span:first-child{color:var(--green);font-size:16px}
-.upgrade-price{font-size:36px;font-weight:800;color:var(--gold);margin:16px 0 4px}
-.upgrade-price-sub{font-size:13px;color:var(--muted2);margin-bottom:20px}
+.upgrade-box{background:var(--s1);border:1px solid var(--border2);border-radius:22px;width:100%;padding:22px 28px;text-align:center;max-height:calc(100dvh - 40px);overflow-y:auto}
+.upgrade-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
+.upgrade-sub{color:var(--muted2);font-size:13px;margin-bottom:12px;line-height:1.6}
+.upgrade-features{background:var(--s2);border-radius:14px;padding:12px 16px;margin-bottom:12px;text-align:right}
+.upgrade-feature{display:flex;align-items:center;gap:10px;padding:4px 0;font-size:13px;color:var(--text)}
+.upgrade-feature span:first-child{color:var(--green);font-size:15px}
+.upgrade-price{font-size:32px;font-weight:800;color:var(--gold);margin:8px 0 2px}
+.upgrade-price-sub{font-size:13px;color:var(--muted2);margin-bottom:12px}
 .upgrade-bank{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;text-align:right;font-size:13px;line-height:2}
 .upgrade-bank strong{color:var(--accent)}
 .upgrade-close{background:var(--s2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-family:inherit;font-size:14px;cursor:pointer;margin-top:8px;width:100%;display:block}
@@ -563,7 +563,7 @@ padding:7px 10px;
   <div class="upgrade-box-wrap">
   <button class="upgrade-x" onclick="closeUpgrade()" aria-label="إغلاق">✕</button>
   <div class="upgrade-box">
-    <div style="display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px" data-i18n="upgrade.badge">🎯 عرض خاص لأول ١٥٠ مشترك</div>
+    <div style="display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px" data-i18n="upgrade.badge">🎯 عرض خاص لأول ١٥٠ مشترك</div>
     <div class="upgrade-title" data-i18n="upgrade.title">⭐ مؤثر برو</div>
     <div class="upgrade-sub" data-i18n="upgrade.sub">احصل على وصول كامل لجميع بيانات المؤثرين</div>
     <div class="upgrade-features">
@@ -572,14 +572,14 @@ padding:7px 10px;
       <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat3">إحصاءات التفاعل والجمهور</span></div>
       <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat4">توزيع الجمهور بالعمر والجنس</span></div>
     </div>
-    <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px" data-i18n="upgrade.old_price">80 دولار</div>
+    <div style="font-size:12px;color:var(--muted2);text-decoration:line-through;margin-bottom:2px" data-i18n="upgrade.old_price">80 دولار</div>
     <div class="upgrade-price" data-i18n="upgrade.price">39 دولار</div>
     <div class="upgrade-price-sub" data-i18n="upgrade.price_sub">✅ دفعة واحدة فقط — بدون اشتراك سنوي</div>
-    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;text-align:right;font-size:12px;color:var(--muted2);line-height:1.7" data-i18n-html="upgrade.first150">
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:8px 12px;margin-bottom:10px;text-align:right;font-size:11px;color:var(--muted2);line-height:1.6" data-i18n-html="upgrade.first150">
       ⚡ أنت ضمن أول ١٥٠ مشترك — ادفع مرة واحدة واستمتع بالوصول الكامل.<br>
       بعد اكتمال الـ ١٥٠ سيتحوّل السعر إلى اشتراك سنوي.
     </div>
-    <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:right" id="emailWarningBox">
+    <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:8px 12px;margin-bottom:10px;text-align:right" id="emailWarningBox">
       <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px" data-i18n="upgrade.email_warning_title">⚠️ مهم قبل الدفع</div>
       <div style="font-size:12px;color:var(--muted2);line-height:1.7" id="emailWarningText" data-i18n="upgrade.email_warning">
         استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.
@@ -590,7 +590,7 @@ padding:7px 10px;
        onclick="openGumroadPopup(event,this)">
       <span data-i18n="upgrade.pay_btn">💳 ادفع الآن — 39 دولار</span>
     </a>
-    <div style="font-size:11px;color:var(--muted2);margin-bottom:16px;line-height:1.7" data-i18n-html="upgrade.payment_note">
+    <div style="font-size:11px;color:var(--muted2);margin-bottom:8px;line-height:1.6" data-i18n-html="upgrade.payment_note">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
       يدعم Visa / Mastercard / PayPal
     </div>
@@ -746,7 +746,10 @@ padding:7px 10px;
         </div>
 
         <div class="admin-section" style="border-color:rgba(99,179,237,.2)">
-          <div class="admin-section-title" style="color:#63b3ed">🇬🇧 English Translation</div>
+          <div class="admin-section-title" style="color:#63b3ed;display:flex;align-items:center;justify-content:space-between">
+            <span>🇬🇧 English Translation</span>
+            <button type="button" id="autoTranslateBtn" onclick="autoTranslateFields()" style="background:rgba(99,179,237,.15);border:1px solid rgba(99,179,237,.3);color:#63b3ed;border-radius:7px;padding:4px 10px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">🔄 Auto Translate</button>
+          </div>
           <div class="admin-grid">
             <div class="admin-field"><label>Name (English)</label><input id="fNameEn" placeholder="e.g. Ahmed Mohammed"></div>
             <div class="admin-field"><label>Specialization (English)</label><input id="fSpecializationEn" placeholder="e.g. Food & Cafes"></div>
@@ -2269,6 +2272,37 @@ function buildInfluencersFromImportRows(rows){
     imported.push(d);
   });
   return imported;
+}
+
+async function autoTranslateFields(){
+  const btn=document.getElementById('autoTranslateBtn');
+  const orig=btn.textContent;
+  btn.disabled=true;btn.textContent='⏳ Translating...';
+  async function tr(text){
+    if(!text||!text.trim())return'';
+    try{
+      const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim())}&langpair=ar|en`);
+      const j=await r.json();
+      return j.responseData?.translatedText||text;
+    }catch{return text;}
+  }
+  const fields=[
+    {src:'fName',dst:'fNameEn'},
+    {src:'fSpecialization',dst:'fSpecializationEn'},
+    {src:'fIntro',dst:'fIntroEn'},
+    {src:'fCategories',dst:'fCategoriesEn'},
+    {src:'fTags',dst:'fTagsEn'},
+    {src:'fRegions',dst:'fRegionsEn'},
+  ];
+  for(const f of fields){
+    const src=document.getElementById(f.src);
+    const dst=document.getElementById(f.dst);
+    if(src&&dst&&src.value.trim()&&!dst.value.trim()){
+      dst.value=await tr(src.value.trim());
+    }
+  }
+  btn.disabled=false;btn.textContent=orig;
+  showAdminToast('✓ Translation complete');
 }
 
 async function saveInfluencerFromForm(e){
