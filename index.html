@@ -12,7 +12,7 @@
 /* AUTH SCREEN */
 .auth-screen{position:fixed;inset:0;background:var(--bg);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
 .auth-box{background:var(--s1);border:1px solid var(--border2);border-radius:22px;padding:40px;max-width:420px;width:100%;text-align:center}
-.auth-box > img{display:block;width:130px !important;max-width:130px !important;height:auto !important;margin:24px auto 18px !important}
+.auth-box > img{display:block;width:130px !important;max-width:130px !important;height:auto !important;margin:24px auto 18px !important;filter:brightness(0) invert(1)}
 .auth-logo{font-size:clamp(20px,4vw,34px);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
 .auth-sub{color:var(--muted2);font-size:13px;margin-bottom:28px;line-height:1.6}
 .auth-tabs{display:flex;gap:4px;background:var(--s2);border-radius:12px;padding:4px;margin-bottom:24px}
@@ -421,6 +421,7 @@ order:1;
 margin-right:0 !important;
 margin-top:28px !important;
 display:block !important;
+filter:brightness(0) invert(1) !important;
 }
 .header .stats-bar{
 flex:1;
@@ -526,6 +527,7 @@ padding:7px 10px;
 <!-- UPGRADE MODAL -->
 <div class="upgrade-modal" id="upgradeModal">
   <div class="upgrade-box">
+    <div style="display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px">🎯 عرض خاص لأول ١٥٠ مشترك</div>
     <div class="upgrade-title">⭐ مؤثر برو</div>
     <div class="upgrade-sub">احصل على وصول كامل لجميع بيانات المؤثرين</div>
     <div class="upgrade-features">
@@ -536,7 +538,11 @@ padding:7px 10px;
     </div>
     <div style="font-size:13px;color:var(--muted2);text-decoration:line-through;margin-bottom:4px">80 دولار</div>
     <div class="upgrade-price">39 دولار</div>
-    <div class="upgrade-price-sub">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
+    <div class="upgrade-price-sub">✅ دفعة واحدة فقط — بدون اشتراك سنوي</div>
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;text-align:right;font-size:12px;color:var(--muted2);line-height:1.7">
+      ⚡ أنت ضمن أول ١٥٠ مشترك — ادفع مرة واحدة واستمتع بالوصول الكامل.<br>
+      بعد اكتمال الـ ١٥٠ سيتحوّل السعر إلى اشتراك سنوي.
+    </div>
     <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:right" id="emailWarningBox">
       <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px">⚠️ مهم قبل الدفع</div>
       <div style="font-size:12px;color:var(--muted2);line-height:1.7" id="emailWarningText">
