@@ -1,6 +1,8 @@
 name: Fetch Influencer Images
 
 on:
+  schedule:
+    - cron: '0 2 * * 0' # every Sunday at 02:00 UTC (~05:00 Saudi time)
   workflow_dispatch:
     inputs:
       limit:
@@ -26,27 +28,31 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Playwright
-        run: |
-          npm install playwright@latest
-          npx playwright install --with-deps chromium
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run scraper
         id: scraper
         timeout-minutes: 180
         continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
           if [ "${{ github.event.inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
           node scripts/fetch-influencer-images.mjs $ARGS
 
-      - name: Commit and push results
+      - name: Commit downloaded images and report
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html assets/influencers/
+          git add assets/influencers/
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else

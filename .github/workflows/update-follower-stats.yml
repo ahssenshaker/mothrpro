@@ -24,29 +24,33 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Playwright
-        run: |
-          npm install playwright@latest
-          npx playwright install --with-deps chromium
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run stats updater
         id: updater
         timeout-minutes: 180
         continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
           node scripts/update-follower-stats.mjs $ARGS
 
-      - name: Commit and push results
+      - name: Commit report file
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html assets/influencers/_stats_report.json
+          git add assets/influencers/_stats_report.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update follower stats from platform pages [automated]"
+            git commit -m "Update follower stats report [automated]"
             git push origin HEAD:${{ github.ref_name }}
           fi

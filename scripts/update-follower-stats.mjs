@@ -1,34 +1,37 @@
 #!/usr/bin/env node
 /**
  * Run on a machine/CI runner with normal internet access (a real headless
- * browser, not a plain HTTP fetch, is required — Instagram/TikTok/X only
- * render their stats via client-side JS, and X/Instagram serve different
- * markup to non-browser clients).
+ * browser is required — Instagram/TikTok/X only render their stats via
+ * client-side JS).
  *
  * Usage:
- *   node scripts/update-follower-stats.mjs
- *   node scripts/update-follower-stats.mjs --limit=20
+ *   SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/update-follower-stats.mjs
+ *   SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/update-follower-stats.mjs --limit=20
  *
- * For every influencer's supported platforms (YouTube, TikTok, X/Twitter,
- * Snapchat — Instagram is skipped, it forces a login wall even in a real
- * browser), visits the profile with Playwright and extracts the current
- * follower count directly from the rendered page. Updates
- * platforms[key].followers / followersNum, and recomputes totalFollowers /
- * totalFormatted as the sum across all of that influencer's platforms.
- * Does NOT touch tier/rank/rangeLabel — those are left for the admin panel
- * to recompute, since their exact thresholds aren't something this script
- * should guess at.
+ * Reads influencers from Supabase, scrapes current follower counts from
+ * platform pages, then writes updated records back to Supabase.
+ * Does NOT touch tier/rank/rangeLabel — those are managed by the admin panel.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createClient } from '@supabase/supabase-js';
 import { chromium } from 'playwright';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const INDEX_HTML = path.join(ROOT, 'index.html');
 const REPORT_PATH = path.join(ROOT, 'assets', 'influencers', '_stats_report.json');
 
+// ─── Supabase ────────────────────────────────────────────────────────────────
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('❌  Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY');
+  process.exit(1);
+}
+const supa = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+// ─── Config ──────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
 const LIMIT = (() => {
   const a = args.find(x => x.startsWith('--limit='));
@@ -40,18 +43,18 @@ const NAV_TIMEOUT_MS = 30000;
 const SETTLE_MS = 4000;
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-
 const SUPPORTED_PLATFORMS = ['يوتيوب', 'تيك توك', 'تويتر/X', 'سناب شات'];
+const MAX_PLAUSIBLE_FOLLOWERS = 500_000_000;
 
-// (influencer id -> [platform keys]) whose stored URL was proven to point at
-// the wrong account. Skip them entirely — scraping them yields the wrong
-// person's numbers.
 const URL_BLOCKLIST_PATH = path.join(ROOT, 'assets', 'influencers', '_url_blocklist.json');
-const urlBlocklist = fs.existsSync(URL_BLOCKLIST_PATH) ? JSON.parse(fs.readFileSync(URL_BLOCKLIST_PATH, 'utf8')) : {};
+const urlBlocklist = fs.existsSync(URL_BLOCKLIST_PATH)
+  ? JSON.parse(fs.readFileSync(URL_BLOCKLIST_PATH, 'utf8'))
+  : {};
 function isBlocked(id, platformKey) {
   return (urlBlocklist[String(id)] || []).includes(platformKey);
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function parseCount(str) {
   if (!str) return null;
   const m = str.replace(/,/g, '').match(/^([\d.]+)\s*([KMB])?$/i);
@@ -92,10 +95,6 @@ async function extractFollowers(page, platformKey) {
   }
 
   if (platformKey === 'سناب شات') {
-    // The count sits in the profile header near the very top ("3.4M followers ·
-    // Last updated ..."). Match line-by-line so digits from unrelated content
-    // further down (spotlight view counts etc.) can never glue into the match —
-    // that bug once produced "followers" counts in the billions for 8 records.
     const lines = (await page.evaluate(() => document.body.innerText)).split('\n').slice(0, 30);
     for (const line of lines) {
       const m = line.match(/^\s*([\d.,]+\s?[KMB]?)\s*followers\b/i);
@@ -107,42 +106,38 @@ async function extractFollowers(page, platformKey) {
   return null;
 }
 
-// No individual creator has anywhere near this many followers on one platform
-// (the most-followed account on Earth is ~650M). Anything above it is a
-// parsing artifact, not data.
-const MAX_PLAUSIBLE_FOLLOWERS = 500_000_000;
-
-function loadData() {
-  const html = fs.readFileSync(INDEX_HTML, 'utf8');
-  const m = html.match(/(<script type="application\/json" id="__d__">)([\s\S]*?)(<\/script>)/);
-  if (!m) throw new Error('Could not find __d__ data script tag in index.html');
-  return { html, prefix: m[1], data: JSON.parse(m[2]), suffix: m[3], matchStart: m.index, matchEnd: m.index + m[0].length };
+// ─── Supabase helpers ─────────────────────────────────────────────────────────
+async function loadData() {
+  const { data, error } = await supa
+    .from('influencers')
+    .select('*')
+    .order('rank', { ascending: true });
+  if (error) throw new Error('Failed to load from Supabase: ' + error.message);
+  return data;
 }
 
-function saveData(original, data) {
-  const { html, prefix, suffix, matchStart, matchEnd } = original;
-  const blob = JSON.stringify(data, null, 0);
-  if (blob.toLowerCase().includes('</script')) throw new Error('Unsafe content in data blob, aborting save');
-  const newHtml = html.slice(0, matchStart) + prefix + blob + suffix + html.slice(matchEnd);
-  fs.writeFileSync(INDEX_HTML, newHtml, 'utf8');
+async function saveRecords(records) {
+  if (!records.length) return;
+  const { error } = await supa.from('influencers').upsert(records, { onConflict: 'id' });
+  if (error) throw new Error('Failed to upsert to Supabase: ' + error.message);
 }
 
+// ─── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
-  const original = loadData();
-  const data = original.data;
+  console.log('📥 Loading influencers from Supabase...');
+  const data = await loadData();
+  console.log(`Loaded ${data.length} records`);
 
-  if (!fs.existsSync(INDEX_HTML + '.stats-bak')) {
-    fs.copyFileSync(INDEX_HTML, INDEX_HTML + '.stats-bak');
-    console.log('Backup written to index.html.stats-bak');
-  }
-
-  const targets = data.filter(d => SUPPORTED_PLATFORMS.some(p => d.platforms?.[p]?.url)).slice(0, LIMIT);
+  const targets = data
+    .filter(d => SUPPORTED_PLATFORMS.some(p => d.platforms?.[p]?.url))
+    .slice(0, LIMIT);
   console.log(`${targets.length} / ${data.length} records have at least one supported platform`);
 
   const browser = await chromium.launch();
   const report = fs.existsSync(REPORT_PATH) ? JSON.parse(fs.readFileSync(REPORT_PATH, 'utf8')) : {};
 
   let processed = 0, updatedRecords = 0;
+  const pendingUpsert = [];
 
   for (const d of targets) {
     processed++;
@@ -159,8 +154,8 @@ async function main() {
       try {
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: NAV_TIMEOUT_MS });
         count = await extractFollowers(page, key);
-      } catch (e) {
-        // leave count null on any navigation/extraction failure
+      } catch {
+        // leave count null on any failure
       } finally {
         await page.close();
       }
@@ -178,20 +173,23 @@ async function main() {
       d.totalFollowers = total;
       d.totalFormatted = formatCount(total);
       updatedRecords++;
+      pendingUpsert.push(d);
     }
 
     report[d.id] = { name: d.name, updated: perPlatform, totalFollowers: d.totalFollowers };
     console.log(`[${processed}/${targets.length}] ${d.name}: ${anyUpdated ? '✅ ' + JSON.stringify(perPlatform) : '—'}`);
 
-    if (processed % CHECKPOINT_EVERY === 0) {
-      saveData(original, data);
+    if (processed % CHECKPOINT_EVERY === 0 && pendingUpsert.length) {
+      await saveRecords([...pendingUpsert]);
+      pendingUpsert.length = 0;
       fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
       console.log(`--- checkpoint saved (${processed}/${targets.length}) ---`);
     }
   }
 
   await browser.close();
-  saveData(original, data);
+
+  if (pendingUpsert.length) await saveRecords(pendingUpsert);
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
 
   console.log('\nDone.');
