@@ -318,7 +318,119 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </footer>
 
 <script>
-const _t={ar:{'back':'← العودة للمنصة'},en:{'back':'← Back to Platform'}};
+var PT={
+ar:{
+  pageTitle:'سياسة الخصوصية — مؤثر برو',
+  back:'← العودة للمنصة',badge:'🔒 سياسة الخصوصية',
+  htitle:'سياسة الخصوصية وحماية البيانات',
+  hsub:'نلتزم بحماية خصوصيتك وبياناتك الشخصية وفق أعلى المعايير',
+  hdate:'آخر تحديث: يناير 2025',
+  tocTitle:'محتويات السياسة',
+  toc:['البيانات التي نجمعها','كيف نستخدم بياناتك','مشاركة البيانات مع أطراف ثالثة','أمان وحماية البيانات','ملفات تعريف الارتباط (Cookies)','حقوقك','التعديلات على السياسة'],
+  s:[
+    {t:'البيانات التي نجمعها',b:'<p>عند استخدامك لمنصة مؤثر برو، قد نجمع الأنواع التالية من البيانات:</p>'},
+    {t:'كيف نستخدم بياناتك',b:'<p>نستخدم البيانات التي نجمعها للأغراض التالية حصراً:</p><ul><li>إنشاء وإدارة حسابك على المنصة</li><li>التحقق من اشتراكك وتفعيل صلاحيات الوصول المناسبة</li><li>معالجة عمليات الدفع والفوترة</li><li>إرسال إشعارات تتعلق بحسابك (تفعيل، انتهاء اشتراك)</li><li>الرد على استفساراتك ودعمك تقنياً</li><li>تحسين أداء المنصة وتجربة المستخدم</li></ul>'},
+    {t:'مشاركة البيانات مع أطراف ثالثة',b:'<p>لا نبيع أو نؤجر بياناتك الشخصية لأي طرف ثالث. نشارك بياناتك فقط مع مزودي الخدمات الضروريين لتشغيل المنصة:</p>'},
+    {t:'أمان وحماية البيانات',b:'<p>نطبق إجراءات أمنية متعددة لحماية بياناتك:</p><ul><li>تشفير كلمات المرور باستخدام خوارزميات تشفير قوية</li><li>اتصال HTTPS مشفر لجميع عمليات نقل البيانات</li><li>Row Level Security في قاعدة البيانات — كل مستخدم يرى بياناته فقط</li><li>مراقبة مستمرة للنشاط غير الطبيعي</li><li>لا نخزن بيانات بطاقات الدفع — تُعالج مباشرة عبر بوابة الدفع</li></ul>'},
+    {t:'ملفات تعريف الارتباط (Cookies)',b:'<p>نستخدم ملفات تعريف الارتباط الضرورية فقط للأغراض التالية:</p><ul><li><strong style="color:var(--text)">جلسة تسجيل الدخول:</strong> للحفاظ على تسجيل دخولك دون الحاجة لإعادته في كل مرة</li><li><strong style="color:var(--text)">تفضيلات المستخدم:</strong> حفظ إعداداتك المفضلة مثل الفلاتر</li></ul><p style="margin-top:10px">لا نستخدم ملفات تعريف الارتباط لأغراض إعلانية أو تتبع سلوكك عبر مواقع أخرى.</p>'},
+    {t:'حقوقك',b:'<p>لديك الحقوق التالية فيما يتعلق ببياناتك الشخصية:</p>'},
+    {t:'التعديلات على السياسة',b:'<p>قد نقوم بتحديث هذه السياسة من وقت لآخر. في حال إجراء تغييرات جوهرية، سنخطرك عبر:</p><ul><li>إشعار واضح على الموقع</li><li>بريد إلكتروني لجميع المستخدمين المسجلين</li></ul><p style="margin-top:10px">استمرارك في استخدام المنصة بعد إشعار التعديل يُعدّ موافقة ضمنية على السياسة المحدثة.</p>'},
+  ],
+  t1th:['نوع البيانات','الغرض','الإلزامية'],
+  t1rows:[['البريد الإلكتروني','إنشاء الحساب وتسجيل الدخول','إلزامي'],['كلمة المرور (مشفرة)','تأمين الحساب','إلزامي'],['حالة الاشتراك','تحديد مستوى الوصول','تلقائي'],['بيانات الدفع','معالجة المعاملات المالية','عند الشراء'],['بيانات الاستخدام','تحسين تجربة المنصة','تلقائي']],
+  s1note:'<strong>لا نجمع أبداً:</strong> أرقام الهواتف، العناوين، أرقام الهوية، أو أي بيانات حساسة غير ضرورية لتقديم الخدمة.',
+  s2note:'<strong>لا نرسل رسائل تسويقية</strong> دون موافقتك الصريحة. يمكنك إلغاء الاشتراك في أي وقت.',
+  t2th:['الجهة','الغرض','البيانات المشاركة'],
+  t2rows:[['<strong>Supabase</strong>','قاعدة البيانات والمصادقة','البريد الإلكتروني وبيانات الحساب'],['<strong>Gumroad</strong>','معالجة المدفوعات','البريد الإلكتروني وبيانات الدفع'],['<strong>Vercel</strong>','استضافة الموقع','بيانات الاستخدام فقط']],
+  s3note:'جميع هذه الجهات تلتزم بسياسات خصوصية صارمة ومعتمدة دولياً. نحن لا نتحكم في كيفية تعاملها مع البيانات وفق سياساتها الخاصة.',
+  s4note:'<strong>في حال اختراق البيانات:</strong> سنخطرك فوراً عبر البريد الإلكتروني ونتخذ الإجراءات اللازمة لحماية حسابك.',
+  rights:['<strong>حق الاطلاع:</strong> يمكنك طلب نسخة من جميع بياناتك المخزنة لدينا.','<strong>حق التصحيح:</strong> يمكنك تحديث بياناتك الشخصية في أي وقت من إعدادات حسابك.','<strong>حق الحذف:</strong> يمكنك طلب حذف حسابك وجميع بياناتك نهائياً بالتواصل معنا.','<strong>حق النقل:</strong> يمكنك طلب بياناتك بصيغة قابلة للقراءة للنقل لخدمة أخرى.'],
+  ctitle:'أسئلة حول الخصوصية؟',csub:'تواصل معنا لأي استفسار يتعلق ببياناتك أو هذه السياسة',
+  footer:'© 2025 مؤثر برو · جميع الحقوق محفوظة',
+  flinks:['الرئيسية','سياسة الخصوصية','سياسة الاسترداد'],
+},
+en:{
+  pageTitle:'Privacy Policy — Mothr Pro',
+  back:'← Back to Platform',badge:'🔒 Privacy Policy',
+  htitle:'Privacy Policy & Data Protection',
+  hsub:'We are committed to protecting your privacy and personal data to the highest standards',
+  hdate:'Last updated: January 2025',
+  tocTitle:'Table of Contents',
+  toc:['Data We Collect','How We Use Your Data','Sharing Data with Third Parties','Security & Data Protection','Cookies','Your Rights','Policy Updates'],
+  s:[
+    {t:'Data We Collect',b:'<p>When you use Mothr Pro, we may collect the following types of data:</p>'},
+    {t:'How We Use Your Data',b:'<p>We use the data we collect exclusively for the following purposes:</p><ul><li>Creating and managing your account on the platform</li><li>Verifying your subscription and activating appropriate access permissions</li><li>Processing payments and billing</li><li>Sending account-related notifications (activation, subscription expiry)</li><li>Responding to your inquiries and providing technical support</li><li>Improving platform performance and user experience</li></ul>'},
+    {t:'Sharing Data with Third Parties',b:'<p>We do not sell or rent your personal data to any third party. We share your data only with service providers necessary to operate the platform:</p>'},
+    {t:'Security & Data Protection',b:'<p>We apply multiple security measures to protect your data:</p><ul><li>Password encryption using strong cryptographic algorithms</li><li>Encrypted HTTPS connection for all data transfers</li><li>Row Level Security in the database — each user sees only their own data</li><li>Continuous monitoring for unusual activity</li><li>We do not store payment card data — processed directly through the payment gateway</li></ul>'},
+    {t:'Cookies',b:'<p>We use only essential cookies for the following purposes:</p><ul><li><strong style="color:var(--text)">Login session:</strong> To keep you logged in without re-entering credentials each time</li><li><strong style="color:var(--text)">User preferences:</strong> Saving your preferred settings such as filters</li></ul><p style="margin-top:10px">We do not use cookies for advertising purposes or to track your behavior across other sites.</p>'},
+    {t:'Your Rights',b:'<p>You have the following rights regarding your personal data:</p>'},
+    {t:'Policy Updates',b:'<p>We may update this policy from time to time. In case of significant changes, we will notify you via:</p><ul><li>A clear notice on the website</li><li>Email to all registered users</li></ul><p style="margin-top:10px">Your continued use of the platform after the notification constitutes implicit acceptance of the updated policy.</p>'},
+  ],
+  t1th:['Data Type','Purpose','Required'],
+  t1rows:[['Email Address','Account creation and login','Mandatory'],['Password (encrypted)','Account security','Mandatory'],['Subscription status','Determining access level','Automatic'],['Payment data','Processing financial transactions','On purchase'],['Usage data','Improving platform experience','Automatic']],
+  s1note:'<strong>We never collect:</strong> Phone numbers, addresses, ID numbers, or any sensitive data unnecessary for providing the service.',
+  s2note:'<strong>We do not send marketing messages</strong> without your explicit consent. You can unsubscribe at any time.',
+  t2th:['Party','Purpose','Shared Data'],
+  t2rows:[['<strong>Supabase</strong>','Database and authentication','Email and account data'],['<strong>Gumroad</strong>','Payment processing','Email and payment data'],['<strong>Vercel</strong>','Website hosting','Usage data only']],
+  s3note:'All these parties adhere to strict, internationally recognized privacy policies. We do not control how they handle data under their own policies.',
+  s4note:'<strong>In case of a data breach:</strong> We will notify you immediately via email and take the necessary measures to protect your account.',
+  rights:['<strong>Right of Access:</strong> You can request a copy of all your data stored with us.','<strong>Right of Rectification:</strong> You can update your personal data at any time from your account settings.','<strong>Right of Erasure:</strong> You can request permanent deletion of your account and all your data by contacting us.','<strong>Right of Portability:</strong> You can request your data in a readable format to transfer to another service.'],
+  ctitle:'Questions about privacy?',csub:'Contact us for any inquiry regarding your data or this policy',
+  footer:'© 2025 Mothr Pro · All rights reserved',
+  flinks:['Home','Privacy Policy','Refund Policy'],
+}
+};
+function applyLangPT(l){
+  var t=PT[l];
+  document.title=t.pageTitle;
+  var bk=document.querySelector('.back-btn');if(bk)bk.textContent=t.back;
+  var hb=document.querySelector('.hero-badge');if(hb)hb.textContent=t.badge;
+  var ht=document.querySelector('.hero-title');if(ht)ht.textContent=t.htitle;
+  var hs=document.querySelector('.hero-sub');if(hs)hs.textContent=t.hsub;
+  var hd=document.querySelector('.hero-date');if(hd)hd.textContent=t.hdate;
+  var tc=document.querySelector('.toc-title');if(tc)tc.textContent=t.tocTitle;
+  document.querySelectorAll('.toc-list a').forEach(function(el,i){if(t.toc[i])el.textContent=t.toc[i];});
+  var secs=document.querySelectorAll('.section');
+  t.s.forEach(function(s,i){
+    if(!secs[i])return;
+    var st=secs[i].querySelector('.section-title');if(st)st.textContent=s.t;
+    var sb=secs[i].querySelector('.section-body');if(sb&&s.b)sb.innerHTML=s.b;
+  });
+  // Table 1 (#s1)
+  var t1ths=document.querySelectorAll('#s1 .data-table th');
+  t.t1th.forEach(function(h,i){if(t1ths[i])t1ths[i].textContent=h;});
+  var t1rows=document.querySelectorAll('#s1 .data-table tbody tr');
+  t.t1rows.forEach(function(r,i){
+    if(!t1rows[i])return;
+    var cells=t1rows[i].querySelectorAll('td');
+    r.forEach(function(c,j){if(cells[j])cells[j].textContent=c;});
+  });
+  var s1n=document.querySelector('#s1 .highlight .info-text');if(s1n)s1n.innerHTML=t.s1note;
+  // Section 2
+  var s2n=document.querySelector('#s2 .info-box .info-text');if(s2n)s2n.innerHTML=t.s2note;
+  // Table 2 (#s3)
+  var t2ths=document.querySelectorAll('#s3 .data-table th');
+  t.t2th.forEach(function(h,i){if(t2ths[i])t2ths[i].textContent=h;});
+  var t2rows=document.querySelectorAll('#s3 .data-table tbody tr');
+  t.t2rows.forEach(function(r,i){
+    if(!t2rows[i])return;
+    var cells=t2rows[i].querySelectorAll('td');
+    r.forEach(function(c,j){if(cells[j])cells[j].innerHTML=c;});
+  });
+  var s3n=document.querySelector('#s3 .info-box .info-text');if(s3n)s3n.textContent=t.s3note;
+  // Section 4
+  var s4n=document.querySelector('#s4 .highlight .info-text');if(s4n)s4n.innerHTML=t.s4note;
+  // Section 6 rights
+  var rbs=document.querySelectorAll('#s6 .info-box .info-text');
+  t.rights.forEach(function(r,i){if(rbs[i])rbs[i].innerHTML=r;});
+  // Contact
+  var ct=document.querySelector('.contact-title');if(ct)ct.textContent=t.ctitle;
+  var cs=document.querySelector('.contact-sub');if(cs)cs.textContent=t.csub;
+  var fp=document.querySelector('.footer p');if(fp)fp.textContent=t.footer;
+  var fls=document.querySelectorAll('.footer a');
+  t.flinks.forEach(function(fl,i){if(fls[i])fls[i].textContent=fl;});
+  var btn=document.getElementById('privacyLangBtn');if(btn)btn.textContent=l==='ar'?'EN':'ع';
+}
 function toggleLang(){
   var l=localStorage.getItem('lang')||'ar';
   var nl=l==='ar'?'en':'ar';
@@ -326,14 +438,12 @@ function toggleLang(){
   document.documentElement.lang=nl;
   document.documentElement.dir=nl==='ar'?'rtl':'ltr';
   document.body.style.direction=nl==='ar'?'rtl':'ltr';
-  var btn=document.getElementById('privacyLangBtn');
-  if(btn)btn.textContent=nl==='ar'?'EN':'ع';
+  applyLangPT(nl);
 }
 (function(){
   var l=localStorage.getItem('lang')||'ar';
-  var btn=document.getElementById('privacyLangBtn');
-  if(btn)btn.textContent=l==='ar'?'EN':'ع';
   document.body.style.direction=l==='ar'?'rtl':'ltr';
+  applyLangPT(l);
 })();
 </script>
 </body>

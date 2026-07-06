@@ -219,6 +219,87 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </footer>
 
 <script>
+var RT={
+ar:{
+  pageTitle:'سياسة الاسترداد — مؤثر برو',
+  back:'← العودة للمنصة',badge:'📋 سياسة الاسترداد',
+  htitle:'سياسة الاسترداد والمبالغ',
+  hsub:'يرجى قراءة هذه السياسة بعناية قبل إتمام عملية الشراء',
+  norefund:'<strong>سياسة عدم الاسترداد:</strong> جميع عمليات الشراء على منصة مؤثر برو نهائية وغير قابلة للاسترداد. بإتمامك عملية الدفع، فإنك تقر بموافقتك على هذه السياسة.',
+  s:[
+    {t:'طبيعة المنتج الرقمي',b:'<p>مؤثر برو منصة رقمية تتيح الوصول الفوري لتحليلات وبيانات المؤثرين. نظراً لطبيعة المنتج الرقمي الذي يُتاح فور إتمام الدفع، لا يمكن "إعادة" المنتج كما هو الحال مع المنتجات المادية.</p><p>بمجرد تفعيل حسابك والوصول للمحتوى، تعتبر عملية الشراء مكتملة ونهائية.</p>'},
+    {t:'ملخص السياسة'},
+    {t:'الحالات الاستثنائية',b:'<p>على الرغم من سياسة عدم الاسترداد، نتعامل بمرونة في الحالات التالية:</p>'},
+    {t:'كيفية تقديم طلب',b:'<p>في حال وجود مشكلة تستوجب المراجعة، تواصل معنا عبر البريد الإلكتروني مع تضمين المعلومات التالية:</p><p>• البريد الإلكتروني المستخدم في الشراء<br>• رقم أو إيصال عملية الدفع<br>• وصف المشكلة بشكل واضح</p><p>سيتم الرد على طلبك خلال <strong style="color:var(--accent)">2-3 أيام عمل</strong>.</p>'},
+    {t:'قبل الشراء',b:'<p>ننصحك بما يلي قبل إتمام الشراء:</p><p>• تسجيل حساب مجاني واستعراض المحتوى المتاح للتأكد من ملاءمة المنصة لاحتياجاتك</p><p>• التواصل معنا لأي استفسار قبل الدفع</p><p>• قراءة <a href="/privacy.html" style="color:var(--accent)">سياسة الخصوصية</a> لفهم كيفية تعاملنا مع بياناتك</p>'},
+  ],
+  th:['الحالة','الاسترداد'],
+  rows:['تغيير رأي بعد الشراء','عدم استخدام الاشتراك','خطأ في الدفع المزدوج','عدم تفعيل الحساب بعد الدفع','مشكلة تقنية من جانبنا'],
+  bno:'غير متاح',byes:'متاح — تواصل معنا',
+  ex:[
+    '<strong>الدفع المزدوج:</strong> إذا تمت خصم المبلغ مرتين لنفس الطلب، يُسترد المبلغ الزائد فوراً.',
+    '<strong>عدم التفعيل:</strong> إذا تم خصم المبلغ ولم يُفعَّل حسابك خلال 24 ساعة، تواصل معنا لحل المشكلة أو استرداد المبلغ.',
+    '<strong>عطل تقني:</strong> في حال وجود عطل تقني كامل يمنع الوصول للمنصة لمدة تزيد عن 72 ساعة، يحق لك طلب استرداد جزئي.',
+  ],
+  ctitle:'هل لديك استفسار؟',csub:'تواصل معنا قبل أو بعد الشراء وسنرد عليك خلال 24 ساعة',
+  footer:'© 2025 مؤثر برو · جميع الحقوق محفوظة',
+  flinks:['الرئيسية','سياسة الخصوصية','سياسة الاسترداد'],
+},
+en:{
+  pageTitle:'Refund Policy — Mothr Pro',
+  back:'← Back to Platform',badge:'📋 Refund Policy',
+  htitle:'Refund & Payment Policy',
+  hsub:'Please read this policy carefully before completing your purchase',
+  norefund:'<strong>No-Refund Policy:</strong> All purchases on Mothr Pro are final and non-refundable. By completing your payment, you acknowledge your agreement to this policy.',
+  s:[
+    {t:'Digital Product Nature',b:'<p>Mothr Pro is a digital platform providing immediate access to influencer analytics and data. Due to the digital nature of the product — which becomes available upon payment completion — it cannot be "returned" as with physical goods.</p><p>Once your account is activated and you access the content, the purchase is considered complete and final.</p>'},
+    {t:'Policy Summary'},
+    {t:'Exceptional Cases',b:'<p>Despite the no-refund policy, we handle the following cases flexibly:</p>'},
+    {t:'How to Submit a Request',b:'<p>If there is an issue requiring review, contact us via email with the following information:</p><p>• Email address used for the purchase<br>• Payment transaction number or receipt<br>• Clear description of the issue</p><p>Your request will be responded to within <strong style="color:var(--accent)">2–3 business days</strong>.</p>'},
+    {t:'Before You Buy',b:'<p>We recommend the following before completing your purchase:</p><p>• Register a free account and browse available content to ensure the platform meets your needs</p><p>• Contact us with any questions before payment</p><p>• Read our <a href="/privacy.html" style="color:var(--accent)">Privacy Policy</a> to understand how we handle your data</p>'},
+  ],
+  th:['Case','Refund'],
+  rows:['Change of mind after purchase','Non-use of subscription','Double payment error','Account not activated after payment','Technical issue on our side'],
+  bno:'Not available',byes:'Available — Contact us',
+  ex:[
+    '<strong>Double Payment:</strong> If the amount was charged twice for the same order, the excess is refunded immediately.',
+    '<strong>Non-Activation:</strong> If the amount was charged and your account was not activated within 24 hours, contact us to resolve the issue or process a refund.',
+    '<strong>Technical Outage:</strong> In case of a complete technical outage preventing platform access for more than 72 hours, you may request a partial refund.',
+  ],
+  ctitle:'Have a question?',csub:"Contact us before or after your purchase and we'll respond within 24 hours",
+  footer:'© 2025 Mothr Pro · All rights reserved',
+  flinks:['Home','Privacy Policy','Refund Policy'],
+}
+};
+function applyLangRT(l){
+  var t=RT[l];
+  document.title=t.pageTitle;
+  var bk=document.querySelector('.back-btn');if(bk)bk.textContent=t.back;
+  var hb=document.querySelector('.hero-badge');if(hb)hb.textContent=t.badge;
+  var ht=document.querySelector('.hero-title');if(ht)ht.textContent=t.htitle;
+  var hs=document.querySelector('.hero-sub');if(hs)hs.textContent=t.hsub;
+  var nr=document.querySelector('.highlight .highlight-text');if(nr)nr.innerHTML=t.norefund;
+  var secs=document.querySelectorAll('.section');
+  t.s.forEach(function(s,i){
+    if(!secs[i])return;
+    var st=secs[i].querySelector('.section-title');if(st)st.textContent=s.t;
+    var sb=secs[i].querySelector('.section-body');if(sb&&s.b)sb.innerHTML=s.b;
+  });
+  var ths=document.querySelectorAll('.policy-table th');
+  t.th.forEach(function(h,i){if(ths[i])ths[i].textContent=h;});
+  var rws=document.querySelectorAll('.policy-table tbody tr td:first-child');
+  t.rows.forEach(function(r,i){if(rws[i])rws[i].textContent=r;});
+  document.querySelectorAll('.badge-no').forEach(function(b){b.textContent=t.bno;});
+  document.querySelectorAll('.badge-yes').forEach(function(b){b.textContent=t.byes;});
+  var exb=document.querySelectorAll('.info-box .highlight-text');
+  t.ex.forEach(function(e,i){if(exb[i])exb[i].innerHTML=e;});
+  var ct=document.querySelector('.contact-title');if(ct)ct.textContent=t.ctitle;
+  var cs=document.querySelector('.contact-sub');if(cs)cs.textContent=t.csub;
+  var fp=document.querySelector('.footer p');if(fp)fp.textContent=t.footer;
+  var fls=document.querySelectorAll('.footer a');
+  t.flinks.forEach(function(fl,i){if(fls[i])fls[i].textContent=fl;});
+  var btn=document.getElementById('refundLangBtn');if(btn)btn.textContent=l==='ar'?'EN':'ع';
+}
 function toggleLang(){
   var l=localStorage.getItem('lang')||'ar';
   var nl=l==='ar'?'en':'ar';
@@ -226,14 +307,12 @@ function toggleLang(){
   document.documentElement.lang=nl;
   document.documentElement.dir=nl==='ar'?'rtl':'ltr';
   document.body.style.direction=nl==='ar'?'rtl':'ltr';
-  var btn=document.getElementById('refundLangBtn');
-  if(btn)btn.textContent=nl==='ar'?'EN':'ع';
+  applyLangRT(nl);
 }
 (function(){
   var l=localStorage.getItem('lang')||'ar';
-  var btn=document.getElementById('refundLangBtn');
-  if(btn)btn.textContent=l==='ar'?'EN':'ع';
   document.body.style.direction=l==='ar'?'rtl':'ltr';
+  applyLangRT(l);
 })();
 </script>
 </body>
