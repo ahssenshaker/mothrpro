@@ -289,7 +289,7 @@
 
   <div class="stats-bar">
     <div class="stat-item">
-      <span class="stat-num"><em>356</em></span>
+      <span class="stat-num"><em id="landingInfluencerCount">...</em></span>
       <div class="stat-label">مؤثر موثّق</div>
     </div>
     <div class="stat-item">
@@ -464,18 +464,26 @@
 <!-- PRICING -->
 <section id="pricing">
   <div class="section-eyebrow" style="text-align:center">الأسعار</div>
-  <h2 class="section-title" style="text-align:center">دفعة واحدة — وصول للأبد</h2>
+  <h2 class="section-title" style="text-align:center">عرض خاص لأول ١٥٠ مشترك</h2>
+  <p class="section-sub" style="text-align:center">دفعة واحدة فقط — بعد اكتمال العدد يتحول إلى اشتراك سنوي</p>
 
   <div class="pricing-wrapper">
     <div class="pricing-card">
       <div class="pricing-badge">⭐ مؤثر برو</div>
+
+      <!-- Early bird seats counter -->
+      <div id="seatsCounterWrap" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;text-align:center;font-size:13px;display:none">
+        <span style="color:var(--gold);font-weight:700">🔥 تبقّى <span id="seatsLeft">-</span> مقعدًا</span>
+        <span style="color:var(--muted);margin-right:6px">من أصل ١٥٠ مقعدًا بسعر الدفعة الواحدة</span>
+      </div>
+
       <div style="font-size:15px;color:var(--muted);text-decoration:line-through;margin-bottom:6px">$80</div>
       <div class="pricing-price"><sup>$</sup>39</div>
-      <div class="pricing-period">🎉 سعر الإطلاق — دفعة واحدة فقط</div>
+      <div class="pricing-period">🎉 سعر الإطلاق لأول ١٥٠ مشترك — دفعة واحدة فقط</div>
 
       <div class="pricing-features">
         <div class="pricing-feature"><span class="check">✓</span><span>وصول كامل لجميع البيانات</span></div>
-        <div class="pricing-feature"><span class="check">✓</span><span>أسعار 538 مؤثر على 6 منصات</span></div>
+        <div class="pricing-feature"><span class="check">✓</span><span>أسعار المؤثرين على 6 منصات</span></div>
         <div class="pricing-feature"><span class="check">✓</span><span>إحصاءات الجمهور الكاملة</span></div>
         <div class="pricing-feature"><span class="check">✓</span><span>روابط مباشرة لجميع الحسابات</span></div>
         <div class="pricing-feature"><span class="check">✓</span><span>تحديثات مستمرة للبيانات</span></div>
@@ -484,6 +492,7 @@
 
       <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="pricingCheckoutBtn" class="pricing-cta gumroad-button" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this)">🚀 اشترك الآن — 39 دولار</a>
       <div class="pricing-note">يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted2);text-align:center">بعد اكتمال الـ ١٥٠ مشترك ينتقل السعر إلى اشتراك سنوي</div>
     </div>
   </div>
 </section>
@@ -495,8 +504,8 @@
 
   <div class="faq-list">
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">هل الدفع مرة واحدة أم اشتراك شهري؟</div>
-      <div class="faq-a"><p>دفعة واحدة فقط بـ 39 دولار، وتحصل على وصول مدى الحياة لجميع البيانات والتحديثات.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)">هل الدفع مرة واحدة أم اشتراك سنوي؟</div>
+      <div class="faq-a"><p>عرض الإطلاق لأول ١٥٠ مشترك: دفعة واحدة فقط بـ 39 دولار وتحصل على وصول كامل. بعد اكتمال الـ ١٥٠ مشترك سيتحول السعر إلى اشتراك سنوي. انضم الآن واستفد من سعر الدفعة الواحدة!</p></div>
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">كيف أصل للدليل بعد الدفع؟</div>
@@ -523,7 +532,8 @@
     <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(ellipse,rgba(59,130,246,0.1) 0%,transparent 70%);pointer-events:none;"></div>
     <div style="font-size:48px;margin-bottom:20px;">🚀</div>
     <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:16px;">جاهز تبدأ؟</h2>
-    <p style="color:var(--muted);font-size:16px;max-width:460px;margin:0 auto 36px;line-height:1.7;">انضم الآن واحصل على وصول فوري لأقوى دليل مؤثرين في السعودية</p>
+    <p style="color:var(--muted);font-size:16px;max-width:460px;margin:0 auto 16px;line-height:1.7;">انضم الآن واستفد من عرض الإطلاق — دفعة واحدة فقط لأول ١٥٠ مشترك</p>
+    <p style="color:var(--muted2);font-size:13px;margin:0 auto 28px">بعد اكتمال العدد ينتقل إلى اشتراك سنوي</p>
     <a href="https://moatherpro.gumroad.com/l/ssfpxx?wanted=true" id="finalCheckoutBtn" class="btn-primary gumroad-button" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openGumroadPopup(event,this)">🎉 39 دولار بدل 80 دولار — سعر الإطلاق</a>
   </div>
 </section>
@@ -539,7 +549,35 @@
   <a href="/refund.html" style="color:#475569;text-decoration:none;margin:0 12px">سياسة الاسترداد</a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+(async function loadLandingStats() {
+  const SUPA_URL = 'https://pvafqzhowebbmahbonfm.supabase.co';
+  const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk';
+  const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  // Fetch influencer count
+  try {
+    const { count } = await supa.from('influencers').select('id', { count: 'exact', head: true });
+    const el = document.getElementById('landingInfluencerCount');
+    if (el && count != null) el.textContent = count.toLocaleString('ar');
+  } catch(e) { /* keep placeholder */ }
+
+  // Fetch pro subscriber count to show remaining early-bird seats
+  try {
+    const { count } = await supa.from('subscribers').select('id', { count: 'exact', head: true }).eq('plan', 'pro');
+    const EARLY_BIRD_TOTAL = 150;
+    const taken = count || 0;
+    const left = Math.max(0, EARLY_BIRD_TOTAL - taken);
+    const wrap = document.getElementById('seatsCounterWrap');
+    const seatsEl = document.getElementById('seatsLeft');
+    if (wrap && seatsEl) {
+      seatsEl.textContent = left;
+      if (left > 0) wrap.style.display = 'block';
+    }
+  } catch(e) { /* hide counter on error */ }
+})();
+
 function toggleFaq(el) {
   const item = el.closest('.faq-item');
   const isOpen = item.classList.contains('open');

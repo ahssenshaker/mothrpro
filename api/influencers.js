@@ -40,15 +40,18 @@ function censorRecord(record) {
         followers: p.followers,
         followersNum: p.followersNum,
         url: null,
-        avgLikes: p.avgLikes,
-        avgComments: p.avgComments,
-        engagementRate: p.engagementRate,
-        postsPerWeek: p.postsPerWeek,
+        avgLikes: null,
+        avgComments: null,
+        engagementRate: null,
+        postsPerWeek: null,
         prices: null
       }
     })
     out.platforms = platforms
   }
+  // Hide audience demographics for free users
+  out.followersAges = []
+  out.followersGender = 0
   return out
 }
 
