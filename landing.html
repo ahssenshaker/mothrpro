@@ -273,7 +273,7 @@
 
 <!-- HERO -->
 <section class="hero" style="max-width:none; padding-right:24px; padding-left:24px;">
-  <div class="hero-badge"><span></span> 538 مؤثر موثّق وجاهز للتعاون</div>
+  <div class="hero-badge"><span></span> <span id="landingBadgeCount">+500</span> مؤثر موثّق وجاهز للتعاون</div>
 
   <h1>دليلك الاحترافي<br>لأقوى <em>المؤثرين السعوديين</em></h1>
 
@@ -556,11 +556,19 @@
   const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk';
   const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-  // Fetch influencer count
+  // Fetch influencer count via API (works for anonymous users)
   try {
-    const { count } = await supa.from('influencers').select('id', { count: 'exact', head: true });
-    const el = document.getElementById('landingInfluencerCount');
-    if (el && count != null) el.textContent = count.toLocaleString('ar');
+    const res = await fetch('/api/influencers');
+    if (res.ok) {
+      const data = await res.json();
+      const count = Array.isArray(data) ? data.length : null;
+      if (count != null) {
+        const el = document.getElementById('landingInfluencerCount');
+        const badge = document.getElementById('landingBadgeCount');
+        if (el) el.textContent = count.toLocaleString('ar');
+        if (badge) badge.textContent = count.toLocaleString('ar');
+      }
+    }
   } catch(e) { /* keep placeholder */ }
 
   // Fetch pro subscriber count to show remaining early-bird seats
