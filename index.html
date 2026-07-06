@@ -724,6 +724,7 @@ padding:7px 10px;
         <button class="btn admin-fab" onclick="startAddInfluencer()" data-i18n="admin.btn.new">＋ مؤثر جديد</button>
         <button class="btn btn-csv" onclick="triggerExcelImport()" data-i18n="admin.btn.import">📥 استيراد Excel</button>
         <button class="btn btn-danger-soft" onclick="resetLocalDashboardData()" data-i18n="admin.btn.reset_data">🧹 تصفير</button>
+        <button class="btn" id="bulkTranslateBtn" onclick="bulkTranslateAll()" style="background:rgba(99,179,237,.12);border:1px solid rgba(99,179,237,.3);color:#63b3ed;font-size:12px">🌐 ترجمة الكل</button>
       </div>
       <input class="admin-search" id="adminSearch" placeholder="بحث داخل المؤثرين..." oninput="renderAdminList()" data-i18n-ph="admin.search_ph">
       <div class="admin-list" id="adminList"></div>
@@ -2305,6 +2306,46 @@ async function autoTranslateFields(){
   showAdminToast('✓ Translation complete');
 }
 
+async function bulkTranslateAll(){
+  const btn=document.getElementById('bulkTranslateBtn');
+  if(!btn)return;
+  const todo=DATA.filter(d=>!d.name_en||!d.name_en.trim());
+  if(!todo.length){showAdminToast('✓ جميع السجلات مترجمة');return;}
+  if(!confirm(`سيتم ترجمة ${todo.length} سجل تلقائياً. قد يستغرق هذا بعض الوقت. متابعة؟`))return;
+  btn.disabled=true;
+  async function tr(text){
+    if(!text||!text.trim())return'';
+    try{
+      const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim().slice(0,450))}&langpair=ar|en`);
+      const j=await r.json();
+      return j.responseData?.translatedText||text;
+    }catch{return text;}
+  }
+  async function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+  let done=0;
+  for(const d of todo){
+    btn.textContent=`⏳ ${done}/${todo.length}`;
+    try{
+      const name_en=await tr(d.name||'');
+      await delay(200);
+      const spec_en=await tr(d.specialization||'');
+      await delay(200);
+      const payload={id:d.id,name_en,specialization_en:spec_en};
+      const res=await fetch('/api/influencers',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_apiJwt},body:JSON.stringify(payload)});
+      if(res.ok){
+        const saved=await res.json();
+        const idx=DATA.findIndex(x=>String(x.id)===String(d.id));
+        if(idx>-1){DATA[idx].name_en=saved.name_en||name_en;DATA[idx].specialization_en=saved.specialization_en||spec_en;}
+      }
+    }catch(e){console.warn('bulk translate error for',d.id,e);}
+    done++;
+    await delay(100);
+  }
+  btn.disabled=false;btn.textContent='🌐 ترجمة الكل';
+  renderAdminList();
+  showAdminToast(`✓ تمت ترجمة ${done} سجل`);
+}
+
 async function saveInfluencerFromForm(e){
   e.preventDefault();
   const btn=e.target.querySelector('[type=submit]');
@@ -2346,7 +2387,11 @@ async function saveInfluencerFromForm(e){
     const idx=DATA.findIndex(x=>String(x.id)===String(normalized.id));
     if(idx>-1)DATA[idx]=normalized;else DATA.push(normalized);
     recalcRanks();refreshStats();applyFilters();renderAdminList();editInfluencer(normalized.id,false);showAdminToast('تم حفظ بيانات المؤثر');
-  }catch(err){alert('خطأ: '+err.message);}
+  }catch(err){
+    if(err.message&&err.message.includes('column')){
+      alert('خطأ في قاعدة البيانات: أعمدة الترجمة الإنجليزية غير موجودة بعد.\n\nشغّل هذا الأمر في Supabase SQL Editor:\n\nALTER TABLE influencers\n  ADD COLUMN IF NOT EXISTS name_en text DEFAULT \'\',\n  ADD COLUMN IF NOT EXISTS specialization_en text DEFAULT \'\',\n  ADD COLUMN IF NOT EXISTS intro_en text DEFAULT \'\',\n  ADD COLUMN IF NOT EXISTS categories_en jsonb DEFAULT \'[]\',\n  ADD COLUMN IF NOT EXISTS tags_en jsonb DEFAULT \'[]\',\n  ADD COLUMN IF NOT EXISTS regions_en jsonb DEFAULT \'[]\';');
+    }else{alert('خطأ: '+err.message);}
+  }
   finally{if(btn){btn.disabled=false;btn.textContent='حفظ';}}
 }
 function deleteCurrentInfluencer(){const id=document.getElementById('fId').value;if(!id){startAddInfluencer(false);return}deleteInfluencer(id)}
