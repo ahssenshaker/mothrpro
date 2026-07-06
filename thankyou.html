@@ -108,58 +108,58 @@
 <div class="container">
   <div class="success-icon">✅</div>
 
-  <h1>تم الدفع بنجاح! 🎉</h1>
-  <p class="subtitle">مرحباً بك في مؤثر برو — أنت الآن تملك وصولاً كاملاً لأقوى دليل مؤثرين في السعودية</p>
+  <h1 id="tyH1">تم الدفع بنجاح! 🎉</h1>
+  <p class="subtitle" id="tySubtitle">مرحباً بك في مؤثر برو — أنت الآن تملك وصولاً كاملاً لأقوى دليل مؤثرين في السعودية</p>
 
   <div class="steps-card">
-    <div class="steps-title">الخطوات التالية</div>
+    <div class="steps-title" id="tyNextSteps">الخطوات التالية</div>
     <div class="step">
       <div class="step-num done">✓</div>
       <div class="step-content">
-        <div class="step-label">تم الدفع بنجاح</div>
-        <div class="step-desc">استلمنا دفعتك وجارٍ تفعيل حسابك</div>
+        <div class="step-label" id="tyStep1Label">تم الدفع بنجاح</div>
+        <div class="step-desc" id="tyStep1Desc">استلمنا دفعتك وجارٍ تفعيل حسابك</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num next">2</div>
       <div class="step-content">
-        <div class="step-label">تفعيل الحساب تلقائياً</div>
-        <div class="step-desc">سيُفعَّل حسابك خلال دقيقة واحدة تلقائياً</div>
+        <div class="step-label" id="tyStep2Label">تفعيل الحساب تلقائياً</div>
+        <div class="step-desc" id="tyStep2Desc">سيُفعَّل حسابك خلال دقيقة واحدة تلقائياً</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num next">3</div>
       <div class="step-content">
-        <div class="step-label">ادخل للمنصة وابدأ</div>
-        <div class="step-desc">سجّل دخول بنفس الإيميل الذي استخدمته عند الدفع</div>
+        <div class="step-label" id="tyStep3Label">ادخل للمنصة وابدأ</div>
+        <div class="step-desc" id="tyStep3Desc">سجّل دخول بنفس الإيميل الذي استخدمته عند الدفع</div>
       </div>
     </div>
   </div>
 
   <div class="steps-card" id="orderBox" style="display:none;margin-bottom:16px">
-    <div class="steps-title">تفاصيل الطلب</div>
+    <div class="steps-title" id="tyOrderTitle">تفاصيل الطلب</div>
     <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px">
-      <span style="color:var(--muted)">رقم الطلب</span>
+      <span style="color:var(--muted)" id="tyOrderNumLabel">رقم الطلب</span>
       <span id="orderNum" style="font-weight:700;color:var(--accent);direction:ltr">#—</span>
     </div>
     <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px">
-      <span style="color:var(--muted)">المبلغ المدفوع</span>
+      <span style="color:var(--muted)" id="tyOrderTotalLabel">المبلغ المدفوع</span>
       <span id="orderTotal" style="font-weight:700;color:var(--green)">—</span>
     </div>
     <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:14px">
-      <span style="color:var(--muted)">البريد الإلكتروني</span>
+      <span style="color:var(--muted)" id="tyOrderEmailLabel">البريد الإلكتروني</span>
       <span id="orderEmail" style="font-weight:600;direction:ltr">—</span>
     </div>
   </div>
 
   <div class="info-box">
     <div class="icon">⏱️</div>
-    <p>إذا لم يُفعَّل حسابك خلال <strong>5 دقائق</strong>، تواصل معنا وسنحل المشكلة فوراً.</p>
+    <p id="tyInfoText">إذا لم يُفعَّل حسابك خلال <strong>5 دقائق</strong>، تواصل معنا وسنحل المشكلة فوراً.</p>
   </div>
 
-  <a href="https://moatherpro.com" class="cta-btn">🚀 ادخل للمنصة الآن</a>
+  <a href="https://moatherpro.com" class="cta-btn" id="tyCtaBtn">🚀 ادخل للمنصة الآن</a>
 
-  <div class="logo">🌟 مؤثر برو</div>
+  <div class="logo" id="tyLogo">🌟 مؤثر برو</div>
 </div>
 
 <script>
@@ -218,9 +218,8 @@ async function checkActivation() {
 
   if (data?.plan === 'pro') {
     clearInterval(checkInterval);
-    // Show success and redirect
     document.querySelector('.success-icon').textContent = '🎉';
-    document.querySelector('h1').textContent = 'تم التفعيل! جاري التوجيه...';
+    document.querySelector('h1').textContent = ty('activated');
     setTimeout(() => { window.location.href = 'https://moatherpro.com'; }, 1500);
     return;
   }
@@ -228,12 +227,12 @@ async function checkActivation() {
   // Update step 2 with countdown
   const step2 = document.querySelectorAll('.step')[1];
   const desc = step2.querySelector('.step-desc');
-  if (desc) desc.textContent = 'جاري التحقق من التفعيل... (' + checkCount + ')';
+  if (desc) desc.textContent = ty('checking') + ' (' + checkCount + ')';
 
   // Stop after 3 minutes
   if (checkCount >= 18) {
     clearInterval(checkInterval);
-    if (desc) desc.textContent = 'لم يتم التفعيل تلقائياً — تواصل معنا';
+    if (desc) desc.textContent = ty('not_activated');
   }
 }
 
@@ -243,22 +242,62 @@ setTimeout(() => {
   checkActivation();
 }, 5000);
 
+var TY={
+  ar:{
+    title:'شكراً لك — مؤثر برو',
+    h1:'تم الدفع بنجاح! 🎉',
+    subtitle:'مرحباً بك في مؤثر برو — أنت الآن تملك وصولاً كاملاً لأقوى دليل مؤثرين في السعودية',
+    next_steps:'الخطوات التالية',
+    step1_label:'تم الدفع بنجاح',step1_desc:'استلمنا دفعتك وجارٍ تفعيل حسابك',
+    step2_label:'تفعيل الحساب تلقائياً',step2_desc:'سيُفعَّل حسابك خلال دقيقة واحدة تلقائياً',
+    step3_label:'ادخل للمنصة وابدأ',step3_desc:'سجّل دخول بنفس الإيميل الذي استخدمته عند الدفع',
+    order_title:'تفاصيل الطلب',order_num:'رقم الطلب',order_total:'المبلغ المدفوع',order_email:'البريد الإلكتروني',
+    info_text:'إذا لم يُفعَّل حسابك خلال <strong>5 دقائق</strong>، تواصل معنا وسنحل المشكلة فوراً.',
+    cta_btn:'🚀 ادخل للمنصة الآن',logo:'🌟 مؤثر برو',
+    checking:'جاري التحقق من التفعيل...',activated:'تم التفعيل! جاري التوجيه...',
+    not_activated:'لم يتم التفعيل تلقائياً — تواصل معنا'
+  },
+  en:{
+    title:'Thank You — Mothr Pro',
+    h1:'Payment Successful! 🎉',
+    subtitle:'Welcome to Mothr Pro — you now have full access to the #1 verified influencer directory in Saudi Arabia',
+    next_steps:'Next Steps',
+    step1_label:'Payment Confirmed',step1_desc:'We received your payment and your account is being activated',
+    step2_label:'Automatic Account Activation',step2_desc:'Your account will be activated automatically within one minute',
+    step3_label:'Log In and Get Started',step3_desc:'Sign in with the same email you used during payment',
+    order_title:'Order Details',order_num:'Order Number',order_total:'Amount Paid',order_email:'Email Address',
+    info_text:'If your account is not activated within <strong>5 minutes</strong>, contact us and we\'ll resolve it immediately.',
+    cta_btn:'🚀 Enter the Platform Now',logo:'🌟 Mothr Pro',
+    checking:'Checking activation...',activated:'Activated! Redirecting...',
+    not_activated:'Automatic activation failed — contact us'
+  }
+};
+function ty(k){var l=localStorage.getItem('lang')||'ar';return(TY[l]&&TY[l][k])||TY.ar[k]||k;}
+function applyLangTY(l){
+  document.documentElement.lang=l;
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  document.body.style.direction=l==='ar'?'rtl':'ltr';
+  document.title=ty('title');
+  var btn=document.getElementById('tyLangBtn');
+  if(btn)btn.textContent=l==='ar'?'EN':'ع';
+  var m={tyH1:'h1',tySubtitle:'subtitle',tyNextSteps:'next_steps',
+    tyStep1Label:'step1_label',tyStep1Desc:'step1_desc',
+    tyStep2Label:'step2_label',tyStep2Desc:'step2_desc',
+    tyStep3Label:'step3_label',tyStep3Desc:'step3_desc',
+    tyOrderTitle:'order_title',tyOrderNumLabel:'order_num',
+    tyOrderTotalLabel:'order_total',tyOrderEmailLabel:'order_email',
+    tyCtaBtn:'cta_btn',tyLogo:'logo'};
+  Object.keys(m).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ty(m[id]);});
+  var info=document.getElementById('tyInfoText');
+  if(info)info.innerHTML=ty('info_text');
+}
 function toggleLang(){
   var l=localStorage.getItem('lang')||'ar';
   var nl=l==='ar'?'en':'ar';
   localStorage.setItem('lang',nl);
-  document.documentElement.lang=nl;
-  document.documentElement.dir=nl==='ar'?'rtl':'ltr';
-  document.body.style.direction=nl==='ar'?'rtl':'ltr';
-  var btn=document.getElementById('tyLangBtn');
-  if(btn)btn.textContent=nl==='ar'?'EN':'ع';
+  applyLangTY(nl);
 }
-(function(){
-  var l=localStorage.getItem('lang')||'ar';
-  var btn=document.getElementById('tyLangBtn');
-  if(btn)btn.textContent=l==='ar'?'EN':'ع';
-  document.body.style.direction=l==='ar'?'rtl':'ltr';
-})();
+(function(){applyLangTY(localStorage.getItem('lang')||'ar');})();
 </script>
 
 </body>
