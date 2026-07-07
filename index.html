@@ -1728,8 +1728,7 @@ function renderPage(){
   const pageItems=filtered.slice(start,start+PAGE_SIZE);
   grid.innerHTML=pageItems.map(d=>cardHTML(d)).join('');
 
-  // Scroll to top of grid smoothly
-  grid.scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollTo({top:0,behavior:'smooth'});
 
   // Pagination
   renderPagination(totalPages);
