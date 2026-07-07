@@ -191,11 +191,13 @@ select:focus{border-color:var(--accent)}
 .ps .k{font-size:9px;color:var(--muted2);margin-top:2px}
 .prices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:10px 14px}
 .price-item{background:var(--s3);border-radius:8px;padding:8px 10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.price-item.est{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.06)}
+.price-item.est{border-color:var(--border);background:var(--s3)}
 .price-type{font-size:11px;color:var(--muted2)}
 .price-val{font-size:13px;font-weight:700;color:var(--green);direction:ltr;display:flex;align-items:center;gap:5px}
-.est-tag{font-size:9px;font-weight:600;color:#f6b730;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.35);border-radius:4px;padding:1px 5px;white-space:nowrap}
-.est-notice{display:flex;align-items:center;gap:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:8px 12px;margin:8px 14px 2px;font-size:11px;color:var(--muted2)}
+.price-range{font-size:12px;font-weight:700;color:var(--green);direction:ltr}
+.price-range-sep{font-size:11px;font-weight:400;color:var(--muted2);margin:0 2px}
+.est-tag{display:none}
+.est-notice{display:flex;align-items:center;gap:8px;background:rgba(99,179,237,.06);border:1px solid rgba(99,179,237,.15);border-radius:8px;padding:8px 12px;margin:8px 14px 2px;font-size:11px;color:var(--muted2)}
 .intro-box{background:var(--s2);border-radius:10px;padding:12px;font-size:13px;color:var(--muted2);line-height:1.7;border:1px solid var(--border)}
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px}
 .tag{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--muted2)}
@@ -910,8 +912,8 @@ const TRANSLATIONS = {
     'plat.engagement': 'جودة الجمهور',
     'plat.posts_week': 'منشور/أسبوع',
     'plat.visit': 'زيارة ↗',
-    'plat.estimated_notice': '📊 أسعار تقديرية بناءً على حجم المتابعين — للاستفسار تواصل مع المؤثر مباشرة',
-    'plat.est_tag': 'تقديري',
+    'plat.estimated_notice': '💡 النطاق السعري المتوقع بناءً على حجم المتابعين وبيانات السوق',
+    'plat.est_tag': '',
     'lock.title': 'ميزة حصرية للمشتركين',
     'lock.sub': 'اشترك بخطة البرو للوصول الكامل',
     'lock.btn': 'ترقية للبرو',
@@ -1100,8 +1102,8 @@ const TRANSLATIONS = {
     'plat.engagement': 'Audience Quality',
     'plat.posts_week': 'Posts/week',
     'plat.visit': 'Visit ↗',
-    'plat.estimated_notice': '📊 Estimated prices based on follower count — contact the influencer directly for inquiries',
-    'plat.est_tag': 'Est.',
+    'plat.estimated_notice': '💡 Expected price range based on follower count and market data',
+    'plat.est_tag': '',
     'lock.title': 'Pro Feature',
     'lock.sub': 'Subscribe to Pro for full access',
     'lock.btn': 'Upgrade to Pro',
@@ -1852,7 +1854,13 @@ function openModal(id){
     const dispPrices=hasReal?realPrices:estimatePrices(n,p.followersNum);
     const isEst=!hasReal&&Object.keys(dispPrices).length>0&&userPlan!=='free';
     const estNotice=isEst?`<div class="est-notice">${t('plat.estimated_notice')}</div>`:'';
-    const pr=Object.entries(dispPrices).map(([pt,v])=>`<div class="price-item${isEst?' est':''}"><span class="price-type">${tPriceKey(pt)}</span><span class="price-val">${Number(v).toLocaleString()} ${t('currency')}${isEst?`<span class="est-tag">${t('plat.est_tag')}</span>`:''}</span></div>`).join('');
+    const pr=Object.entries(dispPrices).map(([pt,v])=>{
+      const num=Number(v);
+      const priceHtml=isEst
+        ?`<span class="price-range">${Math.floor(num*0.85).toLocaleString()}<span class="price-range-sep">—</span>${Math.ceil(num*1.15).toLocaleString()} ${t('currency')}</span>`
+        :`<span class="price-val">${num.toLocaleString()} ${t('currency')}</span>`;
+      return `<div class="price-item${isEst?' est':''}"><span class="price-type">${tPriceKey(pt)}</span>${priceHtml}</div>`;
+    }).join('');
     return `<div class="modal-plat-card"><div class="mph"><div class="mph-left"><span style="font-size:22px">${PI[n]||'🔗'}</span><div><div class="mph-name">${tPlatform(n)}</div><div class="mph-url">${p.url}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="mph-fol">${p.followers}</div><a class="visit-btn" href="${p.url}" target="_blank">${t('plat.visit')}</a></div></div>${st.length?`<div class="plat-stats-row">${st.join('')}</div>`:''}${pr?`${estNotice}<div class="prices-grid">${pr}</div>`:''}</div>`;
   }).join('');
   const tagsH=tfList(d,'tags').map(tg=>`<span class="tag">${tg}</span>`).join('');
