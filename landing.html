@@ -45,8 +45,8 @@
     border-bottom: 1px solid var(--border);
   }
   .nav-logo { display:inline-flex; align-items:center; gap:8px; }
-  .nav-logo img { height:56px; width:auto; display:block; flex-shrink:0; }
-  @media(max-width:600px){ .nav-logo img { height:42px; } }
+  .nav-logo img { height:72px; width:auto; display:block; flex-shrink:0; }
+  @media(max-width:600px){ .nav-logo img { height:52px; } }
   .nav-cta { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: .2s; }
   .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
   .lang-toggle-nav{background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:6px 12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.5px}
@@ -862,8 +862,11 @@ function toggleLang(){
   var img = document.querySelector('.nav-logo img');
   if (!img) return;
   function removeBg(im) {
+    if (im._bgRemoved) return;
+    im._bgRemoved = true;
     var c = document.createElement('canvas');
     c.width = im.naturalWidth; c.height = im.naturalHeight;
+    if (!c.width || !c.height) return;
     var ctx = c.getContext('2d');
     ctx.drawImage(im, 0, 0);
     var d = ctx.getImageData(0, 0, c.width, c.height), px = d.data;
