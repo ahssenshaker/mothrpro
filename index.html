@@ -2315,8 +2315,14 @@ async function autoTranslateFields(){
 async function bulkTranslateAll(){
   const btn=document.getElementById('bulkTranslateBtn');
   if(!btn)return;
-  const todo=DATA.filter(d=>!d.name_en||!d.name_en.trim());
-  if(!todo.length){showAdminToast('✓ جميع السجلات مترجمة');return;}
+  const needsTr=d=>
+    !d.name_en?.trim()||
+    (d.intro?.trim()&&!d.intro_en?.trim())||
+    ((d.categories||[]).length&&(!Array.isArray(d.categories_en)||!d.categories_en.length))||
+    ((d.tags||[]).length&&(!Array.isArray(d.tags_en)||!d.tags_en.length))||
+    ((d.regions||[]).length&&(!Array.isArray(d.regions_en)||!d.regions_en.length));
+  const todo=DATA.filter(needsTr);
+  if(!todo.length){showAdminToast('✓ جميع السجلات مترجمة بالكامل');return;}
   if(!confirm(`سيتم ترجمة ${todo.length} سجل تلقائياً. قد يستغرق هذا بعض الوقت. متابعة؟`))return;
   btn.disabled=true;
   async function tr(text){
