@@ -1006,9 +1006,12 @@ const TRANSLATIONS = {
     'admin.no_spec': 'بدون تخصص',
     'admin.no_results': 'لا توجد نتائج.',
     'admin.saving': 'جاري الحفظ...',
+    'footer.privacy': 'سياسة الخصوصية',
+    'footer.refund': 'سياسة الاسترداد',
+    'footer.copy': '© 2025 مؤثر برو',
   },
   en: {
-    'page.title': 'Mothr Pro — Verified Influencer Directory',
+    'page.title': 'Moather Pro — Verified Influencer Directory',
     'auth.sub': 'Verified Influencer Directory · 512 influencers',
     'auth.tab.login': 'Sign In',
     'auth.tab.signup': 'Sign Up',
@@ -1027,7 +1030,7 @@ const TRANSLATIONS = {
     'err.empty_fields': 'Please enter your email and password',
     'err.invalid_credentials': 'Incorrect email or password',
     'err.email_confirmed': 'Confirmation email sent ✓',
-    'bar.brand': '🌟 Mothr Pro',
+    'bar.brand': '🌟 Moather Pro',
     'bar.plan.free': 'Free',
     'bar.plan.pro': '⭐ Pro',
     'bar.plan.admin': '👑 Admin',
@@ -1035,7 +1038,7 @@ const TRANSLATIONS = {
     'bar.admin': '⚙️ Admin',
     'bar.logout': 'Sign Out',
     'upgrade.badge': '🎯 Special offer — first 150 subscribers',
-    'upgrade.title': '⭐ Mothr Pro',
+    'upgrade.title': '⭐ Moather Pro',
     'upgrade.sub': 'Get full access to all influencer data',
     'upgrade.feat1': 'Influencer pricing per platform',
     'upgrade.feat2': 'Direct links to all profiles',
@@ -1193,6 +1196,9 @@ const TRANSLATIONS = {
     'admin.no_spec': 'No specialization',
     'admin.no_results': 'No results.',
     'admin.saving': 'Saving...',
+    'footer.privacy': 'Privacy Policy',
+    'footer.refund': 'Refund Policy',
+    'footer.copy': '© 2025 Moather Pro',
   }
 };
 
@@ -2321,21 +2327,28 @@ async function bulkTranslateAll(){
       return j.responseData?.translatedText||text;
     }catch{return text;}
   }
+  async function trList(arr){
+    if(!arr||!arr.length)return[];
+    const translated=await tr(arr.join(', '));
+    return translated.split(',').map(s=>s.trim()).filter(Boolean);
+  }
   async function delay(ms){return new Promise(r=>setTimeout(r,ms));}
   let done=0;
   for(const d of todo){
     btn.textContent=`⏳ ${done}/${todo.length}`;
     try{
-      const name_en=await tr(d.name||'');
-      await delay(200);
-      const spec_en=await tr(d.specialization||'');
-      await delay(200);
-      const payload={id:d.id,name_en,specialization_en:spec_en};
+      const name_en=await tr(d.name||'');await delay(200);
+      const specialization_en=await tr(d.specialization||'');await delay(200);
+      const intro_en=await tr(d.intro||'');await delay(200);
+      const categories_en=await trList(d.categories||[]);await delay(200);
+      const tags_en=await trList(d.tags||[]);await delay(200);
+      const regions_en=await trList(d.regions||[]);await delay(200);
+      const payload={id:d.id,name_en,specialization_en,intro_en,categories_en,tags_en,regions_en};
       const res=await fetch('/api/influencers',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_apiJwt},body:JSON.stringify(payload)});
       if(res.ok){
         const saved=await res.json();
         const idx=DATA.findIndex(x=>String(x.id)===String(d.id));
-        if(idx>-1){DATA[idx].name_en=saved.name_en||name_en;DATA[idx].specialization_en=saved.specialization_en||spec_en;}
+        if(idx>-1)Object.assign(DATA[idx],{name_en:saved.name_en||name_en,specialization_en:saved.specialization_en||specialization_en,intro_en:saved.intro_en||intro_en,categories_en:saved.categories_en||categories_en,tags_en:saved.tags_en||tags_en,regions_en:saved.regions_en||regions_en});
       }
     }catch(e){console.warn('bulk translate error for',d.id,e);}
     done++;
@@ -3051,9 +3064,9 @@ window.goPage = function(p) {
     </a>
   </div>
   <div style="font-size:12px;color:#64748b">
-    <a href="https://moatherpro.com/privacy" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الخصوصية</a>
-    <a href="/refund.html" style="color:#64748b;text-decoration:none;margin:0 12px">سياسة الاسترداد</a>
-    <span style="margin:0 12px">© 2025 مؤثر برو</span>
+    <a href="https://moatherpro.com/privacy" style="color:#64748b;text-decoration:none;margin:0 12px" data-i18n="footer.privacy">سياسة الخصوصية</a>
+    <a href="https://moatherpro.com/refund" style="color:#64748b;text-decoration:none;margin:0 12px" data-i18n="footer.refund">سياسة الاسترداد</a>
+    <span style="margin:0 12px" data-i18n="footer.copy">© 2025 مؤثر برو</span>
   </div>
 </div>
 
