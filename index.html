@@ -1257,6 +1257,8 @@ function applyLang(lang) {
 
   // Refresh plan badge text
   if (typeof updatePlanBadge === 'function') updatePlanBadge();
+  // Rebuild region dropdown with correct language
+  if (typeof buildRegionFilter === 'function') buildRegionFilter();
   // Re-render cards with translated content
   if (typeof applyFilters === 'function') applyFilters();
 }
@@ -1634,12 +1636,22 @@ function init(){
 
 function buildRegionFilter(){
   const sel=document.getElementById('regionFilter');
-  // Clear all dynamic options first
   while(sel.options.length>1)sel.remove(1);
   const regions=new Set();
   DATA.forEach(d=>(d.regions||[]).forEach(r=>r&&regions.add(r.trim())));
+  // Build Arabic→English map from data
+  const enMap={};
+  DATA.forEach(d=>{
+    const ar=d.regions||[];const en=d.regions_en||[];
+    ar.forEach((r,i)=>{if(r&&en[i]&&!_badTr(en[i]))enMap[r.trim()]=en[i].trim();});
+  });
   const sorted=[...regions].sort((a,b)=>a.localeCompare(b,'ar'));
-  sorted.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;sel.appendChild(o);});
+  sorted.forEach(r=>{
+    const o=document.createElement('option');
+    o.value=r; // always Arabic for filter matching
+    o.textContent=(currentLang==='en'&&enMap[r])?enMap[r]:r;
+    sel.appendChild(o);
+  });
 }
 
 function filterByTier(t){
