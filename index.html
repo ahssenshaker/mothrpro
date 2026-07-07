@@ -1207,12 +1207,13 @@ let currentLang = localStorage.getItem('lang') || 'ar';
 function t(key) {
   return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS['ar'][key] || key;
 }
+function _badTr(v){return typeof v==='string'&&v.includes('MYMEMORY');}
 function tf(d, field) {
-  if (currentLang === 'en') { const v = d[field + '_en']; if (v && String(v).trim()) return String(v).trim(); }
+  if (currentLang === 'en') { const v = d[field + '_en']; if (v && String(v).trim() && !_badTr(v)) return String(v).trim(); }
   return d[field] || '';
 }
 function tfList(d, field) {
-  if (currentLang === 'en') { const v = d[field + '_en']; if (Array.isArray(v) && v.length) return v; }
+  if (currentLang === 'en') { const v = d[field + '_en']; if (Array.isArray(v) && v.length && !v.some(_badTr)) return v; }
   return d[field] || [];
 }
 
@@ -2315,9 +2316,10 @@ async function autoTranslateFields(){
 async function bulkTranslateAll(){
   const btn=document.getElementById('bulkTranslateBtn');
   if(!btn)return;
+  const isBad=v=>typeof v==='string'&&v.includes('MYMEMORY');
   const needsTr=d=>
-    !d.name_en?.trim()||
-    (d.intro?.trim()&&!d.intro_en?.trim())||
+    !d.name_en?.trim()||isBad(d.name_en)||
+    (d.intro?.trim()&&(!d.intro_en?.trim()||isBad(d.intro_en)))||
     ((d.categories||[]).length&&(!Array.isArray(d.categories_en)||!d.categories_en.length))||
     ((d.tags||[]).length&&(!Array.isArray(d.tags_en)||!d.tags_en.length))||
     ((d.regions||[]).length&&(!Array.isArray(d.regions_en)||!d.regions_en.length));
@@ -2325,29 +2327,34 @@ async function bulkTranslateAll(){
   if(!todo.length){showAdminToast('✓ جميع السجلات مترجمة بالكامل');return;}
   if(!confirm(`سيتم ترجمة ${todo.length} سجل تلقائياً. قد يستغرق هذا بعض الوقت. متابعة؟`))return;
   btn.disabled=true;
+  let limitHit=false;
   async function tr(text){
     if(!text||!text.trim())return'';
     try{
       const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim().slice(0,450))}&langpair=ar|en`);
       const j=await r.json();
-      return j.responseData?.translatedText||text;
+      const res=j.responseData?.translatedText||'';
+      if(res.startsWith('MYMEMORY WARNING')||j.responseStatus===403){limitHit=true;return'';}
+      return res||text;
     }catch{return text;}
   }
   async function trList(arr){
     if(!arr||!arr.length)return[];
     const translated=await tr(arr.join(', '));
+    if(!translated)return[];
     return translated.split(',').map(s=>s.trim()).filter(Boolean);
   }
   async function delay(ms){return new Promise(r=>setTimeout(r,ms));}
   let done=0;
   for(const d of todo){
+    if(limitHit)break;
     btn.textContent=`⏳ ${done}/${todo.length}`;
     try{
-      const name_en=await tr(d.name||'');await delay(200);
-      const specialization_en=await tr(d.specialization||'');await delay(200);
-      const intro_en=await tr(d.intro||'');await delay(200);
-      const categories_en=await trList(d.categories||[]);await delay(200);
-      const tags_en=await trList(d.tags||[]);await delay(200);
+      const name_en=await tr(d.name||'');if(limitHit)break;await delay(200);
+      const specialization_en=await tr(d.specialization||'');if(limitHit)break;await delay(200);
+      const intro_en=await tr(d.intro||'');if(limitHit)break;await delay(200);
+      const categories_en=await trList(d.categories||[]);if(limitHit)break;await delay(200);
+      const tags_en=await trList(d.tags||[]);if(limitHit)break;await delay(200);
       const regions_en=await trList(d.regions||[]);await delay(200);
       const payload={id:d.id,name_en,specialization_en,intro_en,categories_en,tags_en,regions_en};
       const res=await fetch('/api/influencers',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_apiJwt},body:JSON.stringify(payload)});
@@ -2362,7 +2369,8 @@ async function bulkTranslateAll(){
   }
   btn.disabled=false;btn.textContent='🌐 ترجمة الكل';
   renderAdminList();
-  showAdminToast(`✓ تمت ترجمة ${done} سجل`);
+  if(limitHit)showAdminToast('⚠️ انتهى الحد اليومي المجاني — حاول بعد ساعتين');
+  else showAdminToast(`✓ تمت ترجمة ${done} سجل`);
 }
 
 async function saveInfluencerFromForm(e){
