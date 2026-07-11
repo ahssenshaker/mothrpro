@@ -1546,6 +1546,7 @@ async function handleLogout() {
 }
 
 function openUpgrade() {
+  gtag('event','popup_shown',{event_category:'subscription',event_label:'popup_trigger'});
   document.getElementById('upgradeModal').classList.add('open');
   const textEl = document.getElementById('emailWarningText');
   if (textEl && currentUser && currentUser.email) {
@@ -1557,6 +1558,7 @@ function openUpgrade() {
 
 function openGumroadPopup(e, el) {
   e.preventDefault();
+  gtag('event','subscription_complete',{event_category:'subscription',event_label:'purchase',value:39});
   const email = currentUser?.email || '';
   const base = 'https://moatherpro.gumroad.com/l/ssfpxx?wanted=true';
   const url = base + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '');
@@ -1845,6 +1847,7 @@ function estimatePrices(platform,followersNum){
 
 function openModal(id){
   const d=DATA.find(x=>x.id===id);if(!d)return;
+  gtag('event','influencer_click',{event_category:'engagement',event_label:'influencer_card'});
   if(userPlan==='free'){openUpgrade();return;}
   const plats=Object.entries(d.platforms);
   const avEl=d.avatar?`<img class="modal-av" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="modal-av-ph" style="display:none">${d.name[0]}</div>`:`<div class="modal-av-ph">${d.name[0]}</div>`;
