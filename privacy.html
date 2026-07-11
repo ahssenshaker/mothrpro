@@ -171,6 +171,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <strong>لا نجمع أبداً:</strong> أرقام الهواتف، العناوين، أرقام الهوية، أو أي بيانات حساسة غير ضرورية لتقديم الخدمة.
       </div>
     </div>
+    <div class="section-body" style="margin-top:14px" id="s1-disclaimer">
+      <p>تجدر الإشارة إلى أن بعض البيانات المعروضة على المنصة كمتوسطات الأسعار هي تقديرات مبنية على بيانات متاحة للعموم وتحليلات السوق، وليست بيانات رسمية صادرة عن المؤثرين.</p>
+    </div>
   </div>
 
   <div class="section" id="s2">
@@ -347,6 +350,7 @@ ar:{
   t1th:['نوع البيانات','الغرض','الإلزامية'],
   t1rows:[['البريد الإلكتروني','إنشاء الحساب وتسجيل الدخول','إلزامي'],['كلمة المرور (مشفرة)','تأمين الحساب','إلزامي'],['حالة الاشتراك','تحديد مستوى الوصول','تلقائي'],['بيانات الدفع','معالجة المعاملات المالية','عند الشراء'],['بيانات الاستخدام','تحسين تجربة المنصة','تلقائي']],
   s1note:'<strong>لا نجمع أبداً:</strong> أرقام الهواتف، العناوين، أرقام الهوية، أو أي بيانات حساسة غير ضرورية لتقديم الخدمة.',
+  s1disclaimer:'تجدر الإشارة إلى أن بعض البيانات المعروضة على المنصة كمتوسطات الأسعار هي تقديرات مبنية على بيانات متاحة للعموم وتحليلات السوق، وليست بيانات رسمية صادرة عن المؤثرين.',
   s2note:'<strong>لا نرسل رسائل تسويقية</strong> دون موافقتك الصريحة. يمكنك إلغاء الاشتراك في أي وقت.',
   t2th:['الجهة','الغرض','البيانات المشاركة'],
   t2rows:[['<strong>Supabase</strong>','قاعدة البيانات والمصادقة','البريد الإلكتروني وبيانات الحساب'],['<strong>Gumroad</strong>','معالجة المدفوعات','البريد الإلكتروني وبيانات الدفع'],['<strong>Vercel</strong>','استضافة الموقع','بيانات الاستخدام فقط']],
@@ -377,6 +381,7 @@ en:{
   t1th:['Data Type','Purpose','Required'],
   t1rows:[['Email Address','Account creation and login','Mandatory'],['Password (encrypted)','Account security','Mandatory'],['Subscription status','Determining access level','Automatic'],['Payment data','Processing financial transactions','On purchase'],['Usage data','Improving platform experience','Automatic']],
   s1note:'<strong>We never collect:</strong> Phone numbers, addresses, ID numbers, or any sensitive data unnecessary for providing the service.',
+  s1disclaimer:'Please note that some data displayed on the platform, such as average prices, are estimates based on publicly available data and market analysis, and are not official data issued by influencers.',
   s2note:'<strong>We do not send marketing messages</strong> without your explicit consent. You can unsubscribe at any time.',
   t2th:['Party','Purpose','Shared Data'],
   t2rows:[['<strong>Supabase</strong>','Database and authentication','Email and account data'],['<strong>Gumroad</strong>','Payment processing','Email and payment data'],['<strong>Vercel</strong>','Website hosting','Usage data only']],
@@ -414,6 +419,7 @@ function applyLangPT(l){
     r.forEach(function(c,j){if(cells[j])cells[j].textContent=c;});
   });
   var s1n=document.querySelector('#s1 .highlight .info-text');if(s1n)s1n.innerHTML=t.s1note;
+  var s1d=document.querySelector('#s1-disclaimer p');if(s1d)s1d.textContent=t.s1disclaimer;
   // Section 2
   var s2n=document.querySelector('#s2 .info-box .info-text');if(s2n)s2n.innerHTML=t.s2note;
   // Table 2 (#s3)
