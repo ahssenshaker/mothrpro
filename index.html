@@ -1486,9 +1486,7 @@ async function showDashboard() {
   if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
 
   updatePlanBadge(isAdmin);
-  if (userPlan !== 'pro' && !isAdmin) {
-    setTimeout(() => openUpgrade(), 1200);
-  }
+  // Popup is now triggered on influencer card click, not on page load
 
   // Fetch influencer data from secure API
   await loadInfluencerData();
@@ -1847,6 +1845,7 @@ function estimatePrices(platform,followersNum){
 
 function openModal(id){
   const d=DATA.find(x=>x.id===id);if(!d)return;
+  if(userPlan==='free'){openUpgrade();return;}
   const plats=Object.entries(d.platforms);
   const avEl=d.avatar?`<img class="modal-av" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="modal-av-ph" style="display:none">${d.name[0]}</div>`:`<div class="modal-av-ph">${d.name[0]}</div>`;
   const cvEl=d.cover?`<img class="modal-cover" src="${d.cover}" onerror="this.className='modal-cover-ph'">`:`<div class="modal-cover-ph"></div>`;
