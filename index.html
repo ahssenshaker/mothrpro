@@ -113,6 +113,15 @@ select:focus{border-color:var(--accent)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.grid{grid-template-columns:1fr}}
+@media(max-width:640px){.grid.mob-cols-2{grid-template-columns:repeat(2,1fr);gap:8px}}
+@media(max-width:640px){.grid.mob-cols-4{grid-template-columns:repeat(4,1fr);gap:5px}}
+@media(max-width:640px){.grid.mob-cols-2 .card-spec,.grid.mob-cols-4 .card-spec{display:none}}
+@media(max-width:640px){.grid.mob-cols-4 .card-name{font-size:10px}.grid.mob-cols-4 .card-avatar{width:32px;height:32px}.grid.mob-cols-4 .card-avatar-ph{width:32px;height:32px;font-size:13px}.grid.mob-cols-4 .card-cover,.grid.mob-cols-4 .card-cover-ph{height:44px}.grid.mob-cols-4 .followers-num{font-size:12px}.grid.mob-cols-4 .card-badges{font-size:9px;gap:2px}.grid.mob-cols-4 .card-body{padding:6px}.grid.mob-cols-4 .followers-box{font-size:10px}.grid.mob-cols-4 .rank-txt{font-size:10px}}
+@media(max-width:640px){.grid.mob-cols-2 .card-body{padding:8px}}
+.mob-view-toggle{display:none}
+@media(max-width:640px){.mob-view-toggle{display:flex;align-items:center;gap:4px;background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:3px;margin-inline-start:4px}}
+.mob-view-btn{background:none;border:none;color:var(--muted2);border-radius:7px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:.15s}
+.mob-view-btn.active{background:var(--s2);color:var(--accent);border:1px solid var(--border2)}
 
 /* CARD */
 .card{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;position:relative}
@@ -688,6 +697,11 @@ padding:7px 10px;
     <button class="btn admin-fab" onclick="openAdmin()">⚙ لوحة الإدارة</button>
   </div>
   <span class="result-info" id="resultInfo"></span>
+  <div class="mob-view-toggle" id="mobViewToggle">
+    <button class="mob-view-btn active" id="mvBtn1" onclick="setMobView(1)" title="بطاقة واحدة">▬</button>
+    <button class="mob-view-btn" id="mvBtn2" onclick="setMobView(2)" title="بطاقتان">⊞</button>
+    <button class="mob-view-btn" id="mvBtn4" onclick="setMobView(4)" title="أربع بطاقات">⊟</button>
+  </div>
 </div>
 
 <div class="main">
@@ -3114,6 +3128,22 @@ window.goPage = function(p) {
   </div>
 </div>
 
+<script>
+function setMobView(cols){
+  var g=document.getElementById('grid');
+  g.classList.remove('mob-cols-2','mob-cols-4');
+  if(cols===2)g.classList.add('mob-cols-2');
+  else if(cols===4)g.classList.add('mob-cols-4');
+  [1,2,4].forEach(function(n){
+    var b=document.getElementById('mvBtn'+n);
+    if(b)b.classList.toggle('active',n===cols);
+  });
+  try{localStorage.setItem('mobViewCols',cols);}catch(e){}
+}
+(function(){
+  try{var c=parseInt(localStorage.getItem('mobViewCols')||'1');if([1,2,4].indexOf(c)>-1)setMobView(c);}catch(e){}
+})();
+</script>
 <script>
 window.addEventListener("message", function(event) {
   if (event.origin !== "https://gumroad.com") return;
