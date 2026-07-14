@@ -1478,9 +1478,7 @@ async function showDashboard() {
   if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
 
   updatePlanBadge(isAdmin);
-  if (userPlan !== 'pro' && !isAdmin) {
-    setTimeout(() => openUpgrade(), 1200);
-  }
+
 
   // Fetch influencer data from secure API
   await loadInfluencerData();
