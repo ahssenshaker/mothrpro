@@ -192,6 +192,73 @@
   .lock-overlay .lock-icon { font-size: 28px; }
   .lock-overlay .lock-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
+  /* ═══ SAMPLE CARD (full data) ═══ */
+  .sample-card {
+    background: var(--card); border: 2px solid var(--accent2);
+    border-radius: 20px; padding: 28px; margin-top: 48px;
+    box-shadow: 0 0 40px rgba(59,130,246,0.12);
+  }
+  .sample-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(59,130,246,0.15); color: var(--accent2);
+    border: 1px solid rgba(59,130,246,0.35);
+    border-radius: 100px; padding: 4px 14px; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .sample-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .sample-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .sample-name { font-size: 18px; font-weight: 800; }
+  .sample-spec { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .sample-plats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; }
+  .sample-plat {
+    background: rgba(255,255,255,0.07); border-radius: 8px;
+    padding: 5px 12px; font-size: 11px; font-weight: 600; color: var(--muted);
+  }
+  .sample-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+  .sample-stat {
+    background: rgba(255,255,255,0.04); border-radius: 12px;
+    padding: 14px 10px; text-align: center;
+  }
+  .sample-stat-val { font-size: 20px; font-weight: 800; color: #fff; }
+  .sample-stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .sample-section-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted2); margin-bottom: 12px; }
+  .sample-prices { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 24px; }
+  .sample-price-row {
+    background: rgba(255,255,255,0.04); border-radius: 10px;
+    padding: 12px 14px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .sample-price-plat { font-size: 12px; color: var(--muted); }
+  .sample-price-val { font-size: 15px; font-weight: 700; color: var(--gold); }
+  .sample-demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .sample-demo-block {
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px;
+  }
+  .sample-demo-bar { height: 6px; border-radius: 100px; background: var(--border); margin: 8px 0 4px; overflow: hidden; }
+  .sample-demo-fill { height: 100%; border-radius: 100px; }
+  .sample-demo-lbl { font-size: 11px; color: var(--muted); }
+  .sample-ages { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .sample-age-chip {
+    background: rgba(255,255,255,0.06); border-radius: 6px;
+    padding: 3px 8px; font-size: 11px; font-weight: 600;
+  }
+  .sample-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600;
+    color: var(--accent2); text-decoration: none; margin-left: 6px; margin-bottom: 6px;
+  }
+  .sample-cta-note {
+    text-align: center; margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--muted);
+  }
+  .sample-cta-note strong { color: #fff; }
+
   /* ═══ PLATFORMS ═══ */
   .plat-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 36px; }
   .plat-tag {
@@ -374,8 +441,8 @@ ar:{
     {t:'بيانات موثّقة ومحدّثة',d:'كل مؤثر تم التحقق منه يدوياً — لا بيانات قديمة أو مجهولة المصدر.'},
     {t:'سريع وسهل الاستخدام',d:'واجهة عربية سلسة تعمل على جميع الأجهزة — لا تعقيد، لا تسجيل معقد.'},
   ],
-  demoEye:'معاينة',demoH2:'شوف ماذا ستحصل عليه',
-  demoSub:'بعض المؤثرين في الدليل — الأسعار والتفاصيل للمشتركين فقط',
+  demoEye:'نموذج حقيقي',demoH2:'هذا ما ستحصل عليه بعد الاشتراك',
+  demoSub:'ملف مؤثر كامل — نفس المعلومات التي تراها بعد الاشتراك مباشرة',
   demoSpecs:['صانع محتوى قيمنق','فاشن — جمال','لاعب نادي الهلال'],
   demoFollowers:'إجمالي المتابعين: ',demoTier:'التصنيف: ',demoTierVal:'⭐ ألفا',
   demoPlats:['📺 يوتيوب','📸 انستقرام','📸 انستقرام','🎵 تيك توك','👻 سناب','📸 انستقرام','🐦 تويتر/X'],
@@ -429,8 +496,8 @@ en:{
     {t:'Verified & Updated Data',d:'Every influencer is manually verified — no outdated or unknown-source data.'},
     {t:'Fast & Easy to Use',d:'A smooth interface that works on all devices — no complexity, no difficult sign-up.'},
   ],
-  demoEye:'Preview',demoH2:'See What You Get',
-  demoSub:'A sample of influencers in the directory — pricing and details for subscribers only',
+  demoEye:'Real Sample',demoH2:'This Is What You Get After Subscribing',
+  demoSub:'A complete influencer profile — the same data you see immediately after subscribing',
   demoSpecs:['Gaming Content Creator','Fashion — Beauty','Al-Hilal Club Player'],
   demoFollowers:'Total Followers: ',demoTier:'Tier: ',demoTierVal:'⭐ Alpha',
   demoPlats:['📺 YouTube','📸 Instagram','📸 Instagram','🎵 TikTok','👻 Snap','📸 Instagram','🐦 Twitter/X'],
@@ -623,30 +690,108 @@ function toggleLang(){
 <!-- DEMO PREVIEW -->
 <div class="demo-section">
   <div class="demo-section-inner">
-    <div class="section-eyebrow" style="text-align:center">معاينة</div>
-    <h2 class="section-title" style="text-align:center">شوف ماذا ستحصل عليه</h2>
-    <p class="section-sub" style="text-align:center;margin:0 auto 0">بعض المؤثرين في الدليل — الأسعار والتفاصيل للمشتركين فقط</p>
+    <div class="section-eyebrow" style="text-align:center">نموذج حقيقي</div>
+    <h2 class="section-title" style="text-align:center">هذا ما ستحصل عليه بعد الاشتراك</h2>
+    <p class="section-sub" style="text-align:center;margin:0 auto 24px">ملف مؤثر كامل — نفس المعلومات التي تراها بعد الاشتراك مباشرة</p>
 
-    <div class="demo-grid">
+    <!-- SAMPLE FULL CARD -->
+    <div class="sample-card">
+      <div class="sample-badge">✦ نموذج كامل — بيانات حقيقية</div>
 
-      <!-- Card 1 — visible -->
-      <div class="demo-card">
-        <div class="demo-card-header">
-          <div class="demo-avatar">🎮</div>
-          <div>
-            <div class="demo-name">أبو فلة</div>
-            <div class="demo-spec">صانع محتوى قيمنق</div>
-          </div>
+      <div class="sample-header">
+        <div class="sample-avatar">🎮</div>
+        <div>
+          <div class="sample-name">أبو فلة</div>
+          <div class="sample-spec">صانع محتوى — قيمنق وترفيه</div>
         </div>
-        <div class="demo-platforms">
-          <span class="demo-plat">📺 يوتيوب</span>
-          <span class="demo-plat">📸 انستقرام</span>
+        <div style="margin-right:auto;text-align:left">
+          <span style="font-size:11px;color:var(--muted)">التصنيف</span><br>
+          <span style="font-size:15px;font-weight:800;color:var(--gold)">⭐ ألفا</span>
         </div>
-        <div class="demo-followers">إجمالي المتابعين: <strong>50.1M</strong></div>
-        <div class="demo-followers">التصنيف: <strong style="color:var(--gold)">⭐ ألفا</strong></div>
       </div>
 
-      <!-- Card 2 — locked -->
+      <div class="sample-plats">
+        <span class="sample-plat">📺 يوتيوب</span>
+        <span class="sample-plat">📸 انستقرام</span>
+        <span class="sample-plat">🎵 تيك توك</span>
+        <span class="sample-plat">🐦 تويتر/X</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="sample-stats">
+        <div class="sample-stat">
+          <div class="sample-stat-val">50.1M</div>
+          <div class="sample-stat-lbl">إجمالي المتابعين</div>
+        </div>
+        <div class="sample-stat">
+          <div class="sample-stat-val" style="color:var(--green)">4.8%</div>
+          <div class="sample-stat-lbl">معدل التفاعل</div>
+        </div>
+        <div class="sample-stat">
+          <div class="sample-stat-val">12</div>
+          <div class="sample-stat-lbl">منشور / أسبوع</div>
+        </div>
+      </div>
+
+      <!-- Prices -->
+      <div class="sample-section-title">أسعار الإعلانات</div>
+      <div class="sample-prices">
+        <div class="sample-price-row">
+          <span class="sample-price-plat">📺 يوتيوب</span>
+          <span class="sample-price-val">$18,000 – $25,000</span>
+        </div>
+        <div class="sample-price-row">
+          <span class="sample-price-plat">📸 انستقرام</span>
+          <span class="sample-price-val">$8,000 – $12,000</span>
+        </div>
+        <div class="sample-price-row">
+          <span class="sample-price-plat">🎵 تيك توك</span>
+          <span class="sample-price-val">$6,000 – $9,000</span>
+        </div>
+        <div class="sample-price-row">
+          <span class="sample-price-plat">🐦 تويتر/X</span>
+          <span class="sample-price-val">$3,000 – $5,000</span>
+        </div>
+      </div>
+
+      <!-- Audience -->
+      <div class="sample-section-title">تفاصيل الجمهور</div>
+      <div class="sample-demo-row">
+        <div class="sample-demo-block">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">توزيع الجنس</div>
+          <div style="font-size:14px;font-weight:700">ذكور <span style="color:var(--accent2)">78%</span></div>
+          <div class="sample-demo-bar"><div class="sample-demo-fill" style="width:78%;background:var(--accent2)"></div></div>
+          <div style="font-size:14px;font-weight:700;margin-top:6px">إناث <span style="color:var(--gold)">22%</span></div>
+          <div class="sample-demo-bar"><div class="sample-demo-fill" style="width:22%;background:var(--gold)"></div></div>
+        </div>
+        <div class="sample-demo-block">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">الفئة العمرية</div>
+          <div class="sample-ages">
+            <span class="sample-age-chip" style="color:var(--accent2)">18-24 ← 38%</span>
+            <span class="sample-age-chip" style="color:var(--green)">25-34 ← 35%</span>
+            <span class="sample-age-chip">35-44 ← 18%</span>
+            <span class="sample-age-chip">+45 ← 9%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="sample-section-title">روابط الحسابات</div>
+      <div>
+        <a class="sample-link" href="#">📺 قناة يوتيوب</a>
+        <a class="sample-link" href="#">📸 انستقرام</a>
+        <a class="sample-link" href="#">🎵 تيك توك</a>
+        <a class="sample-link" href="#">🐦 تويتر/X</a>
+      </div>
+
+      <div class="sample-cta-note">
+        هذا نموذج توضيحي بأرقام حقيقية. <strong>بعد الاشتراك ستحصل على نفس هذه البيانات لمئات المؤثرين</strong> في المملكة والخليج.
+      </div>
+    </div>
+
+    <!-- Locked cards teaser -->
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:32px">+ مئات المؤثرين الآخرين مقفلة حتى الاشتراك 🔒</p>
+    <div class="demo-grid" style="margin-top:16px">
       <div class="demo-card">
         <div class="demo-card-header">
           <div class="demo-avatar">💄</div>
@@ -666,8 +811,6 @@ function toggleLang(){
           <div class="lock-text">الأسعار وتفاصيل الجمهور<br>للمشتركين فقط</div>
         </div>
       </div>
-
-      <!-- Card 3 — locked -->
       <div class="demo-card">
         <div class="demo-card-header">
           <div class="demo-avatar">⚽</div>
@@ -686,7 +829,6 @@ function toggleLang(){
           <div class="lock-text">الأسعار وتفاصيل الجمهور<br>للمشتركين فقط</div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
