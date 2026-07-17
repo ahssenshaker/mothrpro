@@ -640,9 +640,9 @@ padding:7px 10px;
         استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.
       </div>
     </div>
-    <a href="#" class="ls-checkout-btn" id="lsCheckoutBtn"
+    <a href="#" class="lemonsqueezy-button" id="lsCheckoutBtn"
        style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
-       onclick="openLemonCheckout(event)">
+       onmousedown="prepareLsUrl(this)" ontouchstart="prepareLsUrl(this)">
       <span data-i18n="upgrade.pay_btn">💳 ادفع الآن — 39 دولار</span>
     </a>
     <div style="font-size:11px;color:var(--muted2);margin-bottom:8px;line-height:1.6" data-i18n-html="upgrade.payment_note">
@@ -1641,26 +1641,15 @@ function openUpgrade() {
   }
 }
 
-function openLemonCheckout(e) {
-  e.preventDefault();
+function prepareLsUrl(el) {
   gtag('event','subscription_complete',{event_category:'subscription',event_label:'purchase',value:39});
   const email = currentUser?.email || '';
   const base = window.LS_CHECKOUT_URL || '';
-  if (!base) { console.error('LS_CHECKOUT_URL not set'); return; }
-  const url = base + '?embed=1'
+  if (!base) return;
+  el.href = base + '?embed=1'
     + '&checkout[locale]=en'
     + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '')
     + (email ? ('&checkout[custom][account_email]=' + encodeURIComponent(email)) : '');
-  closeUpgrade();
-  if (window.LemonSqueezy) {
-    window.LemonSqueezy.Url.Open(url);
-  } else {
-    // fallback: iframe داخل الـ modal
-    document.getElementById('lsIframe').src = url;
-    document.querySelector('.upgrade-box').style.display = 'none';
-    document.getElementById('lsIframeView').style.display = 'flex';
-    document.getElementById('upgradeModal').classList.add('open');
-  }
 }
 function closeLsIframe() {
   document.getElementById('lsIframe').src = '';
