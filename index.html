@@ -676,7 +676,8 @@ padding:7px 10px;
           <div><div style="font-size:13px;font-weight:700">ابدأ الاستخدام</div><div style="font-size:11px;color:var(--muted2)">أغلق هذه النافذة وستجد حسابك مفعّلاً</div></div>
         </div>
       </div>
-      <button onclick="closeUpgrade();location.reload()" style="display:block;width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🚀 ابدأ الاستخدام الآن</button>
+      <div id="lsActivationStatus" style="font-size:12px;color:var(--muted2);margin-bottom:10px;min-height:18px"></div>
+      <button onclick="closeUpgrade();location.reload()" id="lsStartBtn" style="display:block;width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🚀 ابدأ الاستخدام الآن</button>
       <button onclick="closeUpgrade()" style="display:block;width:100%;background:transparent;color:var(--muted2);border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;cursor:pointer">إغلاق</button>
     </div>
   </div>
@@ -1654,6 +1655,29 @@ function closeLsIframe() {
   document.getElementById('lsIframe').src = '';
   document.getElementById('lsIframeView').style.display = 'none';
   document.querySelector('.upgrade-box').style.display = '';
+}
+function startProPolling() {
+  if (!currentUser) return;
+  var statusEl = document.getElementById('lsActivationStatus');
+  var startBtn = document.getElementById('lsStartBtn');
+  var attempts = 0, maxAttempts = 30;
+  statusEl.textContent = '⏳ جارٍ تفعيل حسابك...';
+  var interval = setInterval(async function() {
+    attempts++;
+    try {
+      var { data } = await supa.from('subscribers').select('plan').eq('email', currentUser.email).single();
+      if (data && data.plan === 'pro') {
+        clearInterval(interval);
+        statusEl.innerHTML = '✅ تم تفعيل حسابك بنجاح!';
+        statusEl.style.color = 'var(--green)';
+        startBtn.textContent = '🚀 ابدأ الاستخدام الآن ✓';
+        setTimeout(function() { closeUpgrade(); location.reload(); }, 1500);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        statusEl.textContent = 'سيُفعَّل حسابك قريباً — يمكنك إغلاق النافذة والمحاولة لاحقاً';
+      }
+    } catch(e) {}
+  }, 2000);
 }
 function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
 
@@ -3226,6 +3250,8 @@ window.addEventListener("message", function(event) {
       document.getElementById('lsIframe').src = '';
       document.getElementById('lsIframeView').style.display = 'none';
       document.getElementById('lsThankyouView').style.display = 'block';
+      // Poll Supabase until plan = pro (max 60s)
+      startProPolling();
       // Confetti
       var colors = ['#63b3ed','#f6c74d','#68d391','#b794f4','#fc8181','#06b6d4'];
       var container = document.getElementById('lsConfettiContainer');
