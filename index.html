@@ -1641,15 +1641,25 @@ function openUpgrade() {
   }
 }
 
+function isMobileDevice() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
 function prepareLsUrl(el) {
   gtag('event','subscription_complete',{event_category:'subscription',event_label:'purchase',value:39});
   const email = currentUser?.email || '';
   const base = window.LS_CHECKOUT_URL || '';
   if (!base) return;
-  el.href = base + '?embed=1'
-    + '&checkout[locale]=en'
-    + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '')
-    + (email ? ('&checkout[custom][account_email]=' + encodeURIComponent(email)) : '');
+  const emailParams = email
+    ? ('&checkout[email]=' + encodeURIComponent(email) + '&checkout[custom][account_email]=' + encodeURIComponent(email))
+    : '';
+  if (isMobileDevice()) {
+    // On mobile: redirect directly (no iframe/embed) so Apple Pay works
+    const successUrl = encodeURIComponent(window.location.origin + window.location.pathname + '?ls_paid=1');
+    el.href = base + '?checkout[locale]=en' + emailParams + '&redirect_url=' + successUrl;
+    el.removeAttribute('class'); // stop Lemon.js from intercepting
+  } else {
+    el.href = base + '?embed=1&checkout[locale]=en' + emailParams;
+  }
 }
 function closeLsIframe() {
   document.getElementById('lsIframe').src = '';
@@ -3242,6 +3252,49 @@ function setMobView(cols){
 })();
 </script>
 <script>
+// Handle return from mobile checkout redirect
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('ls_paid') === '1') {
+    // Clean URL
+    history.replaceState(null, '', window.location.pathname);
+    // Wait for auth then show thank you
+    var waited = 0;
+    var checkReady = setInterval(function() {
+      waited += 200;
+      if (currentUser || waited > 8000) {
+        clearInterval(checkReady);
+        // Open upgrade modal and show thank you view
+        var modal = document.getElementById('upgradeModal');
+        if (modal) modal.style.display = 'flex';
+        var box = document.querySelector('.upgrade-box');
+        if (box) box.style.display = 'none';
+        var ty = document.getElementById('lsThankyouView');
+        if (ty) ty.style.display = 'block';
+        startProPolling();
+        // Confetti
+        var colors = ['#63b3ed','#f6c74d','#68d391','#b794f4','#fc8181','#06b6d4'];
+        var container = document.getElementById('lsConfettiContainer');
+        if (container) {
+          for (var i = 0; i < 50; i++) {
+            (function(i) {
+              setTimeout(function() {
+                var el = document.createElement('div');
+                el.style.cssText = 'position:absolute;width:8px;height:8px;border-radius:2px;opacity:.9;animation:confettiFall 2s ease-in forwards;';
+                el.style.background = colors[i % colors.length];
+                el.style.left = (Math.random()*100) + '%';
+                el.style.top = '-10px';
+                el.style.animationDelay = (Math.random()*1.5) + 's';
+                el.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+                container.appendChild(el);
+              }, i * 30);
+            })(i);
+          }
+        }
+      }
+    }, 200);
+  }
+})();
 window.addEventListener("message", function(event) {
   try {
     var data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
