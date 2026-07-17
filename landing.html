@@ -1033,7 +1033,7 @@ document.getElementById('payModal').addEventListener('click', function(e) {
 document.getElementById('payModalCta').addEventListener('click', function(e) {
   e.preventDefault();
   closePayModal();
-  const url = LS_CHECKOUT_URL + '?checkout[billing_address][country]=SA';
+  const url = LS_CHECKOUT_URL + '?checkout[billing_address_country]=SA';
   const w = 500, h = 700;
   const left = (screen.width - w) / 2;
   const top = (screen.height - h) / 2;
