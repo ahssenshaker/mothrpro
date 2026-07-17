@@ -60,6 +60,8 @@
 .user-bar-logout{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:inherit;font-size:11px;cursor:pointer}
 .user-bar-logout:hover{color:var(--red);border-color:var(--red)}
 
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(400px) rotate(720deg);opacity:0}}
+@keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
 /* UPGRADE MODAL */
 .upgrade-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
 .upgrade-modal.open{display:flex}
@@ -652,6 +654,31 @@ padding:7px 10px;
   <div id="lsIframeView" style="display:none;flex-direction:column;width:100%;height:100%;min-height:600px;position:relative">
     <button onclick="closeLsIframe()" style="position:absolute;top:10px;right:12px;z-index:10;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;border-radius:50%;width:32px;height:32px;line-height:32px;text-align:center">✕</button>
     <iframe id="lsIframe" src="" style="width:100%;flex:1;border:none;border-radius:16px;min-height:600px" allowfullscreen></iframe>
+  </div>
+  <!-- THANK YOU VIEW -->
+  <div id="lsThankyouView" style="display:none;background:var(--s1);border:1px solid var(--border2);border-radius:22px;width:100%;padding:28px;text-align:center;overflow:hidden;position:relative">
+    <div id="lsConfettiContainer" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0"></div>
+    <div style="position:relative;z-index:1">
+      <div style="width:80px;height:80px;background:rgba(16,185,129,0.12);border:2px solid rgba(16,185,129,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px;animation:popIn .5s cubic-bezier(0.175,0.885,0.32,1.275) forwards">✅</div>
+      <h2 style="font-size:22px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px">تم الدفع بنجاح! 🎉</h2>
+      <p style="font-size:14px;color:var(--muted2);margin-bottom:20px;line-height:1.7">مرحباً بك في مؤثر برو — سيُفعَّل حسابك خلال دقيقة واحدة تلقائياً</p>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;text-align:right">
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0">✓</div>
+          <div><div style="font-size:13px;font-weight:700">تم الدفع بنجاح</div><div style="font-size:11px;color:var(--muted2)">استلمنا دفعتك وجارٍ تفعيل حسابك</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.15);color:var(--accent);border:1px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0">2</div>
+          <div><div style="font-size:13px;font-weight:700">تفعيل الحساب تلقائياً</div><div style="font-size:11px;color:var(--muted2)">سيُفعَّل حسابك خلال دقيقة واحدة تلقائياً</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.15);color:var(--accent);border:1px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0">3</div>
+          <div><div style="font-size:13px;font-weight:700">ابدأ الاستخدام</div><div style="font-size:11px;color:var(--muted2)">أغلق هذه النافذة وستجد حسابك مفعّلاً</div></div>
+        </div>
+      </div>
+      <button onclick="closeUpgrade();location.reload()" style="display:block;width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🚀 ابدأ الاستخدام الآن</button>
+      <button onclick="closeUpgrade()" style="display:block;width:100%;background:transparent;color:var(--muted2);border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;cursor:pointer">إغلاق</button>
+    </div>
   </div>
   </div>
 </div>
@@ -3195,7 +3222,23 @@ window.addEventListener("message", function(event) {
   try {
     var data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
     if (data && data.event === "Checkout.Success") {
-      window.location.href = "/thankyou.html";
+      // Hide iframe, show thank you inside modal
+      document.getElementById('lsIframe').src = '';
+      document.getElementById('lsIframeView').style.display = 'none';
+      document.getElementById('lsThankyouView').style.display = 'block';
+      // Confetti
+      var colors = ['#63b3ed','#f6c74d','#68d391','#b794f4','#fc8181','#06b6d4'];
+      var container = document.getElementById('lsConfettiContainer');
+      for (var i = 0; i < 50; i++) {
+        (function(i) {
+          setTimeout(function() {
+            var el = document.createElement('div');
+            el.style.cssText = 'position:absolute;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;border-radius:2px;background:'+colors[Math.floor(Math.random()*colors.length)]+';left:'+(Math.random()*100)+'%;top:-10px;animation:confettiFall '+(1.5+Math.random()*2)+'s linear forwards;';
+            container.appendChild(el);
+            setTimeout(function(){ el.remove(); }, 4000);
+          }, i * 50);
+        })(i);
+      }
     }
   } catch (e) {}
 });
