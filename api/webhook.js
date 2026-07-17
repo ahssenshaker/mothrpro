@@ -6,32 +6,54 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
+// Read raw body for HMAC verification
+async function getRawBody(req) {
+  const chunks = []
+  for await (const chunk of req) chunks.push(chunk)
+  return Buffer.concat(chunks)
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  // Gumroad security: verify using your Gumroad seller_id
-  // Gumroad sends "ping" as application/x-www-form-urlencoded
-  const body = req.body || {}
-  const sellerId = body.seller_id || ''
-  const expectedSellerId = process.env.GUMROAD_SELLER_ID || ''
+  const rawBody = await getRawBody(req)
 
-  if (!expectedSellerId || sellerId !== expectedSellerId) {
-    console.error('Webhook auth failed', { sellerId })
+  // Lemon Squeezy security: verify HMAC-SHA256 signature
+  const signature = req.headers['x-signature'] || ''
+  const secret = process.env.LEMONSQUEEZY_SIGNING_SECRET || ''
+
+  if (!secret) {
+    console.error('LEMONSQUEEZY_SIGNING_SECRET not set')
+    return res.status(500).json({ error: 'Server misconfigured' })
+  }
+
+  const digest = crypto.createHmac('sha256', secret).update(rawBody).digest('hex')
+
+  if (signature !== digest) {
+    console.error('Webhook signature mismatch')
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const userEmail = (body.email || '').toLowerCase().trim()
-  const refunded  = body.refunded === 'true' || body.refunded === true
-  const cancelled = body.subscription_cancelled === 'true' || body.subscription_cancelled === true || body.subscription_ended_at
+  let payload
+  try {
+    payload = JSON.parse(rawBody.toString('utf8'))
+  } catch {
+    return res.status(400).json({ error: 'Invalid JSON' })
+  }
 
-  console.log('Gumroad webhook received:', { userEmail, refunded, cancelled })
+  const eventName = payload?.meta?.event_name || ''
+  const attrs = payload?.data?.attributes || {}
+  const userEmail = (attrs.user_email || '').toLowerCase().trim()
+
+  console.log('Lemon Squeezy webhook received:', { eventName, userEmail })
 
   if (!userEmail) {
     return res.status(400).json({ error: 'No email in payload' })
   }
 
   // ─── REFUND / CANCELLATION ────────────────────────────────────────
-  if (refunded || cancelled) {
+  const revokeEvents = ['order_refunded', 'subscription_cancelled', 'subscription_expired', 'subscription_paused']
+  if (revokeEvents.includes(eventName)) {
     await supabase
       .from('subscribers')
       .update({ plan: 'free' })
@@ -41,6 +63,12 @@ export default async function handler(req, res) {
   }
 
   // ─── PAYMENT / SALE ───────────────────────────────────────────────
+  const grantEvents = ['order_created', 'subscription_created', 'subscription_resumed', 'subscription_updated']
+  if (!grantEvents.includes(eventName)) {
+    // Unknown event — acknowledge without action
+    return res.status(200).json({ ok: true, ignored: eventName })
+  }
+
   const { data: sub } = await supabase
     .from('subscribers')
     .select('id')
@@ -69,4 +97,5 @@ export default async function handler(req, res) {
   return res.status(200).json({ ok: true })
 }
 
-export const config = { api: { bodyParser: true } }
+// bodyParser must be false so we can read raw body for HMAC verification
+export const config = { api: { bodyParser: false } }
