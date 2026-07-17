@@ -1646,7 +1646,9 @@ function openLemonCheckout(e) {
   const email = currentUser?.email || '';
   const base = window.LS_CHECKOUT_URL || '';
   if (!base) { console.error('LS_CHECKOUT_URL not set'); return; }
-  const url = base + '?embed=1' + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '');
+  const url = base + '?embed=1'
+    + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '')
+    + (email ? ('&checkout[custom][account_email]=' + encodeURIComponent(email)) : '');
   document.getElementById('lsIframe').src = url;
   document.querySelector('.upgrade-box').style.display = 'none';
   document.getElementById('lsIframeView').style.display = 'flex';

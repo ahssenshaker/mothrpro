@@ -6,7 +6,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
-// Read raw body for HMAC verification
 async function getRawBody(req) {
   const chunks = []
   for await (const chunk of req) chunks.push(chunk)
@@ -43,11 +42,16 @@ export default async function handler(req, res) {
 
   const eventName = payload?.meta?.event_name || ''
   const attrs = payload?.data?.attributes || {}
-  const userEmail = (attrs.user_email || '').toLowerCase().trim()
+  const paymentEmail = (attrs.user_email || '').toLowerCase().trim()
 
-  console.log('Lemon Squeezy webhook received:', { eventName, userEmail })
+  // account_email = إيميل الحساب المسجّل (مُمرَّر كـ custom data من الـ checkout)
+  // إذا لم يُوجد نستخدم إيميل الدفع كـ fallback
+  const customData = payload?.meta?.custom_data || {}
+  const accountEmail = (customData.account_email || paymentEmail).toLowerCase().trim()
 
-  if (!userEmail) {
+  console.log('Lemon Squeezy webhook:', { eventName, paymentEmail, accountEmail })
+
+  if (!accountEmail) {
     return res.status(400).json({ error: 'No email in payload' })
   }
 
@@ -57,45 +61,43 @@ export default async function handler(req, res) {
     await supabase
       .from('subscribers')
       .update({ plan: 'free' })
-      .eq('email', userEmail)
-    console.log('🔴 Revoked pro for', userEmail)
+      .eq('email', accountEmail)
+    console.log('🔴 Revoked pro for', accountEmail)
     return res.status(200).json({ ok: true })
   }
 
   // ─── PAYMENT / SALE ───────────────────────────────────────────────
   const grantEvents = ['order_created', 'subscription_created', 'subscription_resumed', 'subscription_updated']
   if (!grantEvents.includes(eventName)) {
-    // Unknown event — acknowledge without action
     return res.status(200).json({ ok: true, ignored: eventName })
   }
 
   const { data: sub } = await supabase
     .from('subscribers')
     .select('id')
-    .eq('email', userEmail)
+    .eq('email', accountEmail)
     .single()
 
   if (sub) {
     await supabase
       .from('subscribers')
       .update({ plan: 'pro', activated_at: new Date().toISOString() })
-      .eq('email', userEmail)
-    console.log('✅ Activated pro for', userEmail)
+      .eq('email', accountEmail)
+    console.log('✅ Activated pro for', accountEmail)
   } else {
-    // دفع قبل إنشاء الحساب — يُخزَّن كـ pending
+    // حساب غير موجود — يُخزَّن كـ pending
     await supabase
       .from('subscribers')
       .insert({
         id: crypto.randomUUID(),
-        email: userEmail,
+        email: accountEmail,
         plan: 'pending',
         activated_at: new Date().toISOString()
       })
-    console.log('⏳ Saved as pending for', userEmail)
+    console.log('⏳ Saved as pending for', accountEmail)
   }
 
   return res.status(200).json({ ok: true })
 }
 
-// bodyParser must be false so we can read raw body for HMAC verification
 export const config = { api: { bodyParser: false } }
