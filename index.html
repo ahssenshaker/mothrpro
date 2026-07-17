@@ -557,6 +557,7 @@ padding:7px 10px;
 }
 
 </style>
+<script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 </head>
 <body>
 
@@ -1646,14 +1647,20 @@ function openLemonCheckout(e) {
   const email = currentUser?.email || '';
   const base = window.LS_CHECKOUT_URL || '';
   if (!base) { console.error('LS_CHECKOUT_URL not set'); return; }
-  const locale = 'en';
   const url = base + '?embed=1'
-    + '&checkout[locale]=' + locale
+    + '&checkout[locale]=en'
     + (email ? ('&checkout[email]=' + encodeURIComponent(email)) : '')
     + (email ? ('&checkout[custom][account_email]=' + encodeURIComponent(email)) : '');
-  document.getElementById('lsIframe').src = url;
-  document.querySelector('.upgrade-box').style.display = 'none';
-  document.getElementById('lsIframeView').style.display = 'flex';
+  closeUpgrade();
+  if (window.LemonSqueezy) {
+    window.LemonSqueezy.Url.Open(url);
+  } else {
+    // fallback: iframe داخل الـ modal
+    document.getElementById('lsIframe').src = url;
+    document.querySelector('.upgrade-box').style.display = 'none';
+    document.getElementById('lsIframeView').style.display = 'flex';
+    document.getElementById('upgradeModal').classList.add('open');
+  }
 }
 function closeLsIframe() {
   document.getElementById('lsIframe').src = '';
