@@ -345,73 +345,8 @@
   }
 
   /* ═══ PAYMENT MODAL ═══ */
-  .pay-modal-bg {
-    display: none; position: fixed; inset: 0; z-index: 999;
-    background: rgba(7,9,15,0.85); backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  .pay-modal-bg.open { display: flex; }
-  .pay-modal {
-    background: var(--card); border: 1px solid var(--border2);
-    border-radius: 24px; padding: 36px 32px; max-width: 420px; width: 100%;
-    text-align: center; position: relative;
-    animation: modalIn .25s ease;
-  }
   @keyframes modalIn { from { opacity:0; transform:scale(.94) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
-  .pay-modal-close {
-    position: absolute; top: 14px; left: 16px;
-    background: none; border: none; color: var(--muted); font-size: 22px;
-    cursor: pointer; line-height: 1; padding: 4px 8px;
-  }
-  .pay-modal-close:hover { color: var(--text); }
-  .pay-modal-badge {
-    display: inline-block; background: rgba(245,158,11,0.15);
-    border: 1px solid rgba(245,158,11,0.35); border-radius: 100px;
-    padding: 5px 14px; font-size: 12px; font-weight: 700;
-    color: var(--gold); margin-bottom: 18px; letter-spacing: .5px;
-  }
-  .pay-modal h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; line-height: 1.3; }
-  .pay-modal-price {
-    font-size: 48px; font-weight: 800; color: #fff;
-    margin: 14px 0 4px;
-  }
-  .pay-modal-price sup { font-size: 22px; vertical-align: top; margin-top: 10px; display: inline-block; }
-  .pay-modal-price-old {
-    font-size: 15px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px;
-  }
-  .pay-modal-once {
-    display: inline-block; background: rgba(16,185,129,0.12);
-    border: 1px solid rgba(16,185,129,0.3); border-radius: 100px;
-    padding: 4px 14px; font-size: 12px; font-weight: 700;
-    color: var(--green); margin-bottom: 20px;
-  }
-  .pay-modal-info {
-    background: rgba(255,255,255,0.04); border-radius: 14px;
-    padding: 14px 16px; margin-bottom: 22px; text-align: right;
-  }
-  .pay-modal-info-row {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 8px;
-  }
-  .pay-modal-info-row:last-child { margin-bottom: 0; }
-  .pay-modal-info-row .dot { color: var(--gold); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .pay-modal-info-row .dot-blue { color: var(--accent2); }
-  .pay-modal-cta {
-    display: block; width: 100%;
-    background: linear-gradient(135deg, var(--accent), #2563eb);
-    color: #fff; border: none; border-radius: 14px;
-    padding: 16px; font-family: inherit; font-size: 16px; font-weight: 700;
-    cursor: pointer; text-decoration: none;
-    transition: .25s; box-shadow: 0 4px 24px rgba(59,130,246,0.3);
-    margin-bottom: 12px;
-  }
-  .pay-modal-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(59,130,246,0.45); }
-  .pay-modal-secure { font-size: 11px; color: var(--muted2); }
   @media(max-width:480px) {
-    .pay-modal { padding: 28px 20px; }
-    .pay-modal h3 { font-size: 19px; }
-    .pay-modal-price { font-size: 40px; }
   }
 </style>
 <style>.sar{display:inline-block;width:.75em;height:.75em;vertical-align:-.1em;fill:currentColor}</style>
@@ -465,8 +400,8 @@ ar:{
   pricingBadge:'⭐ مؤثر برو',
   pricingPeriod:'🎉 سعر الإطلاق لأول ١٥٠ مشترك — دفعة واحدة فقط',
   pricingFeats:['وصول كامل لجميع البيانات','أسعار المؤثرين على 6 منصات','إحصاءات الجمهور الكاملة','روابط مباشرة لجميع الحسابات','تحديثات مستمرة للبيانات','وصول فوري بعد الدفع'],
-  pricingCta:'🚀 اشترك الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg>',
-  pricingNote:'يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع',
+  pricingCta:'🚀 جرّب مجاناً — سجّل حسابك الآن',
+  pricingNote:'مجاني للتصفح · الأسعار والتفاصيل تظهر بعد الاشتراك داخل المنصة',
   pricingFoot:'بعد اكتمال الـ ١٥٠ مشترك ينتقل السعر إلى اشتراك سنوي',
   faqEye:'أسئلة شائعة',faqH2:'أجوبة سريعة',
   faqs:[
@@ -479,7 +414,7 @@ ar:{
   ctaH2:'جاهز تبدأ؟',
   ctaP:'انضم الآن واستفد من عرض الإطلاق — دفعة واحدة فقط لأول ١٥٠ مشترك',
   ctaFoot:'بعد اكتمال العدد ينتقل إلى اشتراك سنوي',
-  ctaBtn:'🎉 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> بدل 299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> — سعر الإطلاق',
+  ctaBtn:'🚀 جرّب مجاناً وانضم الآن',
   modalBadge:'🎯 عرض خاص لأول ١٥٠ مشترك',modalH3:'وصول كامل لدليل مؤثري السعودية والخليج',
   modalOnce:'✓ دفعة واحدة فقط — بدون اشتراك',
   modalRows:['أنت ضمن أول ١٥٠ مشترك — تستفيد من سعر الإطلاق بدفعة واحدة فقط وبدون رسوم سنوية','بعد اكتمال الـ ١٥٠ مشترك يتحوّل السعر إلى اشتراك سنوي — اشترك الآن واحجز سعر الدفعة الواحدة','وصول فوري بعد الدفع — Visa / Mastercard / PayPal'],
@@ -520,8 +455,8 @@ en:{
   pricingBadge:'⭐ Moather Pro',
   pricingPeriod:'🎉 Launch price for first 150 subscribers — one-time payment only',
   pricingFeats:['Full access to all data','Influencer pricing on 6 platforms','Complete audience analytics','Direct links to all accounts','Continuous data updates','Instant access after payment'],
-  pricingCta:'🚀 Subscribe Now — SAR 149',
-  pricingNote:'Supports Visa / Mastercard / PayPal • Instant access after payment',
+  pricingCta:'🚀 Try Free — Create Your Account Now',
+  pricingNote:'Free to browse · Pricing and details visible after subscribing inside the platform',
   pricingFoot:'After 150 subscribers, price switches to annual subscription',
   faqEye:'FAQ',faqH2:'Quick Answers',
   faqs:[
@@ -534,7 +469,7 @@ en:{
   ctaH2:'Ready to Start?',
   ctaP:'Join now and take advantage of the launch offer — one-time payment only for the first 150 subscribers',
   ctaFoot:'After quota fills, switches to annual subscription',
-  ctaBtn:'🎉 SAR 149 instead of SAR 299 — Launch Price',
+  ctaBtn:'🚀 Try Free & Join Now',
   modalBadge:'🎯 Special Offer for First 150 Subscribers',modalH3:'Full Access to the Saudi & Gulf Influencer Directory',
   modalOnce:'✓ One-time payment only — no subscription',
   modalRows:['You are among the first 150 subscribers — get the launch price with a one-time payment, no annual fees','After 150 subscribers, price switches to annual subscription — subscribe now to lock in the one-time price','Instant access after payment — Visa / Mastercard / PayPal'],
@@ -594,12 +529,6 @@ function applyLangLD(l){
   if(ctaPs[0])ctaPs[0].textContent=t.ctaP;
   if(ctaPs[1])ctaPs[1].textContent=t.ctaFoot;
   var fb=document.getElementById('finalCheckoutBtn');if(fb)fb.innerHTML=t.ctaBtn;
-  var mb=document.querySelector('.pay-modal-badge');if(mb)mb.textContent=t.modalBadge;
-  var mh3=document.querySelector('.pay-modal h3');if(mh3)mh3.textContent=t.modalH3;
-  var mo=document.querySelector('.pay-modal-once');if(mo)mo.textContent=t.modalOnce;
-  document.querySelectorAll('.pay-modal-info-row span:last-child').forEach(function(el,i){if(t.modalRows[i])el.textContent=t.modalRows[i];});
-  var mc=document.getElementById('payModalCta');if(mc)mc.innerHTML=t.modalCta;
-  var ms=document.querySelector('.pay-modal-secure');if(ms)ms.textContent=t.modalSecure;
   var fMain=document.querySelector('footer div');if(fMain)fMain.textContent=t.footerMain;
   var fLink=document.querySelector('footer a');if(fLink)fLink.textContent=t.footerLink;
   var flns=document.querySelectorAll('#footerLinks a');
@@ -855,8 +784,8 @@ function toggleLang(){
         <div class="pricing-feature"><span class="check">✓</span><span>وصول فوري بعد الدفع</span></div>
       </div>
 
-      <a href="#" id="pricingCheckoutBtn" class="pricing-cta ls-checkout-btn" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🚀 اشترك الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></a>
-      <div class="pricing-note">يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع</div>
+      <a href="https://moatherpro.com" id="pricingCheckoutBtn" class="pricing-cta" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)">🚀 جرّب مجاناً — سجّل حسابك الآن</a>
+      <div class="pricing-note">مجاني للتصفح · الأسعار والتفاصيل تظهر بعد الاشتراك داخل المنصة</div>
       <div id="pricingFoot" style="margin-top:10px;font-size:11px;color:var(--muted2);text-align:center">بعد اكتمال الـ ١٥٠ مشترك ينتقل السعر إلى اشتراك سنوي</div>
     </div>
   </div>
@@ -955,38 +884,11 @@ function toggleLang(){
     <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:16px;">جاهز تبدأ؟</h2>
     <p style="color:var(--muted);font-size:16px;max-width:460px;margin:0 auto 16px;line-height:1.7;">انضم الآن واستفد من عرض الإطلاق — دفعة واحدة فقط لأول ١٥٠ مشترك</p>
     <p style="color:var(--muted2);font-size:13px;margin:0 auto 28px">بعد اكتمال العدد ينتقل إلى اشتراك سنوي</p>
-    <a href="#" id="finalCheckoutBtn" class="btn-primary ls-checkout-btn" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🎉 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> بدل 299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> — سعر الإطلاق</a>
+    <a href="https://moatherpro.com" id="finalCheckoutBtn" class="btn-primary" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)">🚀 جرّب مجاناً وانضم الآن</a>
   </div>
 </section>
 
 <!-- PAYMENT MODAL -->
-<div class="pay-modal-bg" id="payModal">
-  <div class="pay-modal">
-    <button class="pay-modal-close" onclick="closePayModal()" aria-label="إغلاق">×</button>
-    <img src="/assets/logo.png" alt="مؤثر برو" style="height:70px;width:auto;display:block;margin:0 auto 14px;">
-    <div class="pay-modal-badge">🎯 عرض خاص لأول ١٥٠ مشترك</div>
-    <h3>وصول كامل لدليل المؤثرين</h3>
-    <div class="pay-modal-price-old">299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
-    <div class="pay-modal-price">149 <span style="font-size:20px;font-weight:600"><svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></span></div>
-    <div class="pay-modal-once">✓ دفعة واحدة فقط — بدون اشتراك</div>
-    <div class="pay-modal-info">
-      <div class="pay-modal-info-row">
-        <span class="dot">◆</span>
-        <span>أنت ضمن أول ١٥٠ مشترك — تستفيد من سعر الإطلاق بدفعة واحدة فقط وبدون رسوم سنوية</span>
-      </div>
-      <div class="pay-modal-info-row">
-        <span class="dot dot-blue">◆</span>
-        <span>بعد اكتمال الـ ١٥٠ مشترك يتحوّل السعر إلى اشتراك سنوي — اشترك الآن واحجز سعر الدفعة الواحدة</span>
-      </div>
-      <div class="pay-modal-info-row">
-        <span class="dot" style="color:var(--green)">◆</span>
-        <span>وصول فوري بعد الدفع — Visa / Mastercard / PayPal</span>
-      </div>
-    </div>
-    <a href="#" id="payModalCta" class="pay-modal-cta">🚀 انتقل للدفع الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></a>
-    <div class="pay-modal-secure">🔒 دفع آمن عبر Lemon Squeezy</div>
-  </div>
-</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1024,37 +926,6 @@ function toggleFaq(el) {
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
-var LS_CHECKOUT_URL = 'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046';
-function openLemonCheckout(e, el) {
-  e.preventDefault();
-  document.getElementById('payModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closePayModal() {
-  document.getElementById('payModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('payModal').addEventListener('click', function(e) {
-  if (e.target === this) closePayModal();
-});
-document.getElementById('payModalCta').addEventListener('click', function(e) {
-  e.preventDefault();
-  closePayModal();
-  const url = LS_CHECKOUT_URL + '?checkout[billing_address_country]=SA';
-  const w = 500, h = 700;
-  const left = (screen.width - w) / 2;
-  const top = (screen.height - h) / 2;
-  const popup = window.open(url, 'ls_checkout', `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`);
-  if (!popup) window.location.href = url;
-});
-window.addEventListener("message", function(event) {
-  try {
-    var data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-    if (data && data.event === "Checkout.Success") {
-      window.location.href = "/thankyou.html";
-    }
-  } catch (e) {}
-});
 </script>
 </body>
 </html>
