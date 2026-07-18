@@ -414,8 +414,15 @@
     .pay-modal-price { font-size: 40px; }
   }
 </style>
+<style>.sar{display:inline-block;width:.75em;height:.75em;vertical-align:-.1em;fill:currentColor}</style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="sar" viewBox="0 0 1124.14 1256.39">
+    <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/>
+    <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/>
+  </symbol>
+</svg>
 
 <!-- NAV -->
 <nav>
@@ -458,12 +465,12 @@ ar:{
   pricingBadge:'⭐ مؤثر برو',
   pricingPeriod:'🎉 سعر الإطلاق لأول ١٥٠ مشترك — دفعة واحدة فقط',
   pricingFeats:['وصول كامل لجميع البيانات','أسعار المؤثرين على 6 منصات','إحصاءات الجمهور الكاملة','روابط مباشرة لجميع الحسابات','تحديثات مستمرة للبيانات','وصول فوري بعد الدفع'],
-  pricingCta:'🚀 اشترك الآن — 149 ﷼',
+  pricingCta:'🚀 اشترك الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg>',
   pricingNote:'يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع',
   pricingFoot:'بعد اكتمال الـ ١٥٠ مشترك ينتقل السعر إلى اشتراك سنوي',
   faqEye:'أسئلة شائعة',faqH2:'أجوبة سريعة',
   faqs:[
-    {q:'هل الدفع مرة واحدة أم اشتراك سنوي؟',a:'عرض الإطلاق لأول ١٥٠ مشترك: دفعة واحدة فقط بـ 149 ﷼ وتحصل على وصول كامل. بعد اكتمال الـ ١٥٠ مشترك سيتحول السعر إلى اشتراك سنوي. انضم الآن واستفد من سعر الدفعة الواحدة!'},
+    {q:'هل الدفع مرة واحدة أم اشتراك سنوي؟',a:'عرض الإطلاق لأول ١٥٠ مشترك: دفعة واحدة فقط بـ 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> وتحصل على وصول كامل. بعد اكتمال الـ ١٥٠ مشترك سيتحول السعر إلى اشتراك سنوي. انضم الآن واستفد من سعر الدفعة الواحدة!'},
     {q:'كيف أصل للدليل بعد الدفع؟',a:'فور اكتمال الدفع يُفعَّل حسابك تلقائياً. سجّل دخول وستجد كل البيانات ظاهرة.'},
     {q:'هل البيانات محدّثة؟',a:'نعم، يتم تحديث البيانات بشكل دوري للحفاظ على دقة الأسعار وأعداد المتابعين.'},
     {q:'ما المنصات التي يغطيها الدليل؟',a:'انستقرام، سناب شات، تيك توك، يوتيوب، تويتر/X، وواتساب — مع أسعار مخصصة لكل منصة.'},
@@ -472,11 +479,11 @@ ar:{
   ctaH2:'جاهز تبدأ؟',
   ctaP:'انضم الآن واستفد من عرض الإطلاق — دفعة واحدة فقط لأول ١٥٠ مشترك',
   ctaFoot:'بعد اكتمال العدد ينتقل إلى اشتراك سنوي',
-  ctaBtn:'🎉 149 ﷼ بدل 299 ﷼ — سعر الإطلاق',
+  ctaBtn:'🎉 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> بدل 299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> — سعر الإطلاق',
   modalBadge:'🎯 عرض خاص لأول ١٥٠ مشترك',modalH3:'وصول كامل لدليل مؤثري السعودية والخليج',
   modalOnce:'✓ دفعة واحدة فقط — بدون اشتراك',
   modalRows:['أنت ضمن أول ١٥٠ مشترك — تستفيد من سعر الإطلاق بدفعة واحدة فقط وبدون رسوم سنوية','بعد اكتمال الـ ١٥٠ مشترك يتحوّل السعر إلى اشتراك سنوي — اشترك الآن واحجز سعر الدفعة الواحدة','وصول فوري بعد الدفع — Visa / Mastercard / PayPal'],
-  modalCta:'🚀 انتقل للدفع الآن — 149 ﷼',modalSecure:'🔒 دفع آمن عبر Lemon Squeezy',
+  modalCta:'🚀 انتقل للدفع الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg>',modalSecure:'🔒 دفع آمن عبر Lemon Squeezy',
   footerMain:'دليل مؤثري السعودية والخليج العربي الموثّق 2026 · جميع الحقوق محفوظة',
   footerLink:'الدخول للمنصة ←',footerPrivacy:'سياسة الخصوصية',footerRefund:'سياسة الاسترداد',
 },
@@ -575,7 +582,7 @@ function applyLangLD(l){
   var pb=document.querySelector('.pricing-badge');if(pb)pb.textContent=t.pricingBadge;
   var pp=document.querySelector('.pricing-period');if(pp)pp.textContent=t.pricingPeriod;
   document.querySelectorAll('.pricing-feature span:last-child').forEach(function(el,i){if(t.pricingFeats[i])el.textContent=t.pricingFeats[i];});
-  var pcta=document.getElementById('pricingCheckoutBtn');if(pcta)pcta.textContent=t.pricingCta;
+  var pcta=document.getElementById('pricingCheckoutBtn');if(pcta)pcta.innerHTML=t.pricingCta;
   var pn=document.querySelector('.pricing-note');if(pn)pn.textContent=t.pricingNote;
   var pf=document.getElementById('pricingFoot');if(pf)pf.textContent=t.pricingFoot;
   var fqEye=document.querySelector('#faq .section-eyebrow');if(fqEye)fqEye.textContent=t.faqEye;
@@ -586,12 +593,12 @@ function applyLangLD(l){
   var ctaPs=document.querySelectorAll('#ctaSection p');
   if(ctaPs[0])ctaPs[0].textContent=t.ctaP;
   if(ctaPs[1])ctaPs[1].textContent=t.ctaFoot;
-  var fb=document.getElementById('finalCheckoutBtn');if(fb)fb.textContent=t.ctaBtn;
+  var fb=document.getElementById('finalCheckoutBtn');if(fb)fb.innerHTML=t.ctaBtn;
   var mb=document.querySelector('.pay-modal-badge');if(mb)mb.textContent=t.modalBadge;
   var mh3=document.querySelector('.pay-modal h3');if(mh3)mh3.textContent=t.modalH3;
   var mo=document.querySelector('.pay-modal-once');if(mo)mo.textContent=t.modalOnce;
   document.querySelectorAll('.pay-modal-info-row span:last-child').forEach(function(el,i){if(t.modalRows[i])el.textContent=t.modalRows[i];});
-  var mc=document.getElementById('payModalCta');if(mc)mc.textContent=t.modalCta;
+  var mc=document.getElementById('payModalCta');if(mc)mc.innerHTML=t.modalCta;
   var ms=document.querySelector('.pay-modal-secure');if(ms)ms.textContent=t.modalSecure;
   var fMain=document.querySelector('footer div');if(fMain)fMain.textContent=t.footerMain;
   var fLink=document.querySelector('footer a');if(fLink)fLink.textContent=t.footerLink;
@@ -835,8 +842,8 @@ function toggleLang(){
         <span style="color:var(--muted);margin-right:6px">من أصل ١٥٠ مقعدًا بسعر الدفعة الواحدة</span>
       </div>
 
-      <div style="font-size:15px;color:var(--muted);text-decoration:line-through;margin-bottom:6px">299 &#xFDFC;</div>
-      <div class="pricing-price">149 <span style="font-size:20px;font-weight:600">&#xFDFC;</span></div>
+      <div style="font-size:15px;color:var(--muted);text-decoration:line-through;margin-bottom:6px">299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
+      <div class="pricing-price">149 <span style="font-size:20px;font-weight:600"><svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></span></div>
       <div class="pricing-period">🎉 سعر الإطلاق لأول ١٥٠ مشترك — دفعة واحدة فقط</div>
 
       <div class="pricing-features">
@@ -848,7 +855,7 @@ function toggleLang(){
         <div class="pricing-feature"><span class="check">✓</span><span>وصول فوري بعد الدفع</span></div>
       </div>
 
-      <a href="#" id="pricingCheckoutBtn" class="pricing-cta ls-checkout-btn" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🚀 اشترك الآن — 149 &#xFDFC;</a>
+      <a href="#" id="pricingCheckoutBtn" class="pricing-cta ls-checkout-btn" style="width:100%;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🚀 اشترك الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></a>
       <div class="pricing-note">يدعم Visa / Mastercard / PayPal • وصول فوري بعد الدفع</div>
       <div id="pricingFoot" style="margin-top:10px;font-size:11px;color:var(--muted2);text-align:center">بعد اكتمال الـ ١٥٠ مشترك ينتقل السعر إلى اشتراك سنوي</div>
     </div>
@@ -948,7 +955,7 @@ function toggleLang(){
     <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:16px;">جاهز تبدأ؟</h2>
     <p style="color:var(--muted);font-size:16px;max-width:460px;margin:0 auto 16px;line-height:1.7;">انضم الآن واستفد من عرض الإطلاق — دفعة واحدة فقط لأول ١٥٠ مشترك</p>
     <p style="color:var(--muted2);font-size:13px;margin:0 auto 28px">بعد اكتمال العدد ينتقل إلى اشتراك سنوي</p>
-    <a href="#" id="finalCheckoutBtn" class="btn-primary ls-checkout-btn" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🎉 149 &#xFDFC; بدل 299 &#xFDFC; — سعر الإطلاق</a>
+    <a href="#" id="finalCheckoutBtn" class="btn-primary ls-checkout-btn" style="font-size:17px;padding:18px 44px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:14px;font-family:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:.25s;box-shadow:0 4px 24px rgba(59,130,246,0.3)" onclick="openLemonCheckout(event,this)">🎉 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> بدل 299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg> — سعر الإطلاق</a>
   </div>
 </section>
 
@@ -959,8 +966,8 @@ function toggleLang(){
     <img src="/assets/logo.png" alt="مؤثر برو" style="height:70px;width:auto;display:block;margin:0 auto 14px;">
     <div class="pay-modal-badge">🎯 عرض خاص لأول ١٥٠ مشترك</div>
     <h3>وصول كامل لدليل المؤثرين</h3>
-    <div class="pay-modal-price-old">299 &#xFDFC;</div>
-    <div class="pay-modal-price">149 <span style="font-size:20px;font-weight:600">&#xFDFC;</span></div>
+    <div class="pay-modal-price-old">299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
+    <div class="pay-modal-price">149 <span style="font-size:20px;font-weight:600"><svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></span></div>
     <div class="pay-modal-once">✓ دفعة واحدة فقط — بدون اشتراك</div>
     <div class="pay-modal-info">
       <div class="pay-modal-info-row">
@@ -976,7 +983,7 @@ function toggleLang(){
         <span>وصول فوري بعد الدفع — Visa / Mastercard / PayPal</span>
       </div>
     </div>
-    <a href="#" id="payModalCta" class="pay-modal-cta">🚀 انتقل للدفع الآن — 149 &#xFDFC;</a>
+    <a href="#" id="payModalCta" class="pay-modal-cta">🚀 انتقل للدفع الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></a>
     <div class="pay-modal-secure">🔒 دفع آمن عبر Lemon Squeezy</div>
   </div>
 </div>
