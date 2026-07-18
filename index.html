@@ -1658,7 +1658,7 @@ function buildLsUrl(embed) {
     return base + '?checkout[locale]=en' + countryParam + emailParams + '&redirect_url=' + successUrl;
   }
 }
-var _lsIsMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+var _lsIsMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function handleLsClick(e) {
   e.preventDefault();
