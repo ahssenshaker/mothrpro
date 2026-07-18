@@ -1511,31 +1511,36 @@ async function doSendReset() {
 async function registerUserIfNew(user) {
   if (!user) return;
   try {
-    const { data } = await supa.from('subscribers').select('id').eq('id', user.id).single();
-    if (!data) {
-      await supa.from('subscribers').insert({
-        id: user.id,
-        email: user.email,
-        plan: 'free',
-        activated_at: new Date().toISOString(),
-        expires_at: null
-      });
+    // تحقق بالإيميل أولاً — قد يكون عنده سجل pending من دفع سابق
+    const { data: byEmail } = await supa.from('subscribers').select('id, plan').eq('email', user.email).single();
+    if (byEmail) {
+      // السجل موجود — إذا كان pending سيتفعّل في activatePendingIfExists
+      // إذا كان بـ id مختلف (من الويب هوك) نحدّث الـ id ليطابق auth user
+      if (byEmail.id !== user.id) {
+        await supa.from('subscribers').update({ id: user.id }).eq('email', user.email);
+      }
+      return;
     }
+    // لا يوجد سجل بهذا الإيميل — أنشئ واحداً free جديداً
+    await supa.from('subscribers').insert({
+      id: user.id,
+      email: user.email,
+      plan: 'free',
+      activated_at: new Date().toISOString(),
+      expires_at: null
+    });
   } catch(e) {}
 }
 
 async function activatePendingIfExists(email) {
-  // If user paid before creating account, activate them now
   try {
-    const { data } = await supa.from('subscribers').select('plan').eq('email', email).eq('plan','pending').single();
-    if (data) {
-      const { data: { user } } = await supa.auth.getUser();
-      if (user) {
-        await supa.from('subscribers').upsert({
-          id: user.id, email, plan: 'pro',
-          activated_at: new Date().toISOString(), expires_at: null
-        });
-      }
+    const { data } = await supa.from('subscribers').select('plan').eq('email', email).single();
+    if (data && data.plan === 'pending') {
+      await supa.from('subscribers').update({
+        plan: 'pro',
+        activated_at: new Date().toISOString()
+      }).eq('email', email);
+      console.log('✅ Pending → Pro activated for', email);
     }
   } catch(e) {}
 }
