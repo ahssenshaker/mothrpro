@@ -1727,7 +1727,18 @@ function startProPolling() {
     } catch(e) {}
   }, 2000);
 }
-function closeUpgrade() { document.getElementById('upgradeModal').classList.remove('open'); }
+function closeUpgrade() {
+  document.getElementById('upgradeModal').classList.remove('open');
+  // Reset to initial upgrade box view so next open starts fresh
+  var iframe = document.getElementById('lsIframe');
+  var loader = document.getElementById('lsIframeLoader');
+  iframe.onload = null;
+  iframe.src = '';
+  iframe.style.opacity = '0';
+  loader.style.display = 'flex';
+  document.getElementById('lsIframeView').style.display = 'none';
+  document.querySelector('.upgrade-box').style.display = '';
+}
 
 // ═══════════════════════════════════════════
 // PRO RESTRICTIONS
