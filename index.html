@@ -664,7 +664,7 @@ padding:7px 10px;
     <button onclick="closeLsIframe()" style="position:absolute;top:10px;right:12px;z-index:10;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;border-radius:50%;width:32px;height:32px;line-height:32px;text-align:center">✕</button>
     <div id="lsIframeLoader" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--s1);border-radius:16px;z-index:5;gap:16px">
       <div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite"></div>
-      <div style="font-size:14px;color:var(--muted2)">جارٍ تحميل صفحة الدفع...</div>
+      <div style="font-size:14px;color:var(--muted2)" data-i18n="upgrade.loading">جارٍ تحميل صفحة الدفع...</div>
     </div>
     <iframe id="lsIframe" src="" style="width:100%;flex:1;border:none;border-radius:16px;min-height:600px;opacity:0;transition:opacity 0.4s" allowfullscreen allow="payment"></iframe>
   </div>
@@ -964,6 +964,7 @@ const TRANSLATIONS = {
     'upgrade.email_warning': 'استخدم نفس البريد الإلكتروني المسجّل في حسابك هنا — حتى يتفعّل حسابك تلقائياً بعد الدفع.',
     'upgrade.pay_btn': '💳 ادفع الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg>',
     'upgrade.close': 'إغلاق',
+    'upgrade.loading': 'جارٍ تحميل صفحة الدفع...',
     'loading.text': 'جاري تحميل بيانات المؤثرين...',
     'header.sub': 'دليل المؤثرين الموثّق · أسعار وروابط مباشرة',
     'stat.all': 'الكل',
@@ -1154,6 +1155,7 @@ const TRANSLATIONS = {
     'upgrade.email_warning': 'Use the same email you registered with here — so your account activates automatically after payment.',
     'upgrade.pay_btn': '💳 Pay Now — SAR 149',
     'upgrade.close': 'Close',
+    'upgrade.loading': 'Loading payment page...',
     'loading.text': 'Loading influencer data...',
     'header.sub': 'Verified Influencer Directory · Prices & Direct Links',
     'stat.all': 'All',
