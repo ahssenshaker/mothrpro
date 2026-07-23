@@ -2699,8 +2699,8 @@ initLang();
     
     <div style="overflow-x:auto">
       <table class="admin-table">
-        <thead><tr><th>البريد</th><th>الخطة</th><th>تاريخ التفعيل</th><th>إجراء</th></tr></thead>
-        <tbody id="adminSubsTable"><tr><td colspan="4" style="text-align:center;color:var(--muted2);padding:20px">جاري التحميل...</td></tr></tbody>
+        <thead><tr><th>البريد</th><th>الخطة</th><th>تاريخ التفعيل</th><th>إجراء</th><th>حذف</th></tr></thead>
+        <tbody id="adminSubsTable"><tr><td colspan="5" style="text-align:center;color:var(--muted2);padding:20px">جاري التحميل...</td></tr></tbody>
       </table>
     </div>
 
@@ -2734,7 +2734,7 @@ async function loadAdminSubs() {
     renderAdminStats();
     renderAdminTable(allSubsData);
   } catch(e) {
-    document.getElementById('adminSubsTable').innerHTML = '<tr><td colspan="4" style="color:var(--red);text-align:center;padding:20px">خطأ: ' + e.message + '</td></tr>';
+    document.getElementById('adminSubsTable').innerHTML = '<tr><td colspan="5" style="color:var(--red);text-align:center;padding:20px">خطأ: ' + e.message + '</td></tr>';
   }
 }
 
@@ -2747,7 +2747,7 @@ function renderAdminStats() {
 
 function renderAdminTable(data) {
   const tbody = document.getElementById('adminSubsTable');
-  if (!data.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
   tbody.innerHTML = data.map(s => {
     const isPro = s.plan === 'pro';
     const isAdminUser = s.plan === 'admin';
@@ -2763,11 +2763,13 @@ function renderAdminTable(data) {
       planBadge = `<span class="plan-badge-free">مجاني</span>`;
       actionBtn = `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`;
     }
+    const deleteBtn = `<button class="admin-action-btn btn-revoke" style="background:rgba(239,68,68,.15);color:#f87171;border-color:rgba(239,68,68,.3)" onclick="adminDeleteUser('${s.id}','${s.email}')">🗑 حذف</button>`;
     return `<tr>
       <td dir="ltr">${s.email || '-'}</td>
       <td>${planBadge}</td>
       <td>${date}</td>
       <td>${actionBtn}</td>
+      <td>${deleteBtn}</td>
     </tr>`;
   }).join('');
 }
@@ -2781,6 +2783,25 @@ function adminFilterSubs(filter, btn) {
 
 function adminSearchSubs(q) {
   renderAdminTable(allSubsData.filter(s => (s.email || '').toLowerCase().includes(q.toLowerCase())));
+}
+
+async function adminDeleteUser(id, email) {
+  if (!confirm(`هل أنت متأكد من حذف حساب ${email} بالكامل؟\nلا يمكن التراجع عن هذا الإجراء.`)) return;
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/delete-user', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ userId: id })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل الحذف'); }
+    allSubsData = allSubsData.filter(s => s.id !== id);
+    renderAdminStats();
+    renderAdminTable(allSubsData);
+    showAdminToast('تم حذف الحساب بنجاح');
+  } catch(e) {
+    showAdminToast('خطأ: ' + e.message);
+  }
 }
 
 async function adminActivateSub() {
