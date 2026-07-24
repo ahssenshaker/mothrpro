@@ -47,19 +47,25 @@ async function sendPlanEmail(email, action) {
     </div>`,
   }
 
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: 'مؤثر برو <noreply@moatherpro.com>',
-      to: [email],
-      subject: subjects[action] || 'تحديث اشتراكك في مؤثر برو',
-      html: bodies[action] || '',
-    }),
-  }).catch(() => {}) // email failure must never break the API response
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'مؤثر برو <noreply@moatherpro.com>',
+        to: [email],
+        subject: subjects[action] || 'تحديث اشتراكك في مؤثر برو',
+        html: bodies[action] || '',
+      }),
+    })
+    const body = await r.json().catch(() => ({}))
+    console.log('[resend]', r.status, JSON.stringify(body))
+  } catch (e) {
+    console.error('[resend] fetch failed:', e.message)
+  }
 }
 
 export default async function handler(req, res) {
