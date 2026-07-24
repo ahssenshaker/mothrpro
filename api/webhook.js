@@ -81,7 +81,7 @@ export default async function handler(req, res) {
   if (sub) {
     await supabase
       .from('subscribers')
-      .update({ plan: 'pro', activated_at: new Date().toISOString() })
+      .update({ plan: 'pro', activated_at: new Date().toISOString(), expires_at: null })
       .eq('email', accountEmail)
     console.log('✅ Activated pro for', accountEmail)
   } else {
