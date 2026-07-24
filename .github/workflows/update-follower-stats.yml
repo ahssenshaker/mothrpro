@@ -9,6 +9,14 @@ on:
         description: 'Limit number of records (for testing). Leave empty for all.'
         required: false
         default: ''
+      skip_search_fix:
+        description: 'Skip the auto URL search & fix step'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   contents: write
@@ -16,7 +24,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 220
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +38,7 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      # ── Step 1: Scrape follower counts ──────────────────────────────────────
       - name: Run stats updater
         id: updater
         timeout-minutes: 180
@@ -42,15 +51,34 @@ jobs:
           if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
           node scripts/update-follower-stats.mjs $ARGS
 
+      # ── Step 2: Auto-search & fix wrong URL suspects ─────────────────────────
+      # Reads _url_drift_suspects.json produced in step 1, searches each platform
+      # for the correct profile, verifies the follower count, updates Supabase,
+      # and updates _url_blocklist.json for unresolved suspects.
+      - name: Auto-search and fix wrong URLs
+        if: github.event.inputs.skip_search_fix != 'true'
+        timeout-minutes: 45
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/search-and-fix-urls.mjs
+
+      # ── Step 3: Commit all updated files ────────────────────────────────────
       - name: Commit report files
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/influencers/_stats_report.json assets/influencers/_url_drift_suspects.json || true
+          git add \
+            assets/influencers/_stats_report.json \
+            assets/influencers/_url_drift_suspects.json \
+            assets/influencers/_url_blocklist.json \
+            assets/influencers/_search_fix_report.json \
+            || true
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update follower stats report [automated]"
+            git commit -m "Weekly influencer sync: stats + URL fixes [automated]"
             git push origin HEAD:${{ github.ref_name }}
           fi
