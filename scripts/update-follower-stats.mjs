@@ -42,6 +42,14 @@ const CHECKPOINT_EVERY = 15;
 const NAV_TIMEOUT_MS = 30000;
 const SETTLE_MS = 4000;
 
+// Sanity validation: if the scraped count drops to less than DRIFT_THRESHOLD
+// of the stored count (and stored count is meaningful), skip the update and
+// flag the platform as a likely wrong-URL suspect instead of overwriting.
+const DRIFT_THRESHOLD  = 0.10;   // 10 % of stored count
+const DRIFT_MIN_STORED = 100_000; // only enforce when stored count ≥ this value
+
+const DRIFT_REPORT_PATH = path.join(ROOT, 'assets', 'influencers', '_url_drift_suspects.json');
+
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 const SUPPORTED_PLATFORMS = ['يوتيوب', 'تيك توك', 'تويتر/X', 'سناب شات', 'انستقرام'];
 const MAX_PLAUSIBLE_FOLLOWERS = 500_000_000;
@@ -155,6 +163,7 @@ async function main() {
 
   let processed = 0, updatedRecords = 0;
   const pendingUpsert = [];
+  const driftSuspects = [];
 
   for (const d of targets) {
     processed++;
@@ -178,10 +187,30 @@ async function main() {
       }
 
       if (count && count > 0 && count <= MAX_PLAUSIBLE_FOLLOWERS) {
-        d.platforms[key].followersNum = count;
-        d.platforms[key].followers = formatCount(count);
-        perPlatform[key] = count;
-        anyUpdated = true;
+        const storedCount = d.platforms[key]?.followersNum;
+        if (
+          storedCount >= DRIFT_MIN_STORED &&
+          count < storedCount * DRIFT_THRESHOLD
+        ) {
+          const pct = ((count / storedCount) * 100).toFixed(1);
+          console.warn(
+            `  ⚠️  DRIFT ${d.name} | ${key}: stored=${formatCount(storedCount)}, scraped=${formatCount(count)} (${pct}%) — skipped, likely wrong URL`
+          );
+          driftSuspects.push({
+            name: d.name,
+            id: d.id,
+            platform: key,
+            url,
+            stored: storedCount,
+            scraped: count,
+            dropPercent: parseFloat(pct),
+          });
+        } else {
+          d.platforms[key].followersNum = count;
+          d.platforms[key].followers = formatCount(count);
+          perPlatform[key] = count;
+          anyUpdated = true;
+        }
       }
     }
 
@@ -209,8 +238,21 @@ async function main() {
   if (pendingUpsert.length) await saveRecords(pendingUpsert);
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
 
+  // Merge new drift suspects into the existing file (avoid duplicates).
+  let existingDrift = [];
+  try { existingDrift = JSON.parse(fs.readFileSync(DRIFT_REPORT_PATH, 'utf8')); } catch {}
+  const driftKey = s => `${s.id}|${s.platform}`;
+  const existingKeys = new Set(existingDrift.map(driftKey));
+  const newDrift = driftSuspects.filter(s => !existingKeys.has(driftKey(s)));
+  if (newDrift.length || existingDrift.length) {
+    fs.writeFileSync(DRIFT_REPORT_PATH, JSON.stringify([...existingDrift, ...newDrift], null, 2));
+  }
+
   console.log('\nDone.');
   console.log(`Records with at least one updated platform: ${updatedRecords} / ${targets.length}`);
+  if (driftSuspects.length) {
+    console.log(`⚠️  Drift suspects (skipped): ${driftSuspects.length} — see ${path.relative(ROOT, DRIFT_REPORT_PATH)}`);
+  }
   console.log(`Report: ${path.relative(ROOT, REPORT_PATH)}`);
 }
 

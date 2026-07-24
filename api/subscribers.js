@@ -129,9 +129,10 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
+      // Clear expires_at so a former trial user gets a permanent subscription
       const updates = action === 'activate'
-        ? { plan: 'pro', activated_at: new Date().toISOString() }
-        : { plan: 'admin' }
+        ? { plan: 'pro', activated_at: new Date().toISOString(), expires_at: null }
+        : { plan: 'admin', expires_at: null }
 
       const { error: updateErr } = await supabase
         .from('subscribers')
