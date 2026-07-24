@@ -6,13 +6,19 @@ const supabase = createClient(
 )
 
 // In-memory data cache — populated on first GET, shared across warm invocations.
-// Eliminates repeated Supabase round-trips; invalidated on any write or after TTL.
 let _dataCache = null
 let _dataCacheTs = 0
 const DATA_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
-// In-memory rate limiter — works per-instance; provides best-effort protection
-// in serverless environments where instances may not be shared.
+// In-memory plan cache — avoids 2 Supabase calls per authenticated request.
+const planCache = new Map() // userId → { plan, ts }
+const PLAN_CACHE_TTL = 5 * 60 * 1000
+
+// Free-tier record cap — limits how many rows a free/censored request may receive.
+// Prevents bulk scraping of the influencer list without a paid subscription.
+const FREE_RECORD_CAP = 50
+
+// In-memory rate limiter — per-instance best-effort protection.
 const rateLimitMap = new Map()
 
 function getRateLimitKey(userId, req) {
@@ -37,25 +43,36 @@ function isRateLimited(key, max = 30) {
   return false
 }
 
-// Resolve user plan from Supabase JWT
+// Resolve user plan from Supabase JWT, with short-lived in-memory cache.
 async function resolveUserPlan(authHeader) {
   if (!authHeader?.startsWith('Bearer ')) return { plan: 'free', userId: null }
   const token = authHeader.slice(7)
   try {
     const { data: { user } } = await supabase.auth.getUser(token)
     if (!user) return { plan: 'free', userId: null }
+
+    const cached = planCache.get(user.id)
+    if (cached && (Date.now() - cached.ts) < PLAN_CACHE_TTL) {
+      return { plan: cached.plan, userId: user.id }
+    }
+
     const { data: sub } = await supabase
       .from('subscribers')
       .select('plan, expires_at')
       .eq('id', user.id)
       .single()
-    if (!sub) return { plan: 'free', userId: user.id }
-    if (sub.plan === 'admin') return { plan: 'admin', userId: user.id }
-    if (sub.plan === 'pro') {
-      if (sub.expires_at && new Date(sub.expires_at) < new Date()) return { plan: 'free', userId: user.id }
-      return { plan: 'pro', userId: user.id }
+
+    let resolvedPlan = 'free'
+    if (sub) {
+      if (sub.plan === 'admin') {
+        resolvedPlan = 'admin'
+      } else if (sub.plan === 'pro') {
+        if (!sub.expires_at || new Date(sub.expires_at) >= new Date()) resolvedPlan = 'pro'
+      }
     }
-    return { plan: 'free', userId: user.id }
+
+    planCache.set(user.id, { plan: resolvedPlan, ts: Date.now() })
+    return { plan: resolvedPlan, userId: user.id }
   } catch {
     return { plan: 'free', userId: null }
   }
@@ -86,13 +103,73 @@ function censorRecord(record) {
   return out
 }
 
+// Known automation / bot User-Agent fragments to reject.
+const BOT_UA_PATTERNS = [
+  'headlesschrome', 'phantomjs', 'slimejs', 'splash',
+  'python-requests', 'python-httpx', 'python/',
+  'scrapy', 'curl/', 'wget/', 'libcurl',
+  'go-http-client', 'java/', 'okhttp', 'ruby',
+  'mechanize', 'aiohttp', 'httpx',
+]
+
+function isBotRequest(req) {
+  const ua = (req.headers['user-agent'] || '').toLowerCase()
+  if (!ua) return true // no UA at all — almost certainly a script
+  return BOT_UA_PATTERNS.some(p => ua.includes(p))
+}
+
+// Allowed request origins — any other origin is rejected.
+const ALLOWED_ORIGINS = [
+  'https://moatherpro.com',
+  'https://www.moatherpro.com',
+  'http://localhost',
+  'http://127.0.0.1',
+]
+
+function isAllowedOrigin(req) {
+  const origin = req.headers.origin || req.headers.referer || ''
+  if (!origin) return false // browser fetch() always sends Origin for same-origin requests
+  return ALLOWED_ORIGINS.some(o => origin.startsWith(o))
+}
+
 export default async function handler(req, res) {
-  const { plan, userId } = await resolveUserPlan(req.headers.authorization)
+  // Security headers on every response
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('X-Robots-Tag', 'noindex, noarchive, nosnippet')
+
+  // Internal cron bypass — allows the warmup endpoint to prime the data cache
+  // without a user JWT. Validated against WARMUP_SECRET env var.
+  const isWarmup = !!(
+    process.env.WARMUP_SECRET &&
+    req.headers['x-warmup-secret'] === process.env.WARMUP_SECRET
+  )
+
+  // Block automated scrapers and requests not originating from the site.
+  // The warmup cron call is exempted — it uses x-warmup-secret instead.
+  if (!isWarmup) {
+    if (isBotRequest(req)) {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+    if (!isAllowedOrigin(req)) {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+  }
+
+  const { plan, userId } = isWarmup
+    ? { plan: 'admin', userId: 'warmup' }
+    : await resolveUserPlan(req.headers.authorization)
+
   const isAdmin = plan === 'admin'
   const isPro = plan === 'pro' || isAdmin
 
-  // Rate limit all GET requests — Pro users get a higher cap (need multiple pages)
-  if (req.method === 'GET') {
+  // Require authentication for all GET requests (prevents anonymous scraping).
+  if (req.method === 'GET' && !isWarmup && !userId) {
+    return res.status(401).json({ error: 'يرجى تسجيل الدخول' })
+  }
+
+  // Rate limit authenticated GET requests (warmup is exempt).
+  if (req.method === 'GET' && !isWarmup) {
     const rlKey = getRateLimitKey(userId, req)
     const rlMax = isPro ? 60 : 30
     if (isRateLimited(rlKey, rlMax)) {
@@ -102,12 +179,15 @@ export default async function handler(req, res) {
 
   // ─── GET: list influencers (paginated) ───────────────────────────────
   if (req.method === 'GET') {
-    // Anonymous users always receive censored data — safe to cache briefly at the CDN edge.
-    // Authenticated responses are user-specific and must never be cached.
-    res.setHeader('Cache-Control', userId
-      ? 'private, no-store'
-      : 's-maxage=60, stale-while-revalidate=120'
-    )
+    // Admin always gets fresh data. Pro gets a short private browser cache.
+    // Free authenticated users get a minimal private cache.
+    if (isAdmin) {
+      res.setHeader('Cache-Control', 'private, no-store')
+    } else if (isPro) {
+      res.setHeader('Cache-Control', 'private, max-age=300, stale-while-revalidate=60')
+    } else {
+      res.setHeader('Cache-Control', 'private, max-age=60')
+    }
 
     const rawLimit = parseInt(req.query.limit)
     const page  = Math.max(1, parseInt(req.query.page) || 1)
@@ -127,14 +207,34 @@ export default async function handler(req, res) {
 
     const { rows: allRows, count } = _dataCache
     const from = (page - 1) * limit
+
+    if (!isPro) {
+      // Free users are capped at FREE_RECORD_CAP records total — anti-scraping gate.
+      if (from >= FREE_RECORD_CAP) {
+        return res.status(200).json({
+          data: [], page, limit,
+          total: count,
+          hasMore: false,
+          freeCap: FREE_RECORD_CAP,
+        })
+      }
+      const end = Math.min(from + limit, FREE_RECORD_CAP)
+      const pageRows = allRows.slice(from, end).map(censorRecord)
+      return res.status(200).json({
+        data: pageRows, page, limit,
+        total: count,
+        hasMore: false,
+        freeCap: FREE_RECORD_CAP,
+      })
+    }
+
     const pageRows = allRows.slice(from, from + limit)
-    const processed = isPro ? pageRows : pageRows.map(censorRecord)
     return res.status(200).json({
-      data: processed,
+      data: isPro ? pageRows : pageRows.map(censorRecord),
       page,
       limit,
       total: count,
-      hasMore: from + limit < count
+      hasMore: from + limit < count,
     })
   }
 
@@ -145,6 +245,8 @@ export default async function handler(req, res) {
   // Any write invalidates the in-memory cache so the next GET fetches fresh data
   _dataCache = null
   _dataCacheTs = 0
+  // Also invalidate plan cache on admin writes (plan may have changed)
+  planCache.clear()
 
   // ─── POST: create one or many influencers ─────────────────────────────
   if (req.method === 'POST') {
