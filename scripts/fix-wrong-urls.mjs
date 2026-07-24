@@ -66,6 +66,9 @@ async function main() {
   // ── Build map of verified correct URLs keyed by Supabase ID ─────────────────
   // { supabaseId → { platform → { url, followers } } }
   const verifiedById = {};
+  // Track platforms whose URLs are verified (already correct OR just updated).
+  // These must NOT be blocklisted in step 2.
+  const verifiedPlatforms = new Set(); // "id|platform"
   for (const [id, platforms] of Object.entries(candidatesReport)) {
     for (const [platform, result] of Object.entries(platforms)) {
       if ((result.followers ?? 0) >= MIN_VERIFIED_FOLLOWERS) {
@@ -111,6 +114,8 @@ async function main() {
       const current = updatedPlatforms[platform]?.url;
       if (current === url) {
         console.log(`   ✓ ${rec.name} | ${platform}: URL already correct`);
+        // URL is correct → must not be blocklisted in step 2.
+        verifiedPlatforms.add(`${supabaseId}|${platform}`);
         continue;
       }
 
@@ -128,6 +133,7 @@ async function main() {
         name: rec.name, id: supabaseId, platform,
         oldUrl: current ?? null, newUrl: url, followers,
       });
+      verifiedPlatforms.add(`${supabaseId}|${platform}`);
 
       // Remove from blocklist — URL is now correct, scraping can resume.
       if (updatedBlocklist[supabaseId]) {
@@ -169,9 +175,16 @@ async function main() {
     const id       = String(rec.id);
     const platform = suspect.platform;
 
-    // Skip if this platform was just corrected with a verified URL.
-    const wasFixed = report.urlsUpdated.some(u => u.id === id && u.platform === platform);
-    if (wasFixed) continue;
+    // Skip if this platform has a verified correct URL (already was or just updated).
+    if (verifiedPlatforms.has(`${id}|${platform}`)) {
+      // Also ensure it's removed from the blocklist if it was mistakenly added.
+      if (updatedBlocklist[id]) {
+        updatedBlocklist[id] = updatedBlocklist[id].filter(p => p !== platform);
+        if (updatedBlocklist[id].length === 0) delete updatedBlocklist[id];
+      }
+      console.log(`   ✅ ${suspect.name} | ${platform}: URL verified correct — ensuring unblocked`);
+      continue;
+    }
 
     const already = (updatedBlocklist[id] ?? []).includes(platform);
     if (already) {
