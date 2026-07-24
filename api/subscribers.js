@@ -22,6 +22,46 @@ async function resolveAdmin(authHeader) {
   }
 }
 
+async function sendPlanEmail(email, action) {
+  const key = process.env.RESEND_API_KEY
+  if (!key || !email) return
+
+  const subjects = {
+    activate:  'تم تفعيل اشتراكك في مؤثر برو ✨',
+    revoke:    'تم إيقاف اشتراكك في مؤثر برو',
+    'set-admin': 'تمت ترقيتك كمشرف في مؤثر برو',
+  }
+  const bodies = {
+    activate: `<div dir="rtl" style="font-family:sans-serif;max-width:480px;margin:auto">
+      <h2 style="color:#63b3ed">مرحباً بك في مؤثر برو Pro ✨</h2>
+      <p>تم تفعيل اشتراكك بنجاح. يمكنك الآن الوصول إلى جميع بيانات المؤثرين بما فيها الأسعار الفعلية ونسب التفاعل.</p>
+      <a href="https://moatherpro.com" style="display:inline-block;background:#63b3ed;color:#07090f;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:12px">افتح مؤثر برو</a>
+    </div>`,
+    revoke: `<div dir="rtl" style="font-family:sans-serif;max-width:480px;margin:auto">
+      <h2>تحديث اشتراكك في مؤثر برو</h2>
+      <p>تم إيقاف اشتراكك Pro. إذا كان هذا خطأً أو لديك استفسار، تواصل معنا.</p>
+    </div>`,
+    'set-admin': `<div dir="rtl" style="font-family:sans-serif;max-width:480px;margin:auto">
+      <h2 style="color:#f6c74d">تمت ترقيتك كمشرف في مؤثر برو ⚙️</h2>
+      <p>يمكنك الآن الوصول إلى لوحة الإدارة الكاملة.</p>
+    </div>`,
+  }
+
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'مؤثر برو <noreply@moatherpro.com>',
+      to: [email],
+      subject: subjects[action] || 'تحديث اشتراكك في مؤثر برو',
+      html: bodies[action] || '',
+    }),
+  }).catch(() => {}) // email failure must never break the API response
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
 
@@ -51,8 +91,7 @@ export default async function handler(req, res) {
     if (!action) return res.status(400).json({ error: 'action required' })
 
     if (action === 'activate' || action === 'set-admin') {
-      // Resolve subscriber by id or email
-      let findQuery = supabase.from('subscribers').select('id')
+      let findQuery = supabase.from('subscribers').select('id, email')
       if (id) {
         findQuery = findQuery.eq('id', id)
       } else if (email) {
@@ -67,21 +106,32 @@ export default async function handler(req, res) {
         ? { plan: 'pro', activated_at: new Date().toISOString() }
         : { plan: 'admin' }
 
-      const { error } = await supabase
+      const { error: updateErr } = await supabase
         .from('subscribers')
         .update(updates)
         .eq('id', sub.id)
-      if (error) return res.status(500).json({ error: error.message })
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
+
+      await sendPlanEmail(sub.email, action)
       return res.status(200).json({ ok: true })
     }
 
     if (action === 'revoke') {
       if (!id) return res.status(400).json({ error: 'id required' })
-      const { error } = await supabase
+
+      const { data: sub } = await supabase
+        .from('subscribers')
+        .select('email')
+        .eq('id', id)
+        .single()
+
+      const { error: updateErr } = await supabase
         .from('subscribers')
         .update({ plan: 'free' })
         .eq('id', id)
-      if (error) return res.status(500).json({ error: error.message })
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
+
+      await sendPlanEmail(sub?.email, 'revoke')
       return res.status(200).json({ ok: true })
     }
 
