@@ -1570,6 +1570,9 @@ async function showDashboard() {
   if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
 
   updatePlanBadge(isAdmin);
+  // Apply role-based UI restrictions immediately — before the slow data fetch
+  // so non-admin users never briefly see the admin panel button
+  applyProRestrictions();
   // Show trial welcome popup for new trial users
   if (userTrialExpiresAt) {
     const shownKey = 'trial_welcome_shown_' + currentUser.id;
@@ -1583,7 +1586,6 @@ async function showDashboard() {
   // Fetch influencer data from secure API
   await loadInfluencerData();
   buildRegionFilter();
-  applyProRestrictions();
   init();
 }
 
@@ -1790,16 +1792,20 @@ function applyProRestrictions() {
 // ═══════════════════════════════════════════
 // CHECK SESSION ON LOAD + HANDLE TOKEN EXPIRY
 // ═══════════════════════════════════════════
+// Fast path: read session from localStorage immediately (no event-loop delay)
+(async function() {
+  const { data: { session } } = await supa.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await registerUserIfNew(currentUser);
+    await loadUserPlan();
+    showDashboard();
+  }
+})();
+
+// Background listener: keep JWT fresh and handle unexpected sign-out
 supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'INITIAL_SESSION') {
-    // Page load — restore session from localStorage if still valid
-    if (session) {
-      currentUser = session.user;
-      await registerUserIfNew(currentUser);
-      await loadUserPlan();
-      showDashboard();
-    }
-  } else if (event === 'TOKEN_REFRESHED') {
+  if (event === 'TOKEN_REFRESHED') {
     // Keep the cached JWT token current so API calls stay authorised
     _apiJwt = session?.access_token || null;
   } else if (event === 'SIGNED_OUT' && currentUser) {
