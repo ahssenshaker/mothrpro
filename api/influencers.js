@@ -5,6 +5,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
+// In-memory data cache — populated on first GET, shared across warm invocations.
+// Eliminates repeated Supabase round-trips; invalidated on any write or after TTL.
+let _dataCache = null
+let _dataCacheTs = 0
+const DATA_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 // In-memory rate limiter — works per-instance; provides best-effort protection
 // in serverless environments where instances may not be shared.
 const rateLimitMap = new Map()
@@ -105,31 +111,40 @@ export default async function handler(req, res) {
 
     const rawLimit = parseInt(req.query.limit)
     const page  = Math.max(1, parseInt(req.query.page) || 1)
-    const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 100))
-    const from  = (page - 1) * limit
-    const to    = from + limit - 1
+    const limit = Math.min(500, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 100))
 
-    const { data, error, count } = await supabase
-      .from('influencers')
-      .select('*', { count: 'exact' })
-      .order('rank', { ascending: true })
-      .range(from, to)
+    // Serve from in-memory cache when available — zero Supabase round-trip
+    const now = Date.now()
+    if (!_dataCache || (now - _dataCacheTs) > DATA_CACHE_TTL) {
+      const { data, error, count } = await supabase
+        .from('influencers')
+        .select('*', { count: 'exact' })
+        .order('rank', { ascending: true })
+      if (error) return res.status(500).json({ error: error.message })
+      _dataCache = { rows: data, count }
+      _dataCacheTs = now
+    }
 
-    if (error) return res.status(500).json({ error: error.message })
-
-    const processed = isPro ? data : data.map(censorRecord)
+    const { rows: allRows, count } = _dataCache
+    const from = (page - 1) * limit
+    const pageRows = allRows.slice(from, from + limit)
+    const processed = isPro ? pageRows : pageRows.map(censorRecord)
     return res.status(200).json({
       data: processed,
       page,
       limit,
       total: count,
-      hasMore: to < count - 1
+      hasMore: from + limit < count
     })
   }
 
   // ─── Admin-only methods below ─────────────────────────────────────────
   res.setHeader('Cache-Control', 'no-store')
   if (!isAdmin) return res.status(403).json({ error: 'Admin only' })
+
+  // Any write invalidates the in-memory cache so the next GET fetches fresh data
+  _dataCache = null
+  _dataCacheTs = 0
 
   // ─── POST: create one or many influencers ─────────────────────────────
   if (req.method === 'POST') {
