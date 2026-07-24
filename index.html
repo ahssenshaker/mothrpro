@@ -1353,8 +1353,8 @@ function applyLang(lang) {
   if (typeof updatePlanBadge === 'function') updatePlanBadge();
   // Rebuild region dropdown with correct language
   if (typeof buildRegionFilter === 'function') buildRegionFilter();
-  // Re-render cards with translated content
-  if (typeof applyFilters === 'function') applyFilters();
+  // Re-render cards with translated content — only if data is already loaded
+  if (typeof applyFilters === 'function' && typeof DATA !== 'undefined' && DATA.length > 0) applyFilters();
 }
 
 function toggleLang() {
@@ -1559,6 +1559,8 @@ async function showDashboard() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('userBar').style.display = 'flex';
   document.getElementById('userEmail').textContent = currentUser.email;
+  // Clear any stale "0 نتيجة" that initLang() may have written before data loaded
+  const ri = document.getElementById('resultInfo'); if (ri) ri.textContent = '';
 
   const isAdmin = userPlan === 'admin';
 
@@ -1943,7 +1945,7 @@ function renderPage(){
   const empty=document.getElementById('emptyState');
   const pag=document.getElementById('pagination');
 
-  if(!filtered.length){grid.innerHTML='';empty.style.display='block';pag.innerHTML='';return;}
+  if(!filtered.length){grid.innerHTML='';empty.style.display=DATA.length>0?'block':'none';pag.innerHTML='';return;}
   empty.style.display='none';
 
   const totalPages=Math.ceil(filtered.length/PAGE_SIZE);
