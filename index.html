@@ -435,6 +435,7 @@ body.is-admin .card:hover .card-admin-actions{opacity:1}
 .admin-table tr:hover td{background:var(--s2)}
 .plan-badge-pro{background:rgba(99,179,237,.15);color:var(--accent);border:1px solid rgba(99,179,237,.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
 .plan-badge-free{background:rgba(100,116,139,.1);color:var(--muted2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px}
+.plan-badge-trial{background:rgba(251,191,36,.15);color:#f59e0b;border:1px solid rgba(251,191,36,.35);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
 .admin-action-btn{padding:4px 10px;border-radius:6px;border:none;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
 .btn-activate{background:rgba(104,211,145,.15);color:var(--green);border:1px solid rgba(104,211,145,.3)}
 .btn-activate:hover{background:rgba(104,211,145,.3)}
@@ -442,7 +443,7 @@ body.is-admin .card:hover .card-admin-actions{opacity:1}
 .btn-revoke:hover{background:rgba(252,129,74,.2)}
 .admin-search{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;outline:none;margin-bottom:14px;box-sizing:border-box}
 .admin-search:focus{border-color:var(--accent)}
-.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .admin-stat{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
 .admin-stat-num{font-size:24px;font-weight:800;color:#fff}
 .admin-stat-label{font-size:11px;color:var(--muted2);margin-top:4px}
@@ -2783,6 +2784,7 @@ initLang();
     <div class="admin-stats">
       <div class="admin-stat"><div class="admin-stat-num" id="statTotal">-</div><div class="admin-stat-label">إجمالي المستخدمين</div></div>
       <div class="admin-stat"><div class="admin-stat-num" id="statPro">-</div><div class="admin-stat-label">مشتركون برو</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="statTrial" style="color:#f59e0b">-</div><div class="admin-stat-label">تجربة مجانية</div></div>
       <div class="admin-stat"><div class="admin-stat-num" id="statFree">-</div><div class="admin-stat-label">مستخدمون مجانيون</div></div>
     </div>
 
@@ -2807,6 +2809,7 @@ initLang();
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="adminFilterSubs('all',this)">الكل</button>
       <button class="admin-tab" onclick="adminFilterSubs('pro',this)">برو</button>
+      <button class="admin-tab" onclick="adminFilterSubs('trial',this)">تجربة</button>
       <button class="admin-tab" onclick="adminFilterSubs('free',this)">مجاني</button>
     </div>
 
@@ -2858,23 +2861,34 @@ async function loadAdminSubs() {
 }
 
 function renderAdminStats() {
-  const pro = allSubsData.filter(s => s.plan === 'pro').length;
+  const now = new Date();
+  const trial = allSubsData.filter(s => s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now).length;
+  const pro = allSubsData.filter(s => s.plan === 'pro' && !s.expires_at).length;
+  const free = allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending').length;
   document.getElementById('statTotal').textContent = allSubsData.length;
   document.getElementById('statPro').textContent = pro;
-  document.getElementById('statFree').textContent = allSubsData.length - pro;
+  document.getElementById('statTrial').textContent = trial;
+  document.getElementById('statFree').textContent = free;
 }
 
 function renderAdminTable(data) {
   const tbody = document.getElementById('adminSubsTable');
   if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
   tbody.innerHTML = data.map(s => {
-    const isPro = s.plan === 'pro';
+    const now = new Date();
+    const isTrial = s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now;
+    const isPro = s.plan === 'pro' && !isTrial;
     const isAdminUser = s.plan === 'admin';
-    const date = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
+    const activationDate = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
+    const expiryDate = s.expires_at ? new Date(s.expires_at).toLocaleDateString('ar-SA') : null;
+    const date = isTrial ? `<span style="color:#f59e0b">ينتهي ${expiryDate}</span>` : activationDate;
     let planBadge, actionBtn;
     if (isAdminUser) {
       planBadge = `<span class="plan-badge-pro" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">👑 أدمن</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء الأدمن</button>`;
+    } else if (isTrial) {
+      planBadge = `<span class="plan-badge-trial">🎁 تجربة</span>`;
+      actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء التجربة</button>`;
     } else if (isPro) {
       planBadge = `<span class="plan-badge-pro">⭐ برو</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`;
@@ -2896,7 +2910,11 @@ function renderAdminTable(data) {
 function adminFilterSubs(filter, btn) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  const filtered = filter === 'all' ? allSubsData : allSubsData.filter(s => filter === 'pro' ? s.plan === 'pro' : s.plan !== 'pro');
+  const now = new Date();
+  const filtered = filter === 'all' ? allSubsData :
+    filter === 'pro' ? allSubsData.filter(s => s.plan === 'pro' && !s.expires_at) :
+    filter === 'trial' ? allSubsData.filter(s => s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now) :
+    allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending');
   renderAdminTable(filtered);
 }
 
