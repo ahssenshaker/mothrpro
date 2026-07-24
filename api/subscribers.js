@@ -30,8 +30,9 @@ export default async function handler(req, res) {
 
   // ─── GET: list all subscribers (paginated) ───────────────────────────
   if (req.method === 'GET') {
-    const page  = Math.max(1, parseInt(req.query.page)  || 1)
-    const limit = Math.min(100, parseInt(req.query.limit) || 100)
+    const rawLimit = parseInt(req.query.limit)
+    const page  = Math.max(1, parseInt(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 100))
     const from  = (page - 1) * limit
 
     const { data, error, count } = await supabase

@@ -103,8 +103,9 @@ export default async function handler(req, res) {
       : 's-maxage=60, stale-while-revalidate=120'
     )
 
-    const page  = Math.max(1, parseInt(req.query.page)  || 1)
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 100))
+    const rawLimit = parseInt(req.query.limit)
+    const page  = Math.max(1, parseInt(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 100))
     const from  = (page - 1) * limit
     const to    = from + limit - 1
 
