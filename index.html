@@ -775,9 +775,9 @@ padding:7px 10px;
       <option value="verified" data-i18n-opt="src.confirmed">✔ محدث/مضاف مؤكد</option>
     </select>
     <div class="price-range-wrap" title="فلتر نطاق السعر (ر.س)">
-      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_from" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
+      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_from" autocomplete="off" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
       <span>–</span>
-      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_to" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
+      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_to" autocomplete="off" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
       <span style="font-size:10px">ر.س</span>
     </div>
     <select id="sortBy" onchange="applyFilters()">
@@ -1655,6 +1655,13 @@ async function handleLogout() {
   DATA = [];
   filtered = [];
   _apiJwt = null;
+  // Clear filter state so the next login starts with a clean slate
+  document.getElementById('searchInput').value = '';
+  ['tierFilter','platformFilter','genderFilter','regionFilter','catFilter','sourceFilter'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  ['priceMin','priceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const sb = document.getElementById('sortBy'); if (sb) sb.value = 'rank';
   document.getElementById('authScreen').style.display = 'flex';
   document.getElementById('userBar').style.display = 'none';
   document.getElementById('grid').innerHTML = '';
