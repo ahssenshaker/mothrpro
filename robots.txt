@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://moatherpro.com/sitemap.xml
