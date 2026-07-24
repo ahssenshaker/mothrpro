@@ -2833,6 +2833,7 @@ initLang();
       <div class="admin-form-row">
         <input type="email" id="addSubEmail" placeholder="البريد الإلكتروني" dir="ltr">
         <button class="btn-add-sub" onclick="adminActivateSub()">تفعيل برو</button>
+        <button class="btn-add-sub" style="background:linear-gradient(135deg,#f59e0b,#f6c74d);color:#07090f" onclick="adminGrantTrial()">🎁 تجربة مجانية</button>
       </div>
       <div class="admin-msg" id="addSubMsg"></div>
     </div>
@@ -3007,6 +3008,27 @@ async function adminActivateSub() {
     msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
     document.getElementById('addSubEmail').value = '';
     if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
+    setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
+    await loadAdminSubs();
+  } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
+}
+
+async function adminGrantTrial() {
+  const email = document.getElementById('addSubEmail').value.trim();
+  const msg = document.getElementById('addSubMsg');
+  if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
+  if (!confirm('منح تجربة مجانية 48 ساعة لـ ' + email + '؟ (بدون إرسال إيميل)')) return;
+  msg.textContent = 'جاري منح التجربة...'; msg.className = 'admin-msg';
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'grant-trial', email })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل منح التجربة'); }
+    msg.textContent = '✅ تم منح التجربة لـ ' + email; msg.className = 'admin-msg ok';
+    document.getElementById('addSubEmail').value = '';
     setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
     await loadAdminSubs();
   } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }

@@ -95,6 +95,28 @@ export default async function handler(req, res) {
     const { action, id, email } = req.body || {}
     if (!action) return res.status(400).json({ error: 'action required' })
 
+    if (action === 'grant-trial') {
+      // Grant a 48-hour free trial — does NOT send email (user sees welcome popup on site)
+      let findQuery = supabase.from('subscribers').select('id, email')
+      if (id) {
+        findQuery = findQuery.eq('id', id)
+      } else if (email) {
+        findQuery = findQuery.eq('email', email.toLowerCase().trim())
+      } else {
+        return res.status(400).json({ error: 'id or email required' })
+      }
+      const { data: sub, error: findErr } = await findQuery.single()
+      if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
+
+      const trialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
+      const { error: updateErr } = await supabase
+        .from('subscribers')
+        .update({ plan: 'pro', expires_at: trialEnd, activated_at: new Date().toISOString() })
+        .eq('id', sub.id)
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
+      return res.status(200).json({ ok: true })
+    }
+
     if (action === 'activate' || action === 'set-admin') {
       let findQuery = supabase.from('subscribers').select('id, email')
       if (id) {
