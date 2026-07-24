@@ -69,6 +69,19 @@
 .trial-banner.visible{display:flex}
 .trial-days{font-weight:700;color:var(--gold)}
 .trial-upgrade-link{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline}
+.trial-welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:9500;display:none;align-items:center;justify-content:center;padding:20px}
+.trial-welcome-overlay.visible{display:flex}
+.trial-welcome-box{background:var(--s1);border:1px solid rgba(246,199,77,.35);border-radius:22px;padding:36px 32px;max-width:400px;width:100%;text-align:center;animation:popIn .3s ease}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.trial-welcome-icon{font-size:52px;margin-bottom:12px}
+.trial-welcome-title{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.trial-welcome-sub{color:var(--muted2);font-size:14px;line-height:1.7;margin-bottom:20px}
+.trial-welcome-features{background:var(--s2);border-radius:12px;padding:14px 18px;text-align:right;margin-bottom:22px;font-size:13px;line-height:2.2;color:var(--text)}
+.trial-welcome-features span{color:var(--accent);font-weight:700}
+.trial-welcome-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:12px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.trial-welcome-btn:hover{opacity:.9}
+.trial-welcome-skip{display:block;margin-top:12px;color:var(--muted2);font-size:12px;cursor:pointer}
+.trial-welcome-skip:hover{color:var(--text)}
 
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(400px) rotate(720deg);opacity:0}}
 @keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -1605,6 +1618,14 @@ async function showDashboard() {
   if (adminBtn) adminBtn.style.display = isAdmin ? '' : 'none';
 
   updatePlanBadge(isAdmin);
+  // Show trial welcome popup for new trial users
+  if (userTrialExpiresAt) {
+    const shownKey = 'trial_welcome_shown_' + currentUser.id;
+    if (!localStorage.getItem(shownKey)) {
+      localStorage.setItem(shownKey, '1');
+      setTimeout(() => showTrialWelcome(), 800);
+    }
+  }
   // Popup is now triggered on influencer card click, not on page load
 
   // Fetch influencer data from secure API
@@ -2788,6 +2809,22 @@ initLang();
 </script>
 
 <!-- ADMIN DASHBOARD MODAL -->
+<div class="trial-welcome-overlay" id="trialWelcomeOverlay">
+  <div class="trial-welcome-box">
+    <div class="trial-welcome-icon">🎁</div>
+    <div class="trial-welcome-title">مبروك! حصلت على تجربة مجانية</div>
+    <div class="trial-welcome-sub">لديك <strong>يومان كاملان</strong> للوصول لجميع بيانات المؤثرين</div>
+    <div class="trial-welcome-features">
+      <span>✓</span> أسعار المؤثرين الفعلية<br>
+      <span>✓</span> نسب التفاعل والإحصائيات التفصيلية<br>
+      <span>✓</span> بيانات الجمهور (العمر والجنس)<br>
+      <span>✓</span> روابط التواصل المباشرة
+    </div>
+    <button class="trial-welcome-btn" onclick="closeTrialWelcome()">ابدأ الاستكشاف ⭐</button>
+    <span class="trial-welcome-skip" onclick="closeTrialWelcome()">تخطي</span>
+  </div>
+</div>
+
 <div class="admin-dash" id="adminDash">
   <div class="admin-box">
     <h2>⚙️ لوحة الأدمن <span style="font-size:12px;color:var(--muted2);font-weight:400">مؤثر برو</span></h2>
@@ -2910,6 +2947,16 @@ function adminFilterSubs(filter, btn) {
 
 function adminSearchSubs(q) {
   renderAdminTable(allSubsData.filter(s => (s.email || '').toLowerCase().includes(q.toLowerCase())));
+}
+
+function showTrialWelcome() {
+  const overlay = document.getElementById('trialWelcomeOverlay');
+  if (overlay) overlay.classList.add('visible');
+}
+
+function closeTrialWelcome() {
+  const overlay = document.getElementById('trialWelcomeOverlay');
+  if (overlay) overlay.classList.remove('visible');
 }
 
 async function adminDeleteUser(id, email) {
