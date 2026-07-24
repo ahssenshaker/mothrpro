@@ -42,12 +42,12 @@ jobs:
           if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
           node scripts/update-follower-stats.mjs $ARGS
 
-      - name: Commit report file
+      - name: Commit report files
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/influencers/_stats_report.json
+          git add assets/influencers/_stats_report.json assets/influencers/_url_drift_suspects.json || true
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
