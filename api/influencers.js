@@ -5,20 +5,29 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
-// Rate limiting: max 30 requests per minute per user
+// In-memory rate limiter — works per-instance; provides best-effort protection
+// in serverless environments where instances may not be shared.
 const rateLimitMap = new Map()
-function isRateLimited(userId) {
+
+function getRateLimitKey(userId, req) {
+  if (userId) return `user:${userId}`
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+    || req.socket?.remoteAddress
+    || 'unknown'
+  return `ip:${ip}`
+}
+
+function isRateLimited(key, max = 30) {
   const now = Date.now()
   const windowMs = 60_000
-  const max = 30
-  const entry = rateLimitMap.get(userId) || { count: 0, start: now }
+  const entry = rateLimitMap.get(key) || { count: 0, start: now }
   if (now - entry.start > windowMs) {
-    rateLimitMap.set(userId, { count: 1, start: now })
+    rateLimitMap.set(key, { count: 1, start: now })
     return false
   }
   if (entry.count >= max) return true
   entry.count++
-  rateLimitMap.set(userId, entry)
+  rateLimitMap.set(key, entry)
   return false
 }
 
@@ -46,7 +55,7 @@ async function resolveUserPlan(authHeader) {
   }
 }
 
-// Strip sensitive fields for free users — keep follower counts and stats visible
+// Strip sensitive fields for free users
 function censorRecord(record) {
   const out = { ...record }
   if (out.platforms && typeof out.platforms === 'object') {
@@ -66,43 +75,65 @@ function censorRecord(record) {
     })
     out.platforms = platforms
   }
-  // Hide audience demographics for free users
   out.followersAges = []
   out.followersGender = 0
   return out
 }
 
 export default async function handler(req, res) {
-  // CORS headers for same-origin requests
-  res.setHeader('Cache-Control', 'no-store')
-
   const { plan, userId } = await resolveUserPlan(req.headers.authorization)
   const isAdmin = plan === 'admin'
   const isPro = plan === 'pro' || isAdmin
 
-  // Rate limit Pro/trial users to prevent data scraping
-  if (isPro && userId && isRateLimited(userId)) {
-    return res.status(429).json({ error: 'Too many requests, slow down' })
+  // Rate limit all GET requests — Pro users get a higher cap (need multiple pages)
+  if (req.method === 'GET') {
+    const rlKey = getRateLimitKey(userId, req)
+    const rlMax = isPro ? 60 : 30
+    if (isRateLimited(rlKey, rlMax)) {
+      return res.status(429).json({ error: 'Too many requests, slow down' })
+    }
   }
 
-  // ─── GET: list influencers ────────────────────────────────────────────
+  // ─── GET: list influencers (paginated) ───────────────────────────────
   if (req.method === 'GET') {
-    const { data, error } = await supabase
+    // Anonymous users always receive censored data — safe to cache briefly at the CDN edge.
+    // Authenticated responses are user-specific and must never be cached.
+    res.setHeader('Cache-Control', userId
+      ? 'private, no-store'
+      : 's-maxage=60, stale-while-revalidate=120'
+    )
+
+    const page  = Math.max(1, parseInt(req.query.page)  || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 100))
+    const from  = (page - 1) * limit
+    const to    = from + limit - 1
+
+    const { data, error, count } = await supabase
       .from('influencers')
-      .select('*')
+      .select('*', { count: 'exact' })
       .order('rank', { ascending: true })
+      .range(from, to)
+
     if (error) return res.status(500).json({ error: error.message })
-    return res.status(200).json(isPro ? data : data.map(censorRecord))
+
+    const processed = isPro ? data : data.map(censorRecord)
+    return res.status(200).json({
+      data: processed,
+      page,
+      limit,
+      total: count,
+      hasMore: to < count - 1
+    })
   }
 
   // ─── Admin-only methods below ─────────────────────────────────────────
+  res.setHeader('Cache-Control', 'no-store')
   if (!isAdmin) return res.status(403).json({ error: 'Admin only' })
 
   // ─── POST: create one or many influencers ─────────────────────────────
   if (req.method === 'POST') {
     const body = req.body
     if (Array.isArray(body)) {
-      // Batch insert
       const { data, error } = await supabase
         .from('influencers')
         .insert(body)

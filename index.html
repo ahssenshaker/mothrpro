@@ -1543,38 +1543,18 @@ async function doSendReset() {
 async function registerUserIfNew(user) {
   if (!user) return;
   try {
-    // تحقق بالإيميل أولاً — قد يكون عنده سجل pending من دفع سابق
-    const { data: byEmail } = await supa.from('subscribers').select('id, plan').eq('email', user.email).single();
-    if (byEmail) {
-      // السجل موجود — إذا كان pending سيتفعّل في activatePendingIfExists
-      // إذا كان بـ id مختلف (من الويب هوك) نحدّث الـ id ليطابق auth user
-      if (byEmail.id !== user.id) {
-        await supa.from('subscribers').update({ id: user.id }).eq('email', user.email);
-      }
-      return;
-    }
-    // لا يوجد سجل بهذا الإيميل — أنشئ واحداً free جديداً
-    await supa.from('subscribers').insert({
-      id: user.id,
-      email: user.email,
-      plan: 'free',
-      activated_at: new Date().toISOString(),
-      expires_at: null
+    // تسجيل المستخدم وتفعيل أي pending subscription — كله يتم server-side
+    const { data: { session } } = await supa.auth.getSession();
+    if (!session?.access_token) return;
+    await fetch('/api/activate', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + session.access_token }
     });
   } catch(e) {}
 }
 
 async function activatePendingIfExists(email) {
-  try {
-    const { data } = await supa.from('subscribers').select('plan').eq('email', email).single();
-    if (data && data.plan === 'pending') {
-      await supa.from('subscribers').update({
-        plan: 'pro',
-        activated_at: new Date().toISOString()
-      }).eq('email', email);
-      console.log('✅ Pending → Pro activated for', email);
-    }
-  } catch(e) {}
+  // Handled server-side by /api/activate — called during registerUserIfNew
 }
 
 let userTrialExpiresAt = null;
@@ -1590,6 +1570,7 @@ async function loadUserPlan() {
     
     if (data && data.plan === 'admin') {
       userPlan = 'admin';
+      ADMIN_SESSION = true;
       userTrialExpiresAt = null;
     } else if (data && data.plan === 'pro') {
       const expired = data.expires_at && new Date(data.expires_at) < new Date();
@@ -1639,12 +1620,21 @@ async function loadInfluencerData() {
   try {
     const { data: { session } } = await supa.auth.getSession();
     _apiJwt = session?.access_token || null;
-    const res = await fetch('/api/influencers', {
-      headers: _apiJwt ? { 'Authorization': 'Bearer ' + _apiJwt } : {}
-    });
-    if (!res.ok) throw new Error('فشل تحميل البيانات');
-    const raw = await res.json();
-    DATA = (Array.isArray(raw) ? raw : []).map(normalizeInfluencer);
+    const headers = _apiJwt ? { 'Authorization': 'Bearer ' + _apiJwt } : {};
+    const limit = 100;
+    const allData = [];
+    let page = 1;
+    while (true) {
+      const res = await fetch(`/api/influencers?page=${page}&limit=${limit}`, { headers });
+      if (!res.ok) throw new Error('فشل تحميل البيانات');
+      const result = await res.json();
+      // Support both paginated { data, hasMore } and legacy plain array responses
+      const items = Array.isArray(result) ? result : (result.data || []);
+      allData.push(...items);
+      if (!result.hasMore || items.length < limit) break;
+      page++;
+    }
+    DATA = allData.map(normalizeInfluencer);
   } catch (e) {
     console.error('Error loading influencer data', e);
     DATA = [];
@@ -2016,11 +2006,11 @@ function goPage(p){
 
 function cardHTML(d){
   const plats=Object.entries(d.platforms);
-  const platHTML=plats.slice(0,3).map(([n,p])=>`<div class="plat-row"><a class="plat-link ${PC[n]||'p-tw'}" href="${p.url}" target="_blank" onclick="event.stopPropagation()">${PI[n]||'🔗'} ${tPlatform(n)}</a><span class="plat-fol">${p.followers}</span></div>`).join('');
-  const avEl=d.avatar?`<img class="card-avatar" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy"><div class="card-avatar-ph" style="display:none">${d.name[0]}</div>`:`<div class="card-avatar-ph">${d.name[0]}</div>`;
+  const platHTML=plats.slice(0,3).map(([n,p])=>`<div class="plat-row"><a class="plat-link ${PC[n]||'p-tw'}" href="${safeUrl(p.url)}" target="_blank" onclick="event.stopPropagation()">${PI[n]||'🔗'} ${tPlatform(n)}</a><span class="plat-fol">${esc(p.followers)}</span></div>`).join('');
+  const avEl=d.avatar?`<img class="card-avatar" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy"><div class="card-avatar-ph" style="display:none">${esc(d.name[0])}</div>`:`<div class="card-avatar-ph">${esc(d.name[0])}</div>`;
   const cvEl=d.cover?`<img class="card-cover" src="${d.cover}" onerror="this.className='card-cover-ph'" loading="lazy">`:`<div class="card-cover-ph"></div>`;
-  const cats=tfList(d,'categories').slice(0,1).map(c=>`<span class="badge b-cat">${c}</span>`).join('');
-  const _regs=tfList(d,'regions');const reg=_regs.find(r=>r!=='السعودية'&&r!=='الخليج'&&r!=='Saudi Arabia'&&r!=='Gulf')?`<span class="badge b-region">📍 ${_regs.find(r=>r!=='السعودية'&&r!=='الخليج'&&r!=='Saudi Arabia'&&r!=='Gulf')}</span>`:''
+  const cats=tfList(d,'categories').slice(0,1).map(c=>`<span class="badge b-cat">${esc(c)}</span>`).join('');
+  const _regs=tfList(d,'regions');const reg=_regs.find(r=>r!=='السعودية'&&r!=='الخليج'&&r!=='Saudi Arabia'&&r!=='Gulf')?`<span class="badge b-region">📍 ${esc(_regs.find(r=>r!=='السعودية'&&r!=='الخليج'&&r!=='Saudi Arabia'&&r!=='Gulf'))}</span>`:''
   const addedBadge=d.source==='verified'?`<span class="badge b-added">${t('modal.verified_badge')}</span>`:'';
   const _14days=14*24*60*60*1000;const isNew=d.created_at&&(Date.now()-new Date(d.created_at).getTime()<_14days);
   const newBadge=isNew?`<span class="badge b-new">${t('badge.new')}</span>`:'';
@@ -2028,9 +2018,9 @@ function cardHTML(d){
   return `<div class="card${d.source==='verified'?' is-added':''}" onclick="openModal(${d.id})">
     <div class="card-admin-actions"><button class="card-edit-btn" onclick="event.stopPropagation();editInfluencer(${d.id})">${t('card.edit')}</button></div>
     ${cvEl}<div class="card-body">
-    <div class="card-top">${avEl}<div class="card-namebox"><div class="card-name">${tf(d,'name')}</div><div class="card-spec">${tf(d,'specialization')||tf(d,'intro')||''}</div></div></div>
+    <div class="card-top">${avEl}<div class="card-namebox"><div class="card-name">${esc(tf(d,'name'))}</div><div class="card-spec">${esc(tf(d,'specialization')||tf(d,'intro')||'')}</div></div></div>
     <div class="card-badges">${newBadge}${getTierBadge(d.tier)}${addedBadge}${reg}${cats}</div>
-    <div class="followers-box"><div><div class="followers-num">${d.totalFormatted}</div><div style="font-size:10px;color:var(--muted2)">${t('card.total_followers')}</div></div><div style="text-align:${currentLang==='ar'?'left':'right'}"><div class="rank-txt">${t('card.rank')} <span>#${d.rank}</span></div><div style="font-size:10px;color:var(--muted2);margin-top:2px">${d.rangeLabel}</div></div></div>
+    <div class="followers-box"><div><div class="followers-num">${esc(d.totalFormatted)}</div><div style="font-size:10px;color:var(--muted2)">${t('card.total_followers')}</div></div><div style="text-align:${currentLang==='ar'?'left':'right'}"><div class="rank-txt">${t('card.rank')} <span>#${d.rank}</span></div><div style="font-size:10px;color:var(--muted2);margin-top:2px">${esc(d.rangeLabel)}</div></div></div>
     <div class="platforms-mini">${platHTML}</div>
     <div class="gbar-mini"><span style="color:var(--pink)">👩${fp}%</span><div class="gbar-track"><div class="gbar-fill" style="width:${fp}%"></div></div><span>👨${100-fp}%</span></div>
     </div></div>`;
@@ -2077,7 +2067,7 @@ function openModal(id){
   gtag('event','influencer_click',{event_category:'engagement',event_label:'influencer_card'});
   if(userPlan==='free'){openUpgrade();return;}
   const plats=Object.entries(d.platforms);
-  const avEl=d.avatar?`<img class="modal-av" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="modal-av-ph" style="display:none">${d.name[0]}</div>`:`<div class="modal-av-ph">${d.name[0]}</div>`;
+  const avEl=d.avatar?`<img class="modal-av" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="modal-av-ph" style="display:none">${esc(d.name[0])}</div>`:`<div class="modal-av-ph">${esc(d.name[0])}</div>`;
   const cvEl=d.cover?`<img class="modal-cover" src="${d.cover}" onerror="this.className='modal-cover-ph'">`:`<div class="modal-cover-ph"></div>`;
   const fp=d.followersGender===2?70:d.followersGender===1?30:50;
   const platCards=plats.map(([n,p])=>{
@@ -2098,20 +2088,20 @@ function openModal(id){
         :`<span class="price-val">${num.toLocaleString()} ${t('currency')}</span>`;
       return `<div class="price-item${isEst?' est':''}"><span class="price-type">${tPriceKey(pt)}</span>${priceHtml}</div>`;
     }).join('');
-    return `<div class="modal-plat-card"><div class="mph"><div class="mph-left"><span style="font-size:22px">${PI[n]||'🔗'}</span><div><div class="mph-name">${tPlatform(n)}</div><div class="mph-url">${p.url}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="mph-fol">${p.followers}</div><a class="visit-btn" href="${p.url}" target="_blank">${t('plat.visit')}</a></div></div>${st.length?`<div class="plat-stats-row">${st.join('')}</div>`:''}${pr?`${estNotice}<div class="prices-grid">${pr}</div>`:''}</div>`;
+    return `<div class="modal-plat-card"><div class="mph"><div class="mph-left"><span style="font-size:22px">${PI[n]||'🔗'}</span><div><div class="mph-name">${tPlatform(n)}</div><div class="mph-url">${esc(p.url)}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="mph-fol">${esc(p.followers)}</div><a class="visit-btn" href="${safeUrl(p.url)}" target="_blank">${t('plat.visit')}</a></div></div>${st.length?`<div class="plat-stats-row">${st.join('')}</div>`:''}${pr?`${estNotice}<div class="prices-grid">${pr}</div>`:''}</div>`;
   }).join('');
-  const tagsH=tfList(d,'tags').map(tg=>`<span class="tag">${tg}</span>`).join('');
-  const agesH=(d.followersAges||[]).map(a=>`<span class="age-pill">${a}</span>`).join('');
-  const catsH=tfList(d,'categories').map(c=>`<span class="tag">${c}</span>`).join('');
-  const regH=tfList(d,'regions').map(r=>`<span class="tag">📍 ${r}</span>`).join('');
+  const tagsH=tfList(d,'tags').map(tg=>`<span class="tag">${esc(tg)}</span>`).join('');
+  const agesH=(d.followersAges||[]).map(a=>`<span class="age-pill">${esc(a)}</span>`).join('');
+  const catsH=tfList(d,'categories').map(c=>`<span class="tag">${esc(c)}</span>`).join('');
+  const regH=tfList(d,'regions').map(r=>`<span class="tag">📍 ${esc(r)}</span>`).join('');
   const addedNotice=d.source==='verified'?`<div class="added-notice">${t('verified.notice')}</div>`:'';
 
   document.getElementById('modalContent').innerHTML=`
     ${cvEl}<div class="modal-inner">
     ${addedNotice}
-    <div class="modal-head">${avEl}<div><div class="modal-name">${tf(d,'name')}</div><div class="modal-spec">${tf(d,'specialization')||''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">${getTierBadge(d.tier)}<span class="badge b-region">#${d.rank} ${t('modal.rank_badge')}</span><span class="badge b-region">${d.rangeLabel}</span>${d.source==='verified'?`<span class="badge b-added">${t('modal.verified_badge')}</span>`:''}</div><button class="btn admin-fab modal-edit-btn" style="margin-top:10px" onclick="editInfluencer(${d.id})">${t('modal.edit_btn')}</button></div></div>
+    <div class="modal-head">${avEl}<div><div class="modal-name">${esc(tf(d,'name'))}</div><div class="modal-spec">${esc(tf(d,'specialization')||'')}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">${getTierBadge(d.tier)}<span class="badge b-region">#${d.rank} ${t('modal.rank_badge')}</span><span class="badge b-region">${esc(d.rangeLabel)}</span>${d.source==='verified'?`<span class="badge b-added">${t('modal.verified_badge')}</span>`:''}</div><button class="btn admin-fab modal-edit-btn" style="margin-top:10px" onclick="editInfluencer(${d.id})">${t('modal.edit_btn')}</button></div></div>
     <div class="sec"><div class="sec-title">${t('modal.stats')}</div><div class="stats-grid">
-      <div class="stat-box"><div class="val">${d.totalFormatted}</div><div class="key">${t('stat.total_followers')}</div></div>
+      <div class="stat-box"><div class="val">${esc(d.totalFormatted)}</div><div class="key">${t('stat.total_followers')}</div></div>
       <div class="stat-box"><div class="val">#${d.rank}</div><div class="key">${t('stat.rank_key')}</div></div>
       <div class="stat-box"><div class="val">${plats.length}</div><div class="key">${t('stat.platforms_key')}</div></div>
       <div class="stat-box"><div class="val">${d.gender==='female'?t('gender.female'):d.gender==='male'?t('gender.male'):'—'}</div><div class="key">${t('stat.gender_key')}</div></div>
@@ -2123,7 +2113,7 @@ function openModal(id){
     </div></div>
     ${agesH?`<div class="sec"><div class="sec-title">${t('modal.ages')}</div><div class="tags-wrap">${agesH}</div></div>`:''}
     <div class="sec"><div class="sec-title">${t('modal.platforms')}</div>${platCards}</div>
-    ${(tf(d,'intro'))&&tf(d,'intro')!==tf(d,'specialization')?`<div class="sec"><div class="sec-title">${t('modal.bio')}</div><div class="intro-box">${tf(d,'intro')}</div></div>`:''}
+    ${(tf(d,'intro'))&&tf(d,'intro')!==tf(d,'specialization')?`<div class="sec"><div class="sec-title">${t('modal.bio')}</div><div class="intro-box">${esc(tf(d,'intro'))}</div></div>`:''}
     ${catsH?`<div class="sec"><div class="sec-title">${t('modal.categories')}</div><div class="tags-wrap">${catsH}</div></div>`:''}
     ${tagsH?`<div class="sec"><div class="sec-title">${t('modal.tags')}</div><div class="tags-wrap">${tagsH}</div></div>`:''}
     ${regH?`<div class="sec"><div class="sec-title">${t('modal.regions')}</div><div class="tags-wrap">${regH}</div></div>`:''}
@@ -2216,6 +2206,7 @@ function recalcRanks(){
 function splitList(v){return String(v||'').split(/[،,]/).map(x=>x.trim()).filter(Boolean)}
 function joinList(v){return (v||[]).join('، ')}
 function esc(v){return String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function safeUrl(url){if(!url)return'#';const s=String(url).trim();return/^javascript:/i.test(s)||/^data:/i.test(s)?'#':s}
 
 const ADMIN_PIN_KEY='moalen_admin_pin_v1';
 let ADMIN_SESSION=false;
@@ -2892,9 +2883,13 @@ function closeAdminDash() {
 
 async function loadAdminSubs() {
   try {
-    const { data, error } = await supa.from('subscribers').select('*').order('activated_at', { ascending: false });
-    if (error) throw error;
-    allSubsData = data || [];
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      headers: { 'Authorization': 'Bearer ' + (session?.access_token || '') }
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل التحميل'); }
+    const result = await res.json();
+    allSubsData = result.data || [];
     renderAdminStats();
     renderAdminTable(allSubsData);
   } catch(e) {
@@ -2984,10 +2979,13 @@ async function adminActivateSub() {
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
   msg.textContent = 'جاري التفعيل...'; msg.className = 'admin-msg';
   try {
-    // Find user in subscribers table directly
-    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
-    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
-    await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', sub.id);
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'activate', email })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل التفعيل'); }
     msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
     document.getElementById('addSubEmail').value = '';
     if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
@@ -2998,14 +2996,30 @@ async function adminActivateSub() {
 
 async function adminActivateById(id, email) {
   if (!confirm('تفعيل برو لـ ' + email + '؟')) return;
-  await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', id);
-  await loadAdminSubs();
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'activate', id })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+    await loadAdminSubs();
+  } catch(e) { alert('خطأ: ' + e.message); }
 }
 
 async function adminRevokeSub(id, email) {
   if (!confirm('إلغاء برو لـ ' + email + '؟')) return;
-  await supa.from('subscribers').update({ plan: 'free' }).eq('id', id);
-  await loadAdminSubs();
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'revoke', id })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+    await loadAdminSubs();
+  } catch(e) { alert('خطأ: ' + e.message); }
 }
 
 async function adminAddAdmin() {
@@ -3014,9 +3028,13 @@ async function adminAddAdmin() {
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
   msg.textContent = 'جاري الإضافة...'; msg.className = 'admin-msg';
   try {
-    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
-    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
-    await supa.from('subscribers').update({ plan: 'admin' }).eq('id', sub.id);
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'set-admin', email })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل'); }
     msg.textContent = '✅ تم إضافة ' + email + ' كأدمن'; msg.className = 'admin-msg ok';
     document.getElementById('addAdminEmail').value = '';
     setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
