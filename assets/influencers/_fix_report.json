@@ -1,22 +1,6 @@
 {
   "urlsUpdated": [],
-  "blocklisted": [
-    {
-      "name": "نور ستارز",
-      "id": "1783000246840",
-      "platform": "تيك توك"
-    },
-    {
-      "name": "نور ستارز",
-      "id": "1783000246840",
-      "platform": "يوتيوب"
-    },
-    {
-      "name": "خالد العامري",
-      "id": "1783000246844",
-      "platform": "تيك توك"
-    }
-  ],
+  "blocklisted": [],
   "alreadyBlocked": [
     {
       "name": "أسيل عمران",
