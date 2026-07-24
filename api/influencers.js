@@ -81,8 +81,6 @@ function censorRecord(record) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Cache-Control', 'no-store')
-
   const { plan, userId } = await resolveUserPlan(req.headers.authorization)
   const isAdmin = plan === 'admin'
   const isPro = plan === 'pro' || isAdmin
@@ -98,6 +96,13 @@ export default async function handler(req, res) {
 
   // ─── GET: list influencers (paginated) ───────────────────────────────
   if (req.method === 'GET') {
+    // Anonymous users always receive censored data — safe to cache briefly at the CDN edge.
+    // Authenticated responses are user-specific and must never be cached.
+    res.setHeader('Cache-Control', userId
+      ? 'private, no-store'
+      : 's-maxage=60, stale-while-revalidate=120'
+    )
+
     const page  = Math.max(1, parseInt(req.query.page)  || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 100))
     const from  = (page - 1) * limit
@@ -122,6 +127,7 @@ export default async function handler(req, res) {
   }
 
   // ─── Admin-only methods below ─────────────────────────────────────────
+  res.setHeader('Cache-Control', 'no-store')
   if (!isAdmin) return res.status(403).json({ error: 'Admin only' })
 
   // ─── POST: create one or many influencers ─────────────────────────────

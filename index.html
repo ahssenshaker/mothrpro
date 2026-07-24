@@ -1529,38 +1529,18 @@ async function doSendReset() {
 async function registerUserIfNew(user) {
   if (!user) return;
   try {
-    // تحقق بالإيميل أولاً — قد يكون عنده سجل pending من دفع سابق
-    const { data: byEmail } = await supa.from('subscribers').select('id, plan').eq('email', user.email).single();
-    if (byEmail) {
-      // السجل موجود — إذا كان pending سيتفعّل في activatePendingIfExists
-      // إذا كان بـ id مختلف (من الويب هوك) نحدّث الـ id ليطابق auth user
-      if (byEmail.id !== user.id) {
-        await supa.from('subscribers').update({ id: user.id }).eq('email', user.email);
-      }
-      return;
-    }
-    // لا يوجد سجل بهذا الإيميل — أنشئ واحداً free جديداً
-    await supa.from('subscribers').insert({
-      id: user.id,
-      email: user.email,
-      plan: 'free',
-      activated_at: new Date().toISOString(),
-      expires_at: null
+    // تسجيل المستخدم وتفعيل أي pending subscription — كله يتم server-side
+    const { data: { session } } = await supa.auth.getSession();
+    if (!session?.access_token) return;
+    await fetch('/api/activate', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + session.access_token }
     });
   } catch(e) {}
 }
 
 async function activatePendingIfExists(email) {
-  try {
-    const { data } = await supa.from('subscribers').select('plan').eq('email', email).single();
-    if (data && data.plan === 'pending') {
-      await supa.from('subscribers').update({
-        plan: 'pro',
-        activated_at: new Date().toISOString()
-      }).eq('email', email);
-      console.log('✅ Pending → Pro activated for', email);
-    }
-  } catch(e) {}
+  // Handled server-side by /api/activate — called during registerUserIfNew
 }
 
 let userTrialExpiresAt = null;
@@ -1576,6 +1556,7 @@ async function loadUserPlan() {
     
     if (data && data.plan === 'admin') {
       userPlan = 'admin';
+      ADMIN_SESSION = true;
       userTrialExpiresAt = null;
     } else if (data && data.plan === 'pro') {
       const expired = data.expires_at && new Date(data.expires_at) < new Date();
@@ -2864,9 +2845,13 @@ function closeAdminDash() {
 
 async function loadAdminSubs() {
   try {
-    const { data, error } = await supa.from('subscribers').select('*').order('activated_at', { ascending: false });
-    if (error) throw error;
-    allSubsData = data || [];
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      headers: { 'Authorization': 'Bearer ' + (session?.access_token || '') }
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل التحميل'); }
+    const result = await res.json();
+    allSubsData = result.data || [];
     renderAdminStats();
     renderAdminTable(allSubsData);
   } catch(e) {
@@ -2946,10 +2931,13 @@ async function adminActivateSub() {
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
   msg.textContent = 'جاري التفعيل...'; msg.className = 'admin-msg';
   try {
-    // Find user in subscribers table directly
-    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
-    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
-    await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', sub.id);
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'activate', email })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل التفعيل'); }
     msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
     document.getElementById('addSubEmail').value = '';
     if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
@@ -2960,14 +2948,30 @@ async function adminActivateSub() {
 
 async function adminActivateById(id, email) {
   if (!confirm('تفعيل برو لـ ' + email + '؟')) return;
-  await supa.from('subscribers').update({ plan: 'pro', activated_at: new Date().toISOString() }).eq('id', id);
-  await loadAdminSubs();
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'activate', id })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+    await loadAdminSubs();
+  } catch(e) { alert('خطأ: ' + e.message); }
 }
 
 async function adminRevokeSub(id, email) {
   if (!confirm('إلغاء برو لـ ' + email + '؟')) return;
-  await supa.from('subscribers').update({ plan: 'free' }).eq('id', id);
-  await loadAdminSubs();
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'revoke', id })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+    await loadAdminSubs();
+  } catch(e) { alert('خطأ: ' + e.message); }
 }
 
 async function adminAddAdmin() {
@@ -2976,9 +2980,13 @@ async function adminAddAdmin() {
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
   msg.textContent = 'جاري الإضافة...'; msg.className = 'admin-msg';
   try {
-    const { data: sub } = await supa.from('subscribers').select('id').eq('email', email).single();
-    if (!sub) { msg.textContent = 'المستخدم غير موجود — يجب أن ينشئ حساباً أولاً'; msg.className = 'admin-msg err'; return; }
-    await supa.from('subscribers').update({ plan: 'admin' }).eq('id', sub.id);
+    const { data: { session } } = await supa.auth.getSession();
+    const res = await fetch('/api/subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'set-admin', email })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل'); }
     msg.textContent = '✅ تم إضافة ' + email + ' كأدمن'; msg.className = 'admin-msg ok';
     document.getElementById('addAdminEmail').value = '';
     setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
