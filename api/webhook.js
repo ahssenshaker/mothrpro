@@ -85,33 +85,17 @@ export default async function handler(req, res) {
       .eq('email', accountEmail)
     console.log('✅ Activated pro for', accountEmail)
   } else {
-    // لا يوجد subscriber — تحقق إذا الإيميل مسجّل في auth.users
-    const { data: authUsers } = await supabase.auth.admin.listUsers()
-    const authUser = authUsers?.users?.find(u => u.email?.toLowerCase() === accountEmail)
-
-    if (authUser) {
-      // المستخدم مسجّل لكن ليس في subscribers — أضفه مباشرة كـ pro
-      await supabase
-        .from('subscribers')
-        .insert({
-          id: authUser.id,
-          email: accountEmail,
-          plan: 'pro',
-          activated_at: new Date().toISOString()
-        })
-      console.log('✅ Created pro subscriber for existing auth user', accountEmail)
-    } else {
-      // لا حساب أصلاً — pending حتى يسجّل
-      await supabase
-        .from('subscribers')
-        .insert({
-          id: crypto.randomUUID(),
-          email: accountEmail,
-          plan: 'pending',
-          activated_at: new Date().toISOString()
-        })
-      console.log('⏳ Saved as pending for', accountEmail)
-    }
+    // لا يوجد subscriber — احفظ كـ pending حتى يسجّل المستخدم.
+    // عند تسجيل الدخول، registerUserIfNew() تُصحح الـ id وactivatePendingIfExists() ترقّيه.
+    await supabase
+      .from('subscribers')
+      .insert({
+        id: crypto.randomUUID(),
+        email: accountEmail,
+        plan: 'pending',
+        activated_at: new Date().toISOString()
+      })
+    console.log('⏳ Saved as pending for', accountEmail)
   }
 
   return res.status(200).json({ ok: true })
