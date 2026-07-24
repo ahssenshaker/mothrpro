@@ -24,7 +24,6 @@ async function resolveAdmin(authHeader) {
 
 async function sendPlanEmail(email, action) {
   const key = process.env.RESEND_API_KEY
-  console.log('[email] key present:', !!key, '| email:', email || 'MISSING')
   if (!key || !email) return
 
   const subjects = {
@@ -62,8 +61,7 @@ async function sendPlanEmail(email, action) {
         html: bodies[action] || '',
       }),
     })
-    const body = await r.json().catch(() => ({}))
-    console.log('[resend]', r.status, JSON.stringify(body))
+    await r.json().catch(() => ({}))
   } catch (e) {
     console.error('[resend] fetch failed:', e.message)
   }

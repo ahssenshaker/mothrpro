@@ -1649,8 +1649,8 @@ function updatePlanBadge(isAdmin) {
 }
 
 async function handleLogout() {
+  currentUser = null; // nulled first so the SIGNED_OUT listener skips
   await supa.auth.signOut();
-  currentUser = null;
   userPlan = 'free';
   DATA = [];
   filtered = [];
@@ -1785,17 +1785,40 @@ function applyProRestrictions() {
 // cardHTML and openModal are defined.
 
 // ═══════════════════════════════════════════
-// CHECK SESSION ON LOAD
+// CHECK SESSION ON LOAD + HANDLE TOKEN EXPIRY
 // ═══════════════════════════════════════════
-(async function() {
-  const { data: { session } } = await supa.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await registerUserIfNew(currentUser);
-    await loadUserPlan();
-    showDashboard();
+supa.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'INITIAL_SESSION') {
+    // Page load — restore session from localStorage if still valid
+    if (session) {
+      currentUser = session.user;
+      await registerUserIfNew(currentUser);
+      await loadUserPlan();
+      showDashboard();
+    }
+  } else if (event === 'TOKEN_REFRESHED') {
+    // Keep the cached JWT token current so API calls stay authorised
+    _apiJwt = session?.access_token || null;
+  } else if (event === 'SIGNED_OUT' && currentUser) {
+    // Session expired outside our control (token revoked, 1-hour idle, etc.)
+    currentUser = null;
+    userPlan = 'free';
+    DATA = [];
+    filtered = [];
+    _apiJwt = null;
+    document.getElementById('searchInput').value = '';
+    ['tierFilter','platformFilter','genderFilter','regionFilter','catFilter','sourceFilter'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    ['priceMin','priceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    const sb = document.getElementById('sortBy'); if (sb) sb.value = 'rank';
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('userBar').style.display = 'none';
+    document.getElementById('grid').innerHTML = '';
+    document.getElementById('pagination').innerHTML = '';
+    document.body.classList.remove('is-admin');
   }
-})();
+});
 
 // ═══════════════════════════════════════════
 // ORIGINAL DASHBOARD CODE
