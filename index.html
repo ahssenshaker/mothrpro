@@ -22,6 +22,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://moatherpro.com">
 <meta name="description" content="دليل برو مؤثرين سعوديين وخليجيين فيه الأسعار الفعلية ونسب التفاعل.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"مؤثر برو","url":"https://moatherpro.com","description":"دليل المؤثرين السعوديين والخليجيين مع الأسعار الفعلية ونسب التفاعل","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://moatherpro.com?q={search_term_string}"},"query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"مؤثر برو","url":"https://moatherpro.com","sameAs":["https://www.instagram.com/moather.pro"],"description":"منصة لاكتشاف المؤثرين السعوديين والخليجيين مع الأسعار الفعلية ونسب التفاعل"}</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cG9seWdvbiBwb2ludHM9IjUwLDcgNjAsMzYgOTEsMzcgNjYsNTUgNzUsODUgNTAsNjcgMjUsODUgMzQsNTUgOSwzNyA0MCwzNiIgZmlsbD0iI2Y2Yzc0ZCIvPgogIDxwb2x5Z29uIHBvaW50cz0iNTAsMTQgNTgsMzkgODQsMzkgNjMsNTQgNzIsODAgNTAsNjQgMjgsODAgMzcsNTQgMTYsMzkgNDIsMzkiIGZpbGw9IiMwODBjMWEiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjU1IiByPSI3IiBmaWxsPSJub25lIiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPGxpbmUgeDE9IjE0IiB5MT0iMTciIHgyPSIyNSIgeTI9IjI3IiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iNzUiIHkxPSIxNCIgeDI9IjY0IiB5Mj0iMjQiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI5IiB5MT0iNzMiIHgyPSIyMSIgeTI9IjYzIiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iODYiIHkxPSI3MCIgeDI9Ijc0IiB5Mj0iNjEiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI1MCIgeTE9Ijk2IiB4Mj0iNTAiIHkyPSI4NCIgc3Ryb2tlPSIjNGVjOWQ0IiBzdHJva2Utd2lkdGg9IjMuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPg==">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -351,7 +353,7 @@ select:focus{border-color:var(--accent)}
 [data-theme='light'] .card:hover{box-shadow:0 8px 40px rgba(0,0,0,.1)}
 [data-theme='light'] .pro-lock{background:rgba(240,244,248,.92)}
 [data-theme='light'] #loading{background:var(--bg)}
-[data-theme='light'] .admin-panel,[data-theme='light'] .pin-panel,[data-theme='light'] .admin-dash{background:rgba(0,0,0,.55)}
+[data-theme='light'] .admin-panel,[data-theme='light'] .admin-dash{background:rgba(0,0,0,.55)}
 [data-theme='light'] .upgrade-modal{background:rgba(0,0,0,.5)}
 [data-theme='light'] .overlay{background:rgba(0,0,0,.55)}
 [data-theme='light'] .auth-screen{background:var(--bg)}
@@ -415,15 +417,6 @@ body.is-admin .card:hover .card-admin-actions{opacity:1}
 .form-footer{position:sticky;bottom:-18px;background:linear-gradient(180deg,rgba(14,20,34,0),var(--s1) 28%);padding:22px 0 0;display:flex;gap:9px;justify-content:flex-start;flex-wrap:wrap;z-index:2}
 .admin-toast{position:fixed;bottom:20px;right:20px;background:var(--s2);border:1px solid rgba(104,211,145,.25);color:var(--green);border-radius:12px;padding:12px 16px;font-size:13px;z-index:1400;box-shadow:0 12px 40px rgba(0,0,0,.35);display:none}.admin-toast.show{display:block;animation:toastIn .25s ease-out}
 
-.pin-panel{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);z-index:1500;display:none;align-items:center;justify-content:center;padding:18px}
-.pin-panel.open{display:flex}
-.pin-card{width:min(420px,100%);background:var(--s1);border:1px solid var(--border2);border-radius:22px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.55)}
-.pin-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:6px}.pin-sub{font-size:12px;color:var(--muted2);line-height:1.7;margin-bottom:16px}
-.pin-input{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 14px;font-family:inherit;font-size:22px;letter-spacing:8px;text-align:center;direction:ltr;outline:none;margin-bottom:10px}
-.pin-input:focus,.pin-answer:focus{border-color:var(--accent)}
-.pin-answer{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 14px;font-family:inherit;font-size:14px;outline:none;margin-bottom:10px}
-.pin-question{background:rgba(99,179,237,.07);border:1px solid rgba(99,179,237,.18);border-radius:12px;padding:12px;color:var(--muted2);font-size:13px;line-height:1.7;margin-bottom:10px}
-.pin-error{min-height:18px;color:var(--red);font-size:12px;margin-bottom:10px}.pin-actions{display:flex;gap:8px;flex-wrap:wrap}.pin-link{background:transparent;border:none;color:var(--accent);font-family:inherit;font-size:12px;cursor:pointer;padding:8px 0}.pin-link:hover{text-decoration:underline}
 
 @keyframes toastIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(max-width:900px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{max-height:34vh;border-left:0;border-bottom:1px solid var(--border)}.admin-grid,.image-preview-row,.platform-grid{grid-template-columns:1fr}.admin-panel{padding:8px}.admin-shell{max-height:96vh}}
@@ -816,23 +809,6 @@ padding:7px 10px;
 
 
 
-<div class="pin-panel" id="pinPanel" aria-hidden="true">
-  <div class="pin-card" role="dialog" aria-modal="true" aria-label="دخول لوحة الإدارة">
-    <div class="pin-title" id="pinTitle" data-i18n="admin.pin.title">دخول لوحة الإدارة</div>
-    <div class="pin-sub" id="pinSub" data-i18n="admin.pin.sub">أدخل رمز PIN المكوّن من 4 أرقام لفتح لوحة الإدارة.</div>
-    <input class="pin-input" id="pinInput" type="password" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter')handlePinPrimary()">
-    <div id="pinQuestionWrap" style="display:none">
-      <div class="pin-question" id="pinQuestionText">ما اسم والد والد مصمم هذا الملف؟</div>
-      <input class="pin-answer" id="pinAnswer" placeholder="اكتب الإجابة" autocomplete="off" onkeydown="if(event.key==='Enter')handlePinPrimary()">
-    </div>
-    <div class="pin-error" id="pinError"></div>
-    <div class="pin-actions">
-      <button class="btn admin-fab" type="button" id="pinPrimaryBtn" onclick="handlePinPrimary()" data-i18n="admin.pin.enter">دخول</button>
-      <button class="btn btn-reset" type="button" onclick="closePinPanel()" data-i18n="admin.btn.cancel">إلغاء</button>
-    </div>
-    <button class="pin-link" id="forgotPinBtn" type="button" onclick="alert('لإعادة تعيين PIN، امسح بيانات المتصفح (localStorage) وأعد تعيينه.')" data-i18n="admin.pin.forgot">نسيت PIN؟</button>
-  </div>
-</div>
 
 <div class="admin-panel" id="adminPanel" aria-hidden="true">
   <div class="admin-shell" role="dialog" aria-modal="true" aria-label="لوحة إدارة المؤثرين">
@@ -1111,10 +1087,6 @@ const TRANSLATIONS = {
     'admin.btn.save': '💾 حفظ المؤثر',
     'admin.btn.clear': 'تفريغ لإضافة جديد',
     'admin.btn.delete': '🗑 حذف',
-    'admin.pin.title': 'دخول لوحة الإدارة',
-    'admin.pin.sub': 'أدخل رمز PIN المكوّن من 4 أرقام لفتح لوحة الإدارة.',
-    'admin.pin.enter': 'دخول',
-    'admin.pin.forgot': 'نسيت PIN؟',
     'admin.btn.cancel': 'إلغاء',
     'admin.plat.label': 'منصة',
     'admin.plat.delete': 'حذف',
@@ -1302,10 +1274,6 @@ const TRANSLATIONS = {
     'admin.btn.save': '💾 Save Influencer',
     'admin.btn.clear': 'Clear for New',
     'admin.btn.delete': '🗑 Delete',
-    'admin.pin.title': 'Enter Admin Panel',
-    'admin.pin.sub': 'Enter the 4-digit PIN to open the admin panel.',
-    'admin.pin.enter': 'Enter',
-    'admin.pin.forgot': 'Forgot PIN?',
     'admin.btn.cancel': 'Cancel',
     'admin.plat.label': 'Platform',
     'admin.plat.delete': 'Delete',
@@ -1793,7 +1761,7 @@ function closeUpgrade() {
 function applyProRestrictions() {
   const isAdmin = userPlan === 'admin';
   // Hide all original admin panel triggers for non-admins
-  document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="showPinGate"], [onclick*="openAdmin"], .btn-admin, #adminBtn').forEach(el => {
+  document.querySelectorAll('[onclick*="openAdminPanel"], [onclick*="openAdmin"], .btn-admin, #adminBtn').forEach(el => {
     if (!isAdmin) el.style.display = 'none';
   });
   // Show card edit buttons only for admin via body class
@@ -2126,7 +2094,7 @@ function closeModal(e){if(e&&e.target!==document.getElementById('overlay'))retur
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
 function exportCSV(btn){
-  if(!ADMIN_SESSION){showPinGate(()=>{openAdminPanel();exportCSV(btn);});return;}
+  if(!ADMIN_SESSION)return;
   btn=btn||document.querySelector('[data-export-csv]');
   const oldText=btn?btn.textContent:'';
   if(btn){btn.textContent='⏳...';btn.disabled=true;}
@@ -2208,51 +2176,12 @@ function joinList(v){return (v||[]).join('، ')}
 function esc(v){return String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function safeUrl(url){if(!url)return'#';const s=String(url).trim();return/^javascript:/i.test(s)||/^data:/i.test(s)?'#':s}
 
-const ADMIN_PIN_KEY='moalen_admin_pin_v1';
 let ADMIN_SESSION=false;
-let ADMIN_PIN_CALLBACK=null;
-let ADMIN_PIN_MODE='enter';
-function storedAdminPin(){return localStorage.getItem(ADMIN_PIN_KEY)||''}
-function validPin(v){return /^\d{4}$/.test(String(v||''))}
-function showPinGate(callback){
-  ADMIN_PIN_CALLBACK=callback||null;
-  setPinMode(storedAdminPin()?'enter':'setup');
-  const panel=document.getElementById('pinPanel');
-  panel.classList.add('open');panel.setAttribute('aria-hidden','false');
-  setTimeout(()=>{const el=document.getElementById('pinInput');if(el)el.focus();},50);
-}
-function setPinMode(mode){
-  ADMIN_PIN_MODE=mode;
-  const title=document.getElementById('pinTitle'),sub=document.getElementById('pinSub'),input=document.getElementById('pinInput'),qWrap=document.getElementById('pinQuestionWrap'),primary=document.getElementById('pinPrimaryBtn'),forgot=document.getElementById('forgotPinBtn'),err=document.getElementById('pinError');
-  if(err)err.textContent=''; if(input)input.value='';
-  if(mode==='setup'){
-    title.textContent='تعيين PIN للوحة الإدارة';
-    sub.textContent='أول مرة تفتح اللوحة: اختر رمز PIN من 4 أرقام.';
-    input.style.display='block'; if(qWrap)qWrap.style.display='none'; primary.textContent='حفظ وفتح اللوحة'; if(forgot)forgot.style.display='none';
-  }else{
-    title.textContent='دخول لوحة الإدارة';
-    sub.textContent='أدخل رمز PIN المكوّن من 4 أرقام لفتح لوحة الإدارة.';
-    input.style.display='block'; if(qWrap)qWrap.style.display='none'; primary.textContent='دخول'; if(forgot)forgot.style.display='none';
-  }
-}
-function closePinPanel(){const panel=document.getElementById('pinPanel');panel.classList.remove('open');panel.setAttribute('aria-hidden','true');ADMIN_PIN_CALLBACK=null;}
-function handlePinPrimary(){
-  const err=document.getElementById('pinError');
-  const pin=(document.getElementById('pinInput')?.value||'').trim();
-  if(ADMIN_PIN_MODE==='enter'){
-    if(pin===storedAdminPin()){ADMIN_SESSION=true;const cb=ADMIN_PIN_CALLBACK;closePinPanel();if(cb)cb();return;}
-    err.textContent='PIN غير صحيح. إن نسيته، امسح localStorage وأعد تعيينه.';return;
-  }
-  if(ADMIN_PIN_MODE==='setup'){
-    if(!validPin(pin)){err.textContent='اكتب PIN من 4 أرقام فقط.';return;}
-    localStorage.setItem(ADMIN_PIN_KEY,pin);ADMIN_SESSION=true;const cb=ADMIN_PIN_CALLBACK;closePinPanel();showAdminToast('تم حفظ PIN وفتح لوحة الإدارة');if(cb)cb();return;
-  }
-}
 function openAdminPanel(){
   if(!currentUser || userPlan !== 'admin'){return;}document.getElementById('adminPanel').classList.add('open');document.getElementById('adminPanel').setAttribute('aria-hidden','false');renderAdminList();if(!document.getElementById('fId').value)startAddInfluencer(false)}
 
 function showAdminToast(msg){const t=document.getElementById('adminToast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
-function openAdmin(){if(!ADMIN_SESSION){showPinGate(()=>openAdminPanel());return;}openAdminPanel()}
+function openAdmin(){openAdminPanel()}
 function closeAdmin(){document.getElementById('adminPanel').classList.remove('open');document.getElementById('adminPanel').setAttribute('aria-hidden','true')}
 function renderAdminList(){
   const q=(document.getElementById('adminSearch')?.value||'').trim().toLowerCase();
@@ -2271,7 +2200,6 @@ function startAddInfluencer(open=true){
   if(open)openAdmin();
 }
 function editInfluencer(id,open=true){
-  if(open&&!ADMIN_SESSION){showPinGate(()=>{openAdminPanel();editInfluencer(id,false);});return;}
   const d=DATA.find(x=>String(x.id)===String(id));if(!d)return;
   if(open)openAdminPanel();
   document.getElementById('fId').value=d.id;
@@ -2335,7 +2263,7 @@ function collectPlatforms(){
 /* ===== Excel import logic ===== */
 const XLSX_CDN_URL='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
 function triggerExcelImport(){
-  if(!ADMIN_SESSION){showPinGate(()=>{openAdminPanel();triggerExcelImport();});return;}
+  if(!ADMIN_SESSION)return;
   const input=document.getElementById('excelImportInput');
   if(!input){alert('حقل استيراد Excel غير موجود');return;}
   input.value='';
@@ -2694,7 +2622,7 @@ async function resetLocalDashboardData(){
   await loadInfluencerData();filtered=[...DATA];refreshStats();applyFilters();startAddInfluencer(false);showAdminToast('تم إعادة تحميل البيانات من الخادم');
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('pinPanel')?.classList.contains('open'))closePinPanel();else if(e.key==='Escape'&&document.getElementById('adminPanel')?.classList.contains('open'))closeAdmin()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('adminPanel')?.classList.contains('open'))closeAdmin()});
 
 // init() is now called in showDashboard() after data is fetched from the API
 

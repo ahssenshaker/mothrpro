@@ -43,7 +43,7 @@ const NAV_TIMEOUT_MS = 30000;
 const SETTLE_MS = 4000;
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-const SUPPORTED_PLATFORMS = ['يوتيوب', 'تيك توك', 'تويتر/X', 'سناب شات'];
+const SUPPORTED_PLATFORMS = ['يوتيوب', 'تيك توك', 'تويتر/X', 'سناب شات', 'انستقرام'];
 const MAX_PLAUSIBLE_FOLLOWERS = 500_000_000;
 
 const URL_BLOCKLIST_PATH = path.join(ROOT, 'assets', 'influencers', '_url_blocklist.json');
@@ -101,6 +101,23 @@ async function extractFollowers(page, platformKey) {
       if (m) return parseCount(m[1].trim());
     }
     return null;
+  }
+
+  if (platformKey === 'انستقرام') {
+    // Try og:description meta tag first — available before login wall intercepts
+    const metaContent = await page.evaluate(() => {
+      const el = document.querySelector('meta[property="og:description"]');
+      return el ? el.getAttribute('content') : null;
+    });
+    if (metaContent) {
+      // Format: "1.2M Followers, 500 Following, 200 Posts"
+      const m = metaContent.match(/([\d.,]+\s?[KMB]?)\s*[Ff]ollowers/);
+      if (m) return parseCount(m[1].trim());
+    }
+    // Fallback: scan visible page text
+    const text = await page.evaluate(() => document.body.innerText);
+    const m = text.match(/([\d.,]+\s?[KMB]?)\s*[Ff]ollowers/);
+    return m ? parseCount(m[1].trim()) : null;
   }
 
   return null;
