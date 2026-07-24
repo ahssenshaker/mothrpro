@@ -1590,9 +1590,33 @@ async function showDashboard() {
 }
 
 async function loadInfluencerData() {
+  // Always fetch JWT first — required for admin write operations (import/save/delete)
   try {
     const { data: { session } } = await supa.auth.getSession();
     _apiJwt = session?.access_token || null;
+  } catch(e) {}
+
+  const cacheKey = LS_KEY + '_' + (userPlan || 'free');
+
+  // Stale-while-revalidate: show cached data instantly, refresh in background
+  try {
+    const raw = localStorage.getItem(cacheKey);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        DATA = parsed.map(normalizeInfluencer);
+        _bgRefreshData(cacheKey); // fire-and-forget
+        return; // return immediately — UI renders from cache
+      }
+    }
+  } catch(e) {}
+
+  // No cache yet — must wait for the API (first visit only)
+  await _fetchInfluencerPages(cacheKey);
+}
+
+async function _fetchInfluencerPages(cacheKey) {
+  try {
     const headers = _apiJwt ? { 'Authorization': 'Bearer ' + _apiJwt } : {};
     const limit = 100;
     const allData = [];
@@ -1601,17 +1625,27 @@ async function loadInfluencerData() {
       const res = await fetch(`/api/influencers?page=${page}&limit=${limit}`, { headers });
       if (!res.ok) throw new Error('فشل تحميل البيانات');
       const result = await res.json();
-      // Support both paginated { data, hasMore } and legacy plain array responses
       const items = Array.isArray(result) ? result : (result.data || []);
       allData.push(...items);
       if (!result.hasMore || items.length < limit) break;
       page++;
     }
     DATA = allData.map(normalizeInfluencer);
-  } catch (e) {
+    try { localStorage.setItem(cacheKey, JSON.stringify(allData)); } catch(e) {}
+  } catch(e) {
     console.error('Error loading influencer data', e);
-    DATA = [];
+    if (!DATA.length) DATA = [];
   }
+}
+
+async function _bgRefreshData(cacheKey) {
+  await _fetchInfluencerPages(cacheKey);
+  // Silently update the UI with fresh data
+  const savedRegion = document.getElementById('regionFilter')?.value || '';
+  buildRegionFilter();
+  if (savedRegion) { const s = document.getElementById('regionFilter'); if (s) s.value = savedRegion; }
+  refreshStats();
+  applyFilters();
 }
 
 function updatePlanBadge(isAdmin) {
