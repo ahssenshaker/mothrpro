@@ -13,6 +13,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
 import { getTier, formatFollowers, formatPrice, Influencer } from '@/lib/api'
+import { getCachedInfluencer } from '@/lib/influencerCache'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 
 const { width } = Dimensions.get('window')
@@ -33,8 +34,7 @@ export default function InfluencerDetail() {
   const { effectivePlan } = useAuth()
   const router = useRouter()
 
-  // Get influencer from global cache (passed via router state or re-fetched)
-  const inf: Influencer | null = useInfluencerById(id)
+  const inf: Influencer | null = getCachedInfluencer(id ?? '')
 
   if (!inf) {
     return (
@@ -253,18 +253,6 @@ function GenderBar({ label, pct, color }: { label: string; pct: number; color: s
       <Text style={s.genderLabel}>{label}</Text>
     </View>
   )
-}
-
-// Simple lookup from the global influencer store
-const _cache = new Map<string, Influencer>()
-
-export function cacheInfluencer(inf: Influencer) {
-  _cache.set(inf.id, inf)
-}
-
-function useInfluencerById(id?: string): Influencer | null {
-  if (!id) return null
-  return _cache.get(id) ?? null
 }
 
 const s = StyleSheet.create({

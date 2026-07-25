@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { getTier, formatFollowers, Influencer } from '@/lib/api'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
-import { cacheInfluencer } from '@/app/influencer/[id]'
+import { cacheInfluencer } from '@/lib/influencerCache'
 
 const PLATFORM_LABEL: Record<string, string> = {
   instagram: 'انستقرام',

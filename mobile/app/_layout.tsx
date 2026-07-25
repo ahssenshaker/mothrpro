@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { View, ActivityIndicator } from 'react-native'
 import { Stack, useRouter, useSegments } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Colors } from '@/constants/theme'
 
 function NavigationGuard() {
@@ -28,6 +28,7 @@ function NavigationGuard() {
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
       <SafeAreaProvider>
         <AuthProvider>
           <StatusBar style="light" />
@@ -51,6 +52,7 @@ export default function RootLayout() {
           </Stack>
         </AuthProvider>
       </SafeAreaProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   )
 }
