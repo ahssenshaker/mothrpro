@@ -111,7 +111,7 @@ export default async function handler(req, res) {
       const trialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
       const { error: updateErr } = await supabase
         .from('subscribers')
-        .update({ plan: 'pro', expires_at: trialEnd, activated_at: new Date().toISOString() })
+        .update({ plan: 'pro', expires_at: trialEnd, activated_at: new Date().toISOString(), reminder_sent_at: null })
         .eq('id', sub.id)
       if (updateErr) return res.status(500).json({ error: updateErr.message })
       return res.status(200).json({ ok: true })

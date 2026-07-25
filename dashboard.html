@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<script>
+  document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';
+  (function(){
+    var l = localStorage.getItem('lang') || 'ar';
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة الاشتراك — مؤثر برو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cG9seWdvbiBwb2ludHM9IjUwLDcgNjAsMzYgOTEsMzcgNjYsNTUgNzUsODUgNTAsNjcgMjUsODUgMzQsNTUgOSwzNyA0MCwzNiIgZmlsbD0iI2Y2Yzc0ZCIvPgogIDxwb2x5Z29uIHBvaW50cz0iNTAsMTQgNTgsMzkgODQsMzkgNjMsNTQgNzIsODAgNTAsNjQgMjgsODAgMzcsNTQgMTYsMzkgNDIsMzkiIGZpbGw9IiMwODBjMWEiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjU1IiByPSI3IiBmaWxsPSJub25lIiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMi41Ii8+CiAgPGxpbmUgeDE9IjE0IiB5MT0iMTciIHgyPSIyNSIgeTI9IjI3IiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iNzUiIHkxPSIxNCIgeDI9IjY0IiB5Mj0iMjQiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI5IiB5MT0iNzMiIHgyPSIyMSIgeTI9IjYzIiBzdHJva2U9IiM0ZWM5ZDQiIHN0cm9rZS13aWR0aD0iMy41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iODYiIHkxPSI3MCIgeDI9Ijc0IiB5Mj0iNjEiIHN0cm9rZT0iIzRlYzlkNCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI1MCIgeTE9Ijk2IiB4Mj0iNTAiIHkyPSI4NCIgc3Ryb2tlPSIjNGVjOWQ0IiBzdHJva2Utd2lkdGg9IjMuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPg==">
+<style>
+/* ── CSS variables (matches main app) ── */
+:root,[data-theme='dark']{
+  --bg:#07090f;--s1:#0e1422;--s2:#131c2e;--s3:#192238;
+  --border:rgba(255,255,255,0.07);--border2:rgba(99,179,237,0.15);
+  --accent:#63b3ed;--gold:#f6c74d;--green:#68d391;--red:#fc8181;--purple:#b794f4;
+  --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;
+}
+[data-theme='light']{
+  --bg:#f0f4f8;--s1:#ffffff;--s2:#f1f5f9;--s3:#e2e8f0;
+  --border:rgba(0,0,0,0.08);--border2:rgba(99,179,237,0.30);
+  --text:#1e293b;--muted:#94a3b8;--muted2:#64748b;
+}
+/* ── reset ── */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans Arabic',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;direction:rtl;
+}
+[lang='en'] body{font-family:'Inter','IBM Plex Sans Arabic',sans-serif}
+[lang='en']{direction:ltr}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 35% at 10% 0%,rgba(99,179,237,.05) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 25% at 90% 100%,rgba(246,199,77,.04) 0%,transparent 60%);
+}
+/* ── loading ── */
+#loading{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;
+}
+.spinner{
+  width:44px;height:44px;border:3px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ── header ── */
+.dash-header{
+  position:relative;z-index:2;display:flex;align-items:center;
+  justify-content:space-between;padding:20px 28px;
+  border-bottom:1px solid var(--border);background:var(--s1);
+}
+.logo-text{
+  font-size:20px;font-weight:800;
+  background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+[data-theme='light'] .logo-text{
+  background:linear-gradient(135deg,#1e293b 0%,var(--accent) 60%,#b7860a 100%);
+  -webkit-background-clip:text;background-clip:text;
+}
+.header-actions{display:flex;align-items:center;gap:8px}
+.btn-back{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--s2);border:1px solid var(--border);color:var(--muted2);
+  border-radius:8px;padding:7px 13px;font-family:inherit;font-size:12px;
+  font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;
+}
+.btn-back:hover{border-color:var(--accent);color:var(--accent)}
+.theme-btn{
+  background:var(--s2);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.theme-btn:hover{border-color:var(--accent)}
+/* ── main ── */
+.dash-main{
+  position:relative;z-index:1;display:flex;align-items:flex-start;
+  justify-content:center;padding:40px 20px;min-height:calc(100vh - 65px);
+}
+/* ── card ── */
+.dash-card{
+  background:var(--s1);border:1px solid var(--border2);
+  border-radius:22px;width:100%;max-width:440px;overflow:hidden;
+}
+.card-top{
+  background:linear-gradient(135deg,var(--s2),var(--s3));
+  padding:28px 28px 0;text-align:center;
+}
+.avatar-circle{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#07090f;
+  margin:0 auto 12px;border:3px solid var(--s1);
+}
+.user-email{font-size:14px;color:var(--muted2);margin-bottom:16px;word-break:break-all}
+/* ── plan badge ── */
+.plan-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;
+  margin-bottom:20px;
+}
+.plan-free{background:rgba(100,116,139,.12);color:var(--muted2);border:1px solid var(--border)}
+.plan-trial{background:rgba(246,199,77,.12);color:var(--gold);border:1px solid rgba(246,199,77,.3)}
+.plan-pro{background:rgba(99,179,237,.12);color:var(--accent);border:1px solid rgba(99,179,237,.25)}
+.plan-admin{background:rgba(183,148,244,.12);color:var(--purple);border:1px solid rgba(183,148,244,.25)}
+.plan-pending{background:rgba(237,137,54,.12);color:#ed8936;border:1px solid rgba(237,137,54,.25)}
+/* ── divider ── */
+.divider{border:none;border-top:1px solid var(--border);margin:0}
+/* ── info section ── */
+.info-section{padding:22px 28px}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--border);gap:12px;
+}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:12px;color:var(--muted2);font-weight:600;flex-shrink:0}
+.info-value{font-size:13px;color:var(--text);font-weight:600;text-align:left;direction:ltr}
+[lang='en'] .info-value{text-align:right}
+/* ── trial countdown ── */
+.trial-countdown{
+  background:rgba(246,199,77,.07);border:1px solid rgba(246,199,77,.2);
+  border-radius:10px;padding:12px 16px;margin:0 28px 20px;
+  display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted2);
+}
+.trial-countdown .hrs{font-size:22px;font-weight:800;color:var(--gold);direction:ltr}
+/* ── CTA section ── */
+.cta-section{padding:0 28px 24px}
+.btn-upgrade{
+  display:block;width:100%;
+  background:linear-gradient(135deg,var(--accent),var(--gold));
+  color:#07090f;border:none;border-radius:12px;
+  padding:14px;font-family:inherit;font-size:15px;font-weight:800;
+  cursor:pointer;transition:.2s;text-align:center;text-decoration:none;
+}
+.btn-upgrade:hover{opacity:.88}
+/* ── footer ── */
+.card-footer{padding:20px 28px;display:flex;flex-direction:column;gap:10px;background:var(--s2)}
+.btn-logout{
+  background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:10px;padding:11px;font-family:inherit;font-size:13px;
+  font-weight:600;cursor:pointer;transition:.2s;width:100%;
+}
+.btn-logout:hover{color:var(--red);border-color:var(--red)}
+.footer-link{
+  font-size:12px;color:var(--muted);text-align:center;cursor:pointer;
+  text-decoration:none;display:block;
+}
+.footer-link:hover{color:var(--accent)}
+/* ── not-logged view ── */
+.not-logged{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;text-align:center;gap:16px;padding:20px;
+}
+.not-logged h2{font-size:22px;font-weight:800;color:var(--text)}
+.not-logged p{font-size:14px;color:var(--muted2);max-width:320px;line-height:1.7}
+.btn-go{
+  background:var(--accent);color:var(--bg);border:none;border-radius:11px;
+  padding:13px 28px;font-family:inherit;font-size:15px;font-weight:700;
+  cursor:pointer;text-decoration:none;display:inline-block;margin-top:8px;transition:.2s;
+}
+.btn-go:hover{opacity:.88}
+/* ── pending notice ── */
+.pending-notice{
+  background:rgba(237,137,54,.07);border:1px solid rgba(237,137,54,.2);
+  border-radius:10px;padding:12px 16px;margin:0 28px 20px;
+  font-size:12px;color:var(--muted2);line-height:1.7;
+}
+/* ── responsive ── */
+@media(max-width:480px){
+  .dash-header{padding:14px 16px}
+  .dash-main{padding:20px 12px}
+  .card-top{padding:22px 16px 0}
+  .info-section{padding:16px 16px}
+  .trial-countdown{margin:0 16px 16px}
+  .cta-section{padding:0 16px 18px}
+  .card-footer{padding:16px}
+  .pending-notice{margin:0 16px 16px}
+}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div></div>
+
+<div id="appShell" style="display:none">
+  <!-- HEADER -->
+  <header class="dash-header">
+    <div class="logo-text" id="logoText">مؤثر برو ⭐</div>
+    <div class="header-actions">
+      <a href="/" class="btn-back" id="backBtn">← <span id="backLabel">التطبيق</span></a>
+      <button class="theme-btn" id="themeBtn" title="تغيير الثيم" onclick="toggleTheme()">🌙</button>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD -->
+  <main class="dash-main">
+    <div class="dash-card">
+      <!-- top: avatar + email + plan badge -->
+      <div class="card-top">
+        <div class="avatar-circle" id="avatarCircle">—</div>
+        <div class="user-email" id="userEmail">—</div>
+        <span class="plan-badge plan-free" id="planBadge">—</span>
+      </div>
+
+      <!-- trial countdown (shown for trial users only) -->
+      <div class="trial-countdown" id="trialCountdown" style="display:none">
+        <div>
+          <div class="hrs" id="trialHours">—</div>
+          <div id="trialLabel">ساعة متبقية</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--gold);margin-bottom:2px" id="trialTitle">ينتهي اشتراكك التجريبي</div>
+          <div id="trialExpiry"></div>
+        </div>
+      </div>
+
+      <!-- pending notice -->
+      <div class="pending-notice" id="pendingNotice" style="display:none">
+        <strong style="color:#ed8936" id="pendingTitle">في انتظار التفعيل</strong><br>
+        <span id="pendingDesc">تم استلام طلبك. سيتم تفعيل اشتراكك قريباً وستصلك رسالة على بريدك الإلكتروني.</span>
+      </div>
+
+      <hr class="divider">
+
+      <!-- info rows -->
+      <div class="info-section" id="infoSection">
+        <!-- rendered by JS -->
+      </div>
+
+      <hr class="divider">
+
+      <!-- upgrade CTA (free / trial users) -->
+      <div class="cta-section" id="ctaSection" style="display:none;padding-top:20px">
+        <a class="btn-upgrade" id="upgradeBtn" href="#" onclick="openUpgrade(event)" id="upgradeBtn">
+          <span id="upgradeLabel">اشترك في مؤثر برو Pro — 39 ريال/شهر</span>
+        </a>
+      </div>
+
+      <!-- footer -->
+      <div class="card-footer">
+        <button class="btn-logout" id="logoutBtn" onclick="doLogout()">
+          <span id="logoutLabel">تسجيل الخروج</span>
+        </button>
+        <a class="footer-link" href="/" id="footerBack">
+          <span id="footerBackLabel">العودة للتطبيق الرئيسي →</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- NOT LOGGED IN -->
+<div id="notLoggedView" style="display:none">
+  <header class="dash-header">
+    <div class="logo-text">مؤثر برو ⭐</div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </header>
+  <div class="not-logged">
+    <div style="font-size:48px">🔒</div>
+    <h2 id="notLoggedTitle">يرجى تسجيل الدخول</h2>
+    <p id="notLoggedDesc">هذه الصفحة متاحة للمستخدمين المسجلين فقط. يرجى تسجيل الدخول للوصول للوحة الاشتراك.</p>
+    <a href="/" class="btn-go" id="notLoggedBtn">سجّل الدخول</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── Config (same as main app) ──────────────────────────────────────────────
+const SUPA_URL = 'https://pvafqzhowebbmahbonfm.supabase.co'
+const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk'
+const LS_CHECKOUT_URL = 'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046'
+
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY)
+const lang = localStorage.getItem('lang') || 'ar'
+const isAr = lang === 'ar'
+
+// ── i18n (minimal) ──────────────────────────────────────────────────────────
+const i18n = {
+  ar: {
+    back: 'التطبيق', logo: 'مؤثر برو ⭐', logout: 'تسجيل الخروج',
+    footerBack: 'العودة للتطبيق الرئيسي →',
+    notLoggedTitle: 'يرجى تسجيل الدخول',
+    notLoggedDesc: 'هذه الصفحة متاحة للمستخدمين المسجلين فقط.',
+    notLoggedBtn: 'سجّل الدخول',
+    planFree: '⬜ الخطة المجانية', planTrial: '⏳ تجربة Pro مجانية',
+    planPro: '✨ Pro نشط', planAdmin: '⚙️ مشرف', planPending: '⏸ في انتظار التفعيل',
+    rowPlan: 'الخطة الحالية', rowEmail: 'البريد الإلكتروني',
+    rowActivated: 'تاريخ التفعيل', rowExpiry: 'تاريخ الانتهاء',
+    rowSince: 'عضو منذ',
+    trialLabel: 'ساعة متبقية', trialTitle: 'ينتهي اشتراكك التجريبي',
+    pendingTitle: 'في انتظار التفعيل',
+    pendingDesc: 'تم استلام طلبك. سيتم تفعيل اشتراكك قريباً وستصلك رسالة على بريدك الإلكتروني.',
+    upgradeLabel: 'اشترك في مؤثر برو Pro — 39 ريال/شهر',
+    permanent: 'دائم',
+  },
+  en: {
+    back: 'App', logo: 'Moather Pro ⭐', logout: 'Sign Out',
+    footerBack: '← Back to App',
+    notLoggedTitle: 'Please Sign In',
+    notLoggedDesc: 'This page is for registered users only. Please sign in to access your dashboard.',
+    notLoggedBtn: 'Sign In',
+    planFree: '⬜ Free Plan', planTrial: '⏳ Free Pro Trial',
+    planPro: '✨ Pro Active', planAdmin: '⚙️ Admin', planPending: '⏸ Pending Activation',
+    rowPlan: 'Current Plan', rowEmail: 'Email',
+    rowActivated: 'Activation Date', rowExpiry: 'Expiry Date',
+    rowSince: 'Member Since',
+    trialLabel: 'hours remaining', trialTitle: 'Your trial is ending soon',
+    pendingTitle: 'Pending Activation',
+    pendingDesc: 'Your request has been received. Your subscription will be activated soon and you will receive a confirmation email.',
+    upgradeLabel: 'Subscribe to Moather Pro — 39 SAR/month',
+    permanent: 'Permanent',
+  }
+}
+const t = key => (i18n[lang] || i18n.ar)[key] || key
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'
+  document.documentElement.dataset.theme = next
+  localStorage.setItem('theme', next)
+  updateThemeBtn()
+}
+function updateThemeBtn() {
+  const btn = document.getElementById('themeBtn')
+  if (btn) btn.textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙'
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function formatDate(iso) {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    })
+  } catch { return iso }
+}
+
+function hoursUntil(iso) {
+  if (!iso) return 0
+  return Math.max(0, Math.round((new Date(iso) - Date.now()) / 3_600_000))
+}
+
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]))
+}
+
+// ── Render dashboard ───────────────────────────────────────────────────────
+function renderDashboard(user, sub) {
+  // Apply i18n labels
+  document.getElementById('logoText').textContent   = t('logo')
+  document.getElementById('backLabel').textContent  = t('back')
+  document.getElementById('logoutBtn').querySelector('span').textContent    = t('logout')
+  document.getElementById('footerBackLabel').textContent = t('footerBack')
+
+  // Avatar
+  const initial = (user.email || '?')[0].toUpperCase()
+  document.getElementById('avatarCircle').textContent = initial
+
+  // Email
+  document.getElementById('userEmail').textContent = user.email || '—'
+
+  const plan = sub?.plan || 'free'
+  const isTrial = plan === 'pro' && !!sub?.expires_at
+  const isPro   = plan === 'pro' && !sub?.expires_at
+  const isAdmin = plan === 'admin'
+  const isPending = plan === 'pending'
+
+  // Plan badge
+  const badge = document.getElementById('planBadge')
+  const planConfigs = {
+    free:    { cls: 'plan-free',    label: t('planFree') },
+    trial:   { cls: 'plan-trial',   label: t('planTrial') },
+    pro:     { cls: 'plan-pro',     label: t('planPro') },
+    admin:   { cls: 'plan-admin',   label: t('planAdmin') },
+    pending: { cls: 'plan-pending', label: t('planPending') },
+  }
+  const cfg = planConfigs[isPending ? 'pending' : isTrial ? 'trial' : isPro ? 'pro' : isAdmin ? 'admin' : 'free']
+  badge.className = `plan-badge ${cfg.cls}`
+  badge.textContent = cfg.label
+
+  // Trial countdown
+  if (isTrial) {
+    const hrs = hoursUntil(sub.expires_at)
+    document.getElementById('trialHours').textContent  = hrs
+    document.getElementById('trialLabel').textContent  = t('trialLabel')
+    document.getElementById('trialTitle').textContent  = t('trialTitle')
+    document.getElementById('trialExpiry').textContent = formatDate(sub.expires_at)
+    document.getElementById('trialCountdown').style.display = 'flex'
+  }
+
+  // Pending notice
+  if (isPending) {
+    document.getElementById('pendingTitle').textContent = t('pendingTitle')
+    document.getElementById('pendingDesc').textContent  = t('pendingDesc')
+    document.getElementById('pendingNotice').style.display = 'block'
+  }
+
+  // Info rows
+  const rows = []
+  rows.push({ label: t('rowEmail'), value: esc(user.email || '—') })
+  rows.push({ label: t('rowPlan'),  value: esc(cfg.label) })
+
+  if (sub?.activated_at && (isPro || isAdmin || isTrial)) {
+    rows.push({ label: t('rowActivated'), value: esc(formatDate(sub.activated_at)) })
+  }
+  if (sub?.expires_at) {
+    rows.push({ label: t('rowExpiry'), value: esc(formatDate(sub.expires_at)) })
+  }
+  if (!sub?.expires_at && (isPro || isAdmin)) {
+    rows.push({ label: t('rowExpiry'), value: t('permanent') })
+  }
+
+  const created = user.created_at || user.last_sign_in_at
+  if (created) {
+    rows.push({ label: t('rowSince'), value: esc(formatDate(created)) })
+  }
+
+  document.getElementById('infoSection').innerHTML = rows.map(r =>
+    `<div class="info-row">
+      <span class="info-label">${r.label}</span>
+      <span class="info-value">${r.value}</span>
+    </div>`
+  ).join('')
+
+  // Upgrade CTA (free and trial users)
+  if (plan === 'free' || isTrial) {
+    document.getElementById('upgradeLabel').textContent = t('upgradeLabel')
+    document.getElementById('ctaSection').style.display = 'block'
+  }
+}
+
+function openUpgrade(e) {
+  e.preventDefault()
+  const email = (document.getElementById('userEmail').textContent || '').trim()
+  const emailParams = email
+    ? `&checkout[email]=${encodeURIComponent(email)}&checkout[custom][account_email]=${encodeURIComponent(email)}`
+    : ''
+  const url = `${LS_CHECKOUT_URL}?checkout[locale]=en&checkout[billing_address_country]=SA${emailParams}`
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+// ── Auth & data load ───────────────────────────────────────────────────────
+async function init() {
+  try {
+    const { data: { session } } = await supa.auth.getSession()
+
+    if (!session?.user) {
+      // Not logged in
+      document.getElementById('loading').style.display = 'none'
+      document.getElementById('notLoggedView').style.display = ''
+      applyNotLoggedI18n()
+      updateThemeBtn()
+      return
+    }
+
+    const user = session.user
+
+    // Fetch subscriber row (RLS: user can read own row only)
+    const { data: sub } = await supa
+      .from('subscribers')
+      .select('plan, activated_at, expires_at')
+      .eq('id', user.id)
+      .single()
+
+    // Render
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('appShell').style.display = ''
+    renderDashboard(user, sub)
+    updateThemeBtn()
+
+  } catch (err) {
+    console.error('[dashboard] init error:', err)
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('notLoggedView').style.display = ''
+    applyNotLoggedI18n()
+    updateThemeBtn()
+  }
+}
+
+function applyNotLoggedI18n() {
+  const el = id => document.getElementById(id)
+  el('notLoggedTitle').textContent = t('notLoggedTitle')
+  el('notLoggedDesc').textContent  = t('notLoggedDesc')
+  el('notLoggedBtn').textContent   = t('notLoggedBtn')
+  const logo = document.querySelector('#notLoggedView .logo-text')
+  if (logo) logo.textContent = t('logo')
+}
+
+async function doLogout() {
+  await supa.auth.signOut()
+  window.location.href = '/'
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+init()
+updateThemeBtn()
+</script>
+</body>
+</html>
