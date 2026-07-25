@@ -1812,11 +1812,12 @@ function applyProRestrictions() {
   });
   // Show card edit buttons only for admin via body class
   document.body.classList.toggle('is-admin', isAdmin);
-  if (userPlan === 'pro') return;
-  
-  // Hide CSV export
+
+  // CSV export is admin-only — hide for free and Pro users alike
   const csvBtn = document.querySelector('[data-export-csv]');
-  if (csvBtn) csvBtn.style.display = 'none';
+  if (csvBtn) csvBtn.style.display = isAdmin ? '' : 'none';
+
+  if (userPlan === 'pro') return;
 }
 
 // These overrides are intentional dead code stubs — kept for reference.
@@ -1979,9 +1980,10 @@ function applyFilters(){
     if(priceMin||priceMax){
       const allPrices=Object.values(d.platforms).flatMap(p=>Object.values(p.prices||{}).map(v=>Number(v))).filter(v=>v>0);
       if(!allPrices.length)return false;
-      const minP=Math.min(...allPrices);
-      if(priceMin&&minP<priceMin)return false;
-      if(priceMax&&minP>priceMax)return false;
+      // Show influencer if they have at least one price within the requested range
+      if(priceMin&&priceMax){if(!allPrices.some(p=>p>=priceMin&&p<=priceMax))return false;}
+      else if(priceMin){if(!allPrices.some(p=>p>=priceMin))return false;}
+      else if(priceMax){if(!allPrices.some(p=>p<=priceMax))return false;}
     }
     if(q){const h=(d.name+(d.name_en||'')+d.specialization+(d.specialization_en||'')+d.intro+(d.intro_en||'')+(d.tags||[]).join(' ')+(d.tags_en||[]).join(' ')+(d.categories||[]).join(' ')+(d.categories_en||[]).join(' ')).toLowerCase();if(!h.includes(q))return false;}
     return true;

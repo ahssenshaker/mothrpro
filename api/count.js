@@ -5,9 +5,34 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
+const BOT_UA_PATTERNS = [
+  'headlesschrome', 'phantomjs', 'slimejs', 'splash',
+  'python-requests', 'python-httpx', 'python/',
+  'scrapy', 'curl/', 'wget/', 'libcurl',
+  'go-http-client', 'java/', 'okhttp', 'ruby',
+  'mechanize', 'aiohttp', 'httpx',
+]
+
+const ALLOWED_ORIGINS = [
+  'https://moatherpro.com',
+  'https://www.moatherpro.com',
+  'http://localhost',
+  'http://127.0.0.1',
+]
+
 export default async function handler(req, res) {
-  res.setHeader('Cache-Control', 'public, max-age=300') // cache 5 min
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Cache-Control', 'public, max-age=300')
+
+  const ua = (req.headers['user-agent'] || '').toLowerCase()
+  if (!ua || BOT_UA_PATTERNS.some(p => ua.includes(p))) {
+    return res.status(403).json({ count: 0 })
+  }
+
+  const origin = req.headers.origin || req.headers.referer || ''
+  if (!origin || !ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+    return res.status(403).json({ count: 0 })
+  }
+
   try {
     const { count, error } = await supabase
       .from('influencers')

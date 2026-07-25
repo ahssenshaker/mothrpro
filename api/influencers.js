@@ -18,8 +18,22 @@ const PLAN_CACHE_TTL = 5 * 60 * 1000
 // Prevents bulk scraping of the influencer list without a paid subscription.
 const FREE_RECORD_CAP = 50
 
-// In-memory rate limiter — per-instance best-effort protection.
+// Distributed rate limiter backed by Vercel KV when available,
+// falling back to in-memory per-instance tracking otherwise.
 const rateLimitMap = new Map()
+let _kv = null
+
+async function getKV() {
+  if (_kv) return _kv
+  if (!process.env.KV_REST_API_URL) return null
+  try {
+    const mod = await import('@vercel/kv')
+    _kv = mod.kv
+    return _kv
+  } catch {
+    return null
+  }
+}
 
 function getRateLimitKey(userId, req) {
   if (userId) return `user:${userId}`
@@ -29,11 +43,21 @@ function getRateLimitKey(userId, req) {
   return `ip:${ip}`
 }
 
-function isRateLimited(key, max = 30) {
+async function isRateLimited(key, max = 30) {
+  const kv = await getKV()
+  if (kv) {
+    try {
+      const windowKey = `rl:${key}:${Math.floor(Date.now() / 60_000)}`
+      const count = await kv.incr(windowKey)
+      if (count === 1) await kv.expire(windowKey, 61)
+      return count > max
+    } catch {
+      // fall through to in-memory
+    }
+  }
   const now = Date.now()
-  const windowMs = 60_000
   const entry = rateLimitMap.get(key) || { count: 0, start: now }
-  if (now - entry.start > windowMs) {
+  if (now - entry.start > 60_000) {
     rateLimitMap.set(key, { count: 1, start: now })
     return false
   }
@@ -172,7 +196,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && !isWarmup) {
     const rlKey = getRateLimitKey(userId, req)
     const rlMax = isPro ? 60 : 30
-    if (isRateLimited(rlKey, rlMax)) {
+    if (await isRateLimited(rlKey, rlMax)) {
       return res.status(429).json({ error: 'Too many requests, slow down' })
     }
   }
@@ -242,11 +266,9 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
   if (!isAdmin) return res.status(403).json({ error: 'Admin only' })
 
-  // Any write invalidates the in-memory cache so the next GET fetches fresh data
+  // Any write invalidates the in-memory data cache so the next GET fetches fresh data
   _dataCache = null
   _dataCacheTs = 0
-  // Also invalidate plan cache on admin writes (plan may have changed)
-  planCache.clear()
 
   // ─── POST: create one or many influencers ─────────────────────────────
   if (req.method === 'POST') {

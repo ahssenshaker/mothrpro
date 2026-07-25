@@ -1,26 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
+import { resolveAdmin } from './_auth.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 )
-
-async function resolveAdmin(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  try {
-    const { data: { user } } = await supabase.auth.getUser(token)
-    if (!user) return null
-    const { data: sub } = await supabase
-      .from('subscribers')
-      .select('plan')
-      .eq('id', user.id)
-      .single()
-    return sub?.plan === 'admin' ? user : null
-  } catch {
-    return null
-  }
-}
 
 async function sendPlanEmail(email, action) {
   const key = process.env.RESEND_API_KEY
