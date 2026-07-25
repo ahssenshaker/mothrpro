@@ -1,0 +1,11 @@
+-- Adds English translation columns to the influencers table.
+-- Must be run after 001_influencers.sql.
+-- Source: previously tracked as migrations/add_en_columns.sql (root-level).
+
+ALTER TABLE public.influencers
+  ADD COLUMN IF NOT EXISTS name_en            text  DEFAULT '',
+  ADD COLUMN IF NOT EXISTS specialization_en  text  DEFAULT '',
+  ADD COLUMN IF NOT EXISTS intro_en           text  DEFAULT '',
+  ADD COLUMN IF NOT EXISTS categories_en      jsonb DEFAULT '[]',
+  ADD COLUMN IF NOT EXISTS tags_en            jsonb DEFAULT '[]',
+  ADD COLUMN IF NOT EXISTS regions_en         jsonb DEFAULT '[]';
