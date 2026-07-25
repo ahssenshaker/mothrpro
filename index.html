@@ -67,6 +67,10 @@
 .user-bar-upgrade{background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:8px;padding:5px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}
 .user-bar-logout{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:inherit;font-size:11px;cursor:pointer}
 .user-bar-logout:hover{color:var(--red);border-color:var(--red)}
+.user-bar-myplan{background:transparent;color:var(--muted2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:inherit;font-size:11px;cursor:pointer;text-decoration:none}
+.user-bar-myplan:hover{color:var(--accent);border-color:var(--accent)}
+.user-bar-plan{cursor:pointer}
+.user-bar-plan:hover{opacity:.8}
 .trial-banner{background:linear-gradient(90deg,rgba(246,199,77,.15),rgba(99,179,237,.12));border-bottom:1px solid rgba(246,199,77,.3);padding:7px 24px;display:none;align-items:center;justify-content:center;gap:10px;font-size:12px;color:var(--text);text-align:center}
 .trial-banner.visible{display:flex}
 .trial-days{font-weight:700;color:var(--gold)}
@@ -632,7 +636,8 @@ padding:7px 10px;
     <span class="user-bar-email" id="userEmail"></span>
   </div>
   <div class="user-bar-actions">
-    <span class="user-bar-plan free" id="userPlanBadge" data-i18n="bar.plan.free">مجاني</span>
+    <span class="user-bar-plan free" id="userPlanBadge" data-i18n="bar.plan.free" onclick="window.location.href='/dashboard'" title="عرض اشتراكك">مجاني</span>
+    <button class="user-bar-myplan" onclick="window.location.href='/dashboard'" data-i18n="bar.myplan">🔑 اشتراكي</button>
     <button class="user-bar-upgrade" id="upgradeBtn" onclick="openUpgrade()" data-i18n="bar.upgrade">⭐ ترقية للبرو</button>
     <button id="adminDashBtn" style="display:none;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:5px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer" onclick="openAdminDash()" data-i18n="bar.admin">⚙️ الأدمن</button>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="تبديل الوضع المظلم/الفاتح">🌙</button>
@@ -946,6 +951,7 @@ const TRANSLATIONS = {
     'bar.plan.pro': '⭐ برو',
     'bar.plan.admin': '👑 أدمن',
     'bar.upgrade': '⭐ ترقية للبرو',
+    'bar.myplan': '🔑 اشتراكي',
     'bar.admin': '⚙️ الأدمن',
     'bar.logout': 'خروج',
     'upgrade.badge': '🎯 عرض خاص لأول ١٥٠ مشترك',
@@ -1133,6 +1139,7 @@ const TRANSLATIONS = {
     'bar.plan.pro': '⭐ Pro',
     'bar.plan.admin': '👑 Admin',
     'bar.upgrade': '⭐ Upgrade to Pro',
+    'bar.myplan': '🔑 My Plan',
     'bar.admin': '⚙️ Admin',
     'bar.logout': 'Sign Out',
     'upgrade.badge': '🎯 Special offer — first 150 subscribers',
