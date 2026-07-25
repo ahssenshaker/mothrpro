@@ -75,8 +75,13 @@ function parseCount(str) {
   return Math.round(n);
 }
 
+// MIN_ABSOLUTE: when stored count is unknown (0), trust any profile with ≥ this many followers.
+const CONFIDENCE_MIN_ABSOLUTE = 1_000_000;
+
 function isConfident(found, stored) {
   if (!found || found < CONFIDENCE_MIN_COUNT) return false;
+  // When stored count is unknown, accept any result above a high absolute threshold.
+  if (!stored) return found >= CONFIDENCE_MIN_ABSOLUTE;
   const ratio = found / stored;
   return ratio >= CONFIDENCE_MIN_RATIO && ratio <= CONFIDENCE_MAX_RATIO;
 }
@@ -265,7 +270,8 @@ async function main() {
 
     const id       = String(rec.id);
     const platform = suspect.platform;
-    const stored   = suspect.stored ?? rec.platforms?.[platform]?.followersNum ?? 0;
+    // suspect.stored comes from drift suspects; suspect.claimed from wrong-url suspects.
+    const stored   = suspect.stored || suspect.claimed || rec.platforms?.[platform]?.followersNum || 0;
     const suspectKey = `${id}|${platform}`;
 
     console.log(`\n[${suspect.name}] ${platform} — stored: ${formatCount(stored)}`);
@@ -293,7 +299,11 @@ async function main() {
       console.log(`   → ${url} : ${count != null ? formatCount(count) : 'N/A'}`);
 
       if (count && isConfident(count, stored)) {
-        if (!bestCount || Math.abs(count - stored) < Math.abs(bestCount - stored)) {
+        const isBetter = !bestCount ||
+          (stored
+            ? Math.abs(count - stored) < Math.abs(bestCount - stored)
+            : count > bestCount);
+        if (isBetter) {
           bestUrl   = url;
           bestCount = count;
         }
