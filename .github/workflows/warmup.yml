@@ -1,0 +1,17 @@
+name: Warmup
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  warmup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping warmup endpoint
+        run: |
+          curl -sf \
+            -H "x-warmup-secret: ${{ secrets.WARMUP_SECRET }}" \
+            https://moatherpro.com/api/warmup \
+          || true
