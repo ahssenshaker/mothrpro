@@ -2,16 +2,27 @@ name: Warmup
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 */4 * * *'  # Every 4 hours — reliable on GitHub free tier
   workflow_dispatch:
 
 jobs:
   warmup:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping warmup endpoint
+      - name: Ping Vercel warmup endpoint
         run: |
           curl -sf \
             -H "x-warmup-secret: ${{ secrets.WARMUP_SECRET }}" \
             https://moatherpro.com/api/warmup \
+          || true
+
+      # Direct Supabase ping — bypasses the Vercel chain entirely.
+      # Ensures Supabase stays active even if the Vercel call fails.
+      # Supabase pauses after 7 days of no DB queries; this runs every 4 hours.
+      - name: Direct Supabase ping
+        run: |
+          curl -sf \
+            -H "apikey: ${{ secrets.SUPABASE_SERVICE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_KEY }}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/influencers?select=id&limit=1" \
           || true
