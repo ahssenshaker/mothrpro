@@ -175,8 +175,8 @@
   },
   "46": {
     "name": "عبدالله الخريف",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/46-avatar.jpg",
     "cover": null
   },
   "49": {
@@ -205,8 +205,8 @@
   },
   "60": {
     "name": "فارس البشيري",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/60-avatar.jpg",
     "cover": null
   },
   "61": {
@@ -403,8 +403,8 @@
   },
   "240": {
     "name": "مجلة قوانين",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/240-avatar.jpg",
     "cover": null
   },
   "276": {
@@ -625,9 +625,9 @@
   },
   "382": {
     "name": "انهار",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/382-avatar.jpg",
+    "cover": "assets/influencers/382-cover.jpg"
   },
   "387": {
     "name": "بندريتا",
@@ -667,9 +667,9 @@
   },
   "491": {
     "name": "أمل العمار",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/491-avatar.jpg",
+    "cover": "assets/influencers/491-cover.jpg"
   },
   "496": {
     "name": "اسماء الشمري",
@@ -685,8 +685,8 @@
   },
   "523": {
     "name": "محمد بن عبدالرحمن ال سعود",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/523-avatar.jpg",
     "cover": null
   },
   "525": {
@@ -751,9 +751,9 @@
   },
   "555": {
     "name": "رنا",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "يوتيوب",
+    "avatar": "assets/influencers/555-avatar.jpg",
+    "cover": "assets/influencers/555-cover.jpg"
   },
   "556": {
     "name": "يحيى سعد الودعاني",
@@ -931,8 +931,8 @@
   },
   "608": {
     "name": "كورة بريك",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/608-avatar.jpg",
     "cover": null
   },
   "610": {
@@ -1051,14 +1051,14 @@
   },
   "645": {
     "name": "كازان",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/645-avatar.jpg",
     "cover": null
   },
   "646": {
     "name": "سعد الغنامي",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/646-avatar.jpg",
     "cover": null
   },
   "647": {
@@ -1123,8 +1123,8 @@
   },
   "667": {
     "name": "ياسر الشهراني",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/667-avatar.jpg",
     "cover": null
   },
   "669": {
@@ -1189,9 +1189,9 @@
   },
   "700": {
     "name": "أحمد الفرحان",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تيك توك",
+    "avatar": "assets/influencers/700-avatar.jpg",
+    "cover": "assets/influencers/700-cover.jpg"
   },
   "701": {
     "name": "وصايف القحطاني",
@@ -1219,9 +1219,9 @@
   },
   "713": {
     "name": "فهد الزهراني",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/713-avatar.jpg",
+    "cover": "assets/influencers/713-cover.jpg"
   },
   "714": {
     "name": "فارس الرشيد",
@@ -1231,8 +1231,8 @@
   },
   "717": {
     "name": "فهد النماصي",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/717-avatar.jpg",
     "cover": null
   },
   "718": {
@@ -1537,8 +1537,8 @@
   },
   "879": {
     "name": "وليد عبدالله",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/879-avatar.jpg",
     "cover": null
   },
   "884": {
@@ -1663,9 +1663,9 @@
   },
   "959": {
     "name": "عبدالاله العمري",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/959-avatar.jpg",
+    "cover": "assets/influencers/959-cover.jpg"
   },
   "970": {
     "name": "دارين البايض",
@@ -1891,9 +1891,9 @@
   },
   "1088": {
     "name": "علي لاجامي",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1088-avatar.jpg",
+    "cover": "assets/influencers/1088-cover.jpg"
   },
   "1089": {
     "name": "فــيّ 🌴",
@@ -2107,9 +2107,9 @@
   },
   "1188": {
     "name": "محمد البريك",
-    "source": null,
-    "avatar": null,
-    "cover": null
+    "source": "سناب شات",
+    "avatar": "assets/influencers/1188-avatar.jpg",
+    "cover": "assets/influencers/1188-cover.jpg"
   },
   "200001": {
     "name": "أبو فلة",
@@ -2581,8 +2581,8 @@
   },
   "1783000246850": {
     "name": "أنس بوخش",
-    "source": null,
-    "avatar": null,
+    "source": "تويتر/X",
+    "avatar": "assets/influencers/1783000246850-avatar.jpg",
     "cover": null
   },
   "1783000246851": {
