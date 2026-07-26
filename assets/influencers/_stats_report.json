@@ -2,48 +2,50 @@
   "10": {
     "name": "عبدالعزيز الرشيد",
     "updated": {
-      "تويتر/X": 172600
+      "تويتر/X": 172200
     },
-    "totalFollowers": 3156433
+    "totalFollowers": 1556033
   },
   "13": {
     "name": "أحمد الشهري",
     "updated": {
-      "تويتر/X": 243700
+      "تويتر/X": 243400
     },
-    "totalFollowers": 1538818
+    "totalFollowers": 538518
   },
   "14": {
     "name": "رغد دايز",
     "updated": {},
-    "totalFollowers": 7698732
+    "totalFollowers": 4398732
   },
   "16": {
     "name": "ملاك الحسيني",
     "updated": {
-      "تويتر/X": 287700
+      "تويتر/X": 287400
     },
-    "totalFollowers": 10130002
+    "totalFollowers": 5129702
   },
   "18": {
     "name": "رغد محمد",
     "updated": {},
-    "totalFollowers": 3455417
+    "totalFollowers": 2355417
   },
   "19": {
     "name": "لطيفة تركي",
     "updated": {},
-    "totalFollowers": 3945777
+    "totalFollowers": 1145777
   },
   "20": {
     "name": "عبدالعزيز العقلا",
     "updated": {},
-    "totalFollowers": 3666662
+    "totalFollowers": 1966662
   },
   "21": {
     "name": "نايف حمدان",
-    "updated": {},
-    "totalFollowers": 3700000
+    "updated": {
+      "تويتر/X": 1300000
+    },
+    "totalFollowers": 3826000
   },
   "23": {
     "name": "مختصر سنابات المشاهير",
@@ -53,63 +55,70 @@
   "25": {
     "name": "محمد  عبدالرحمن",
     "updated": {
-      "تويتر/X": 165500
+      "تويتر/X": 165100
     },
-    "totalFollowers": 2336902
+    "totalFollowers": 636502
   },
   "26": {
     "name": "عز بن فهد",
     "updated": {
-      "تويتر/X": 398600
+      "تويتر/X": 398100
     },
-    "totalFollowers": 3579142
+    "totalFollowers": 1278642
   },
   "27": {
     "name": "ابراهيم باشا",
     "updated": {},
-    "totalFollowers": 8595805
+    "totalFollowers": 6695805
   },
   "28": {
     "name": "عبدالرحمن السدحان",
     "updated": {
-      "تويتر/X": 92500
+      "تويتر/X": 92300
     },
-    "totalFollowers": 4035538
+    "totalFollowers": 735338
   },
   "29": {
     "name": "أمل",
     "updated": {},
-    "totalFollowers": 13429085
+    "totalFollowers": 1129085
   },
   "30": {
     "name": "فاطمة الأنصاري",
     "updated": {},
-    "totalFollowers": 52500000
+    "totalFollowers": 5600000
+  },
+  "31": {
+    "name": "عبير الغيث",
+    "updated": {},
+    "totalFollowers": 451647
   },
   "32": {
     "name": "افنان الباتل",
     "updated": {},
-    "totalFollowers": 3000000
+    "totalFollowers": 8500000
   },
   "33": {
     "name": "افنان النملة",
     "updated": {},
-    "totalFollowers": 2891407
+    "totalFollowers": 1091407
   },
   "34": {
     "name": "وعد التركي",
     "updated": {},
-    "totalFollowers": 6015834
+    "totalFollowers": 2915834
   },
   "35": {
     "name": "جود عزيز",
     "updated": {},
-    "totalFollowers": 4256099
+    "totalFollowers": 1456099
   },
   "36": {
     "name": "مروج الرحيلي",
-    "updated": {},
-    "totalFollowers": 3000000
+    "updated": {
+      "تيك توك": 798900
+    },
+    "totalFollowers": 4005900
   },
   "37": {
     "name": "أخبار السعودية",
@@ -122,7 +131,7 @@
   "38": {
     "name": "شوق محمد",
     "updated": {},
-    "totalFollowers": 5968931
+    "totalFollowers": 2968931
   },
   "39": {
     "name": "المشاهير العرب",
@@ -134,34 +143,34 @@
   "40": {
     "name": "راكان الشايع",
     "updated": {
-      "يوتيوب": 592000
+      "يوتيوب": 601000
     },
-    "totalFollowers": 1072000
+    "totalFollowers": 601000
   },
   "41": {
     "name": "أبوعابد",
     "updated": {
       "يوتيوب": 2880000,
-      "تويتر/X": 547100
+      "تويتر/X": 547500
     },
-    "totalFollowers": 4651359
+    "totalFollowers": 3854759
   },
   "42": {
     "name": "حياة الحربي",
     "updated": {
-      "تويتر/X": 44
+      "تويتر/X": 45
     },
-    "totalFollowers": 1478974
+    "totalFollowers": 178975
   },
   "43": {
     "name": "15 ثانية",
     "updated": {},
-    "totalFollowers": 11521824
+    "totalFollowers": 7521824
   },
   "44": {
     "name": "أحمد البارقي",
     "updated": {},
-    "totalFollowers": 73600000
+    "totalFollowers": 2130000
   },
   "46": {
     "name": "عبدالله الخريف",
@@ -173,79 +182,90 @@
   "49": {
     "name": "يارا النملة",
     "updated": {},
-    "totalFollowers": 3267271
+    "totalFollowers": 1467271
+  },
+  "52": {
+    "name": "الشيف حصة",
+    "updated": {},
+    "totalFollowers": 1786211
   },
   "58": {
     "name": "حمدي الفريدي",
     "updated": {
-      "تويتر/X": 346500
+      "تويتر/X": 345800
     },
-    "totalFollowers": 4341107
+    "totalFollowers": 2440407
   },
   "59": {
     "name": "نجلاء الودعاني",
     "updated": {
-      "تويتر/X": 178400
+      "تويتر/X": 178000
     },
-    "totalFollowers": 4006164
+    "totalFollowers": 605764
   },
   "60": {
     "name": "فارس البشيري",
     "updated": {
-      "تويتر/X": 492600
+      "تويتر/X": 491100
     },
-    "totalFollowers": 1605154
+    "totalFollowers": 1603654
   },
   "61": {
     "name": "وعد محمد",
     "updated": {},
-    "totalFollowers": 5008796
+    "totalFollowers": 2008796
   },
   "63": {
     "name": "دونا الحسين",
     "updated": {},
-    "totalFollowers": 1206258
+    "totalFollowers": 299258
   },
   "64": {
     "name": "عبدالقادر الشهراني",
-    "updated": {},
-    "totalFollowers": 4000000
+    "updated": {
+      "تيك توك": 1700000
+    },
+    "totalFollowers": 1700000
   },
   "65": {
     "name": "مشعل الاسباني",
     "updated": {
-      "تويتر/X": 112100
+      "تويتر/X": 112000
     },
-    "totalFollowers": 5493192
+    "totalFollowers": 3793092
   },
   "69": {
     "name": "طارق الحربي",
     "updated": {
-      "تويتر/X": 681500
+      "تويتر/X": 680700
     },
-    "totalFollowers": 81937384
+    "totalFollowers": 938584
   },
   "70": {
     "name": "فهد البقمي",
     "updated": {
       "تويتر/X": 1000000
     },
-    "totalFollowers": 2400000
+    "totalFollowers": 1000000
   },
   "71": {
     "name": "أبو حصة - بدر",
-    "updated": {},
-    "totalFollowers": 126700000
+    "updated": {
+      "تيك توك": 1600000
+    },
+    "totalFollowers": 1954000
   },
   "73": {
     "name": "حصة الغماس",
     "updated": {},
-    "totalFollowers": 699000
+    "totalFollowers": 702100
   },
   "74": {
     "name": "ام سعود",
-    "updated": {},
-    "totalFollowers": 79000
+    "updated": {
+      "تيك توك": 219400
+    },
+    "totalFollowers": 222615
   },
   "77": {
     "name": "برجك اليوم",
@@ -260,78 +280,82 @@
   "81": {
     "name": "فرح القفاري",
     "updated": {},
-    "totalFollowers": 1009870
+    "totalFollowers": 39870
   },
   "92": {
     "name": "اودي الزبن",
     "updated": {
       "تويتر/X": 12500
     },
-    "totalFollowers": 1027548
+    "totalFollowers": 211548
   },
   "94": {
     "name": "ايناس الحنطي",
-    "updated": {},
-    "totalFollowers": 2600000
+    "updated": {
+      "تيك توك": 454200
+    },
+    "totalFollowers": 3454200
   },
   "95": {
     "name": "اماني الحنطي",
     "updated": {},
-    "totalFollowers": 2146721
+    "totalFollowers": 1414721
   },
   "118": {
     "name": "عهود ناصر الزهراني",
     "updated": {
-      "تيك توك": 330200
+      "تيك توك": 329700
     },
-    "totalFollowers": 455095
+    "totalFollowers": 454595
   },
   "125": {
     "name": "عفاف عبد الله",
     "updated": {},
-    "totalFollowers": 386355
+    "totalFollowers": 99355
   },
   "142": {
     "name": "العنود سعد",
     "updated": {
-      "تيك توك": 436600
+      "تيك توك": 436700
     },
-    "totalFollowers": 851862
+    "totalFollowers": 851962
   },
   "145": {
     "name": "منيف الخمشي",
-    "updated": {},
-    "totalFollowers": 838000
+    "updated": {
+      "تيك توك": 124400
+    },
+    "totalFollowers": 726400
   },
   "156": {
     "name": "عباس أبو كاميليا",
     "updated": {
-      "تيك توك": 601100
+      "تيك توك": 605100
     },
-    "totalFollowers": 1377925
+    "totalFollowers": 712925
   },
   "176": {
     "name": "فارس فهد الحميد",
     "updated": {
       "يوتيوب": 3120000,
-      "سناب شات": 904000
+      "سناب شات": 878000
     },
-    "totalFollowers": 4766030
+    "totalFollowers": 4740030
   },
   "187": {
     "name": "عبدالمجيد المطيويع",
     "updated": {
       "يوتيوب": 1000000,
-      "تويتر/X": 68300
+      "تويتر/X": 68100
     },
-    "totalFollowers": 1441692
+    "totalFollowers": 1339492
   },
   "190": {
     "name": "عبدالله العلاوي",
     "updated": {
-      "يوتيوب": 3500000
+      "يوتيوب": 3520000
     },
-    "totalFollowers": 5346080
+    "totalFollowers": 5366080
   },
   "221": {
     "name": "سيف القرشي",
@@ -346,10 +370,10 @@
   "223": {
     "name": "محمد عدنان",
     "updated": {
-      "يوتيوب": 11300000,
-      "تيك توك": 7700000
+      "يوتيوب": 11500000,
+      "تيك توك": 7800000
     },
-    "totalFollowers": 19827277
+    "totalFollowers": 19677277
   },
   "224": {
     "name": "كورة شو",
@@ -361,14 +385,17 @@
   "230": {
     "name": "منبر الهلال",
     "updated": {
-      "سناب شات": 1500000
+      "سناب شات": 1400000
     },
-    "totalFollowers": 1500000
+    "totalFollowers": 1400000
   },
   "232": {
     "name": "بندر المشرافي",
-    "updated": {},
-    "totalFollowers": 180000
+    "updated": {
+      "يوتيوب": 58100,
+      "تويتر/X": 148000
+    },
+    "totalFollowers": 207177
   },
   "235": {
     "name": "جريدة الرياض",
@@ -385,37 +412,39 @@
   "239": {
     "name": "هبه الحسين",
     "updated": {},
-    "totalFollowers": 111900000
+    "totalFollowers": 47000
   },
   "240": {
     "name": "مجلة قوانين",
     "updated": {
-      "تويتر/X": 2393
+      "تويتر/X": 2391
     },
-    "totalFollowers": 610393
+    "totalFollowers": 610391
   },
   "276": {
     "name": "عهود محمد",
     "updated": {
-      "يوتيوب": 28100,
-      "تيك توك": 526000
+      "يوتيوب": 28500,
+      "تيك توك": 525100
     },
-    "totalFollowers": 811768
+    "totalFollowers": 681268
   },
   "277": {
     "name": "معاذ الفداغي",
     "updated": {},
-    "totalFollowers": 502689
+    "totalFollowers": 457689
   },
   "278": {
     "name": "هشام باعشن",
-    "updated": {},
-    "totalFollowers": 3000000
+    "updated": {
+      "تيك توك": 3700000
+    },
+    "totalFollowers": 8700000
   },
   "279": {
     "name": "عبير الماضي",
     "updated": {},
-    "totalFollowers": 641043
+    "totalFollowers": 81043
   },
   "280": {
     "name": "رانسي القحطاني",
@@ -430,128 +459,128 @@
   "285": {
     "name": "مرااايم",
     "updated": {},
-    "totalFollowers": 3910634
+    "totalFollowers": 2999634
   },
   "286": {
     "name": "جود",
     "updated": {
       "تيك توك": 1600000
     },
-    "totalFollowers": 1851522
+    "totalFollowers": 1821522
   },
   "287": {
     "name": "Donia Dagreeri",
     "updated": {
-      "تيك توك": 363000
+      "تيك توك": 364700
     },
-    "totalFollowers": 594112
+    "totalFollowers": 595812
   },
   "313": {
     "name": "سلطانه سعود",
     "updated": {},
-    "totalFollowers": 160524
+    "totalFollowers": 112524
   },
   "315": {
     "name": "أرسطو",
     "updated": {
       "تيك توك": 14600
     },
-    "totalFollowers": 57900
+    "totalFollowers": 14600
   },
   "317": {
     "name": "خلود العتيبي",
     "updated": {},
-    "totalFollowers": 2525728
+    "totalFollowers": 112728
   },
   "323": {
     "name": "نايف العنزي | هستور",
     "updated": {
       "تيك توك": 2400000
     },
-    "totalFollowers": 4400000
+    "totalFollowers": 2400000
   },
   "325": {
     "name": "دستور",
     "updated": {
-      "يوتيوب": 6890000,
-      "تيك توك": 2400000
+      "يوتيوب": 6900000,
+      "تيك توك": 2500000
     },
-    "totalFollowers": 12114912
+    "totalFollowers": 9824912
   },
   "329": {
     "name": "رند ورفيف الشهيلي",
     "updated": {},
-    "totalFollowers": 5045595
+    "totalFollowers": 2145595
   },
   "332": {
     "name": "رود المالكي",
     "updated": {
-      "تيك توك": 281800
+      "تيك توك": 281100
     },
-    "totalFollowers": 620408
+    "totalFollowers": 319708
   },
   "334": {
     "name": "سالم القحطاني",
     "updated": {
-      "تيك توك": 187800
+      "تيك توك": 190500
     },
-    "totalFollowers": 2644569
+    "totalFollowers": 1047269
   },
   "335": {
     "name": "ساره القحطاني",
     "updated": {
-      "تيك توك": 120500
+      "تيك توك": 122000
     },
-    "totalFollowers": 150500
+    "totalFollowers": 122000
   },
   "336": {
     "name": "طارق العواد",
     "updated": {
       "تويتر/X": 15100
     },
-    "totalFollowers": 333096
+    "totalFollowers": 115096
   },
   "339": {
     "name": "شيراز",
     "updated": {
       "تيك توك": 1100000
     },
-    "totalFollowers": 6240000
+    "totalFollowers": 6100000
   },
   "341": {
     "name": "عبدالعزيز الزير",
     "updated": {
-      "يوتيوب": 44100
+      "يوتيوب": 44900
     },
-    "totalFollowers": 594100
+    "totalFollowers": 594900
   },
   "343": {
     "name": "ضحى سليمان",
     "updated": {
-      "تيك توك": 200400
+      "تيك توك": 199800
     },
-    "totalFollowers": 397318
+    "totalFollowers": 261718
   },
   "349": {
     "name": "لولو السعيد",
     "updated": {
-      "تيك توك": 112700
+      "تيك توك": 112800
     },
-    "totalFollowers": 331073
+    "totalFollowers": 315173
   },
   "350": {
     "name": "لولي",
     "updated": {
-      "تيك توك": 357800
+      "تيك توك": 359000
     },
-    "totalFollowers": 723979
+    "totalFollowers": 602179
   },
   "351": {
     "name": "تغطيات الرياض",
     "updated": {
       "تيك توك": 233500
     },
-    "totalFollowers": 807972
+    "totalFollowers": 491972
   },
   "352": {
     "name": "مس نوره",
@@ -561,55 +590,59 @@
   "353": {
     "name": "وفاء الحربي",
     "updated": {
-      "تيك توك": 139100
+      "تيك توك": 139600
     },
-    "totalFollowers": 265478
+    "totalFollowers": 171602
   },
   "354": {
     "name": "مساء الرياض",
     "updated": {
-      "تيك توك": 183400,
-      "تويتر/X": 19500
+      "تويتر/X": 19400
     },
-    "totalFollowers": 378169
+    "totalFollowers": 274069
   },
   "356": {
     "name": "عبدالله التميمي",
     "updated": {
-      "تيك توك": 617600
+      "تيك توك": 618600
     },
-    "totalFollowers": 4807699
+    "totalFollowers": 3608699
   },
   "357": {
     "name": "رضا خالد العتيبي",
     "updated": {
-      "تيك توك": 73200
+      "تيك توك": 73000
     },
-    "totalFollowers": 223200
+    "totalFollowers": 73000
   },
   "364": {
     "name": "ابتسام محمد",
     "updated": {},
-    "totalFollowers": 582798
+    "totalFollowers": 372798
   },
   "365": {
     "name": "رحاب",
     "updated": {
-      "تيك توك": 114800
+      "تيك توك": 118900
     },
-    "totalFollowers": 215143
+    "totalFollowers": 219243
+  },
+  "369": {
+    "name": "الهنوف",
+    "updated": {},
+    "totalFollowers": 87132
   },
   "370": {
     "name": "نوره الزهراني",
     "updated": {
-      "تيك توك": 292100
+      "تيك توك": 294800
     },
-    "totalFollowers": 4849865
+    "totalFollowers": 552565
   },
   "374": {
     "name": "حول المدينة",
     "updated": {},
-    "totalFollowers": 173423
+    "totalFollowers": 85423
   },
   "376": {
     "name": "رغدة",
@@ -618,22 +651,24 @@
   },
   "382": {
     "name": "انهار",
-    "updated": {},
-    "totalFollowers": 50000
+    "updated": {
+      "تيك توك": 613200
+    },
+    "totalFollowers": 952200
   },
   "387": {
     "name": "بندريتا",
     "updated": {
-      "يوتيوب": 20800000,
+      "يوتيوب": 20900000,
       "تيك توك": 5600000,
       "تويتر/X": 1300000
     },
-    "totalFollowers": 34312086
+    "totalFollowers": 31112086
   },
   "395": {
     "name": "نورة المالكي",
     "updated": {},
-    "totalFollowers": 534454
+    "totalFollowers": 533454
   },
   "399": {
     "name": "حمني الطباخ",
@@ -645,9 +680,9 @@
   "400": {
     "name": "سلوم بطي",
     "updated": {
-      "تيك توك": 754400
+      "تيك توك": 763800
     },
-    "totalFollowers": 869400
+    "totalFollowers": 763800
   },
   "477": {
     "name": "خالد العنزي",
@@ -657,15 +692,17 @@
   "482": {
     "name": "مزيون قيمز",
     "updated": {
-      "يوتيوب": 3320000,
-      "تيك توك": 157400
+      "يوتيوب": 3330000,
+      "تيك توك": 157800
     },
-    "totalFollowers": 3565400
+    "totalFollowers": 3487800
   },
   "491": {
     "name": "أمل العمار",
-    "updated": {},
-    "totalFollowers": 54000
+    "updated": {
+      "تيك توك": 105400
+    },
+    "totalFollowers": 105400
   },
   "496": {
     "name": "اسماء الشمري",
@@ -675,49 +712,49 @@
   "513": {
     "name": "عبدالله الجميري",
     "updated": {
-      "تويتر/X": 165400
+      "تويتر/X": 165200
     },
-    "totalFollowers": 700287
+    "totalFollowers": 642087
   },
   "523": {
     "name": "محمد بن عبدالرحمن ال سعود",
     "updated": {
-      "تويتر/X": 235000
+      "تويتر/X": 234900
     },
-    "totalFollowers": 835000
+    "totalFollowers": 234900
   },
   "525": {
     "name": "عزيز وليد",
     "updated": {
       "يوتيوب": 486000,
-      "تيك توك": 59500
+      "تيك توك": 59200
     },
-    "totalFollowers": 1278280
+    "totalFollowers": 935980
   },
   "528": {
     "name": "سلطان حبادي",
     "updated": {
       "تيك توك": 4200000
     },
-    "totalFollowers": 5687007
+    "totalFollowers": 5346007
   },
   "529": {
     "name": "نيفو",
     "updated": {
       "يوتيوب": 1930000,
-      "تيك توك": 217000
+      "تيك توك": 216700
     },
-    "totalFollowers": 2326791
+    "totalFollowers": 2326491
   },
   "537": {
     "name": "طوركي وعبدالله",
     "updated": {},
-    "totalFollowers": 2189662
+    "totalFollowers": 2100662
   },
   "538": {
     "name": "روان",
     "updated": {},
-    "totalFollowers": 1530000
+    "totalFollowers": 650000
   },
   "547": {
     "name": "هنا الحدث",
@@ -727,21 +764,21 @@
   "549": {
     "name": "غدي البارقي",
     "updated": {},
-    "totalFollowers": 6607000
+    "totalFollowers": 232000
   },
   "551": {
     "name": "عثمان بن هزاع",
     "updated": {
-      "تيك توك": 712300
+      "تيك توك": 709600
     },
-    "totalFollowers": 866300
+    "totalFollowers": 709600
   },
   "552": {
     "name": "فؤاد عبدالعزيز",
     "updated": {
-      "تيك توك": 216200
+      "تيك توك": 216000
     },
-    "totalFollowers": 844448
+    "totalFollowers": 331248
   },
   "554": {
     "name": "روز الهيلا",
@@ -750,8 +787,11 @@
   },
   "555": {
     "name": "رنا",
-    "updated": {},
-    "totalFollowers": 100000
+    "updated": {
+      "يوتيوب": 1730000,
+      "تيك توك": 190100
+    },
+    "totalFollowers": 2325100
   },
   "556": {
     "name": "يحيى سعد الودعاني",
@@ -761,9 +801,9 @@
   "558": {
     "name": "رندا تركستاني",
     "updated": {
-      "تيك توك": 23000
+      "تيك توك": 22900
     },
-    "totalFollowers": 160943
+    "totalFollowers": 155013
   },
   "559": {
     "name": "ياسمين الشريف",
@@ -775,7 +815,7 @@
     "updated": {
       "تيك توك": 239700
     },
-    "totalFollowers": 8681497
+    "totalFollowers": 6681497
   },
   "562": {
     "name": "لبنى الدوسري",
@@ -787,15 +827,15 @@
     "updated": {
       "تيك توك": 95300
     },
-    "totalFollowers": 328053
+    "totalFollowers": 128053
   },
   "569": {
     "name": "ديم القو",
     "updated": {
       "تيك توك": 1100000,
-      "تويتر/X": 2759
+      "تويتر/X": 2725
     },
-    "totalFollowers": 1727292
+    "totalFollowers": 1331258
   },
   "572": {
     "name": "وفاء محمد",
@@ -807,41 +847,43 @@
     "updated": {
       "تيك توك": 14500
     },
-    "totalFollowers": 187070
+    "totalFollowers": 185070
   },
   "575": {
     "name": "افنان المرغلاني",
     "updated": {
-      "تيك توك": 33400,
+      "تيك توك": 33500,
       "تويتر/X": 2198
     },
-    "totalFollowers": 147845
+    "totalFollowers": 129945
   },
   "576": {
     "name": "محمد فلود",
     "updated": {
-      "تيك توك": 618300
+      "تيك توك": 621100
     },
-    "totalFollowers": 1916575
+    "totalFollowers": 1199375
   },
   "577": {
     "name": "ندى حمبظاظة",
     "updated": {
       "تيك توك": 141700
     },
-    "totalFollowers": 361379
+    "totalFollowers": 341379
   },
   "582": {
     "name": "سهام صالح",
-    "updated": {},
-    "totalFollowers": 185000
+    "updated": {
+      "تيك توك": 112400
+    },
+    "totalFollowers": 1295700
   },
   "583": {
     "name": "نادية عبدالله القرني",
     "updated": {
-      "تيك توك": 571900
+      "تيك توك": 572500
     },
-    "totalFollowers": 799474
+    "totalFollowers": 698074
   },
   "584": {
     "name": "هاجر العبدالله",
@@ -853,60 +895,60 @@
   "585": {
     "name": "شيف هنوده",
     "updated": {
-      "تيك توك": 22100
+      "تيك توك": 22200
     },
-    "totalFollowers": 1788358
+    "totalFollowers": 1301458
   },
   "587": {
     "name": "ريفا عبدالله",
     "updated": {
-      "تيك توك": 146700
+      "تيك توك": 146100
     },
-    "totalFollowers": 1353117
+    "totalFollowers": 352517
   },
   "588": {
     "name": "فوز الشهري",
     "updated": {
       "يوتيوب": 256000,
-      "تيك توك": 80100
+      "تيك توك": 81900
     },
-    "totalFollowers": 746753
+    "totalFollowers": 748317
   },
   "589": {
     "name": "ندى العمري",
     "updated": {
-      "تيك توك": 41400
+      "تيك توك": 41200
     },
-    "totalFollowers": 980400
+    "totalFollowers": 41200
   },
   "590": {
     "name": "لجين حسن",
     "updated": {
-      "تيك توك": 570900
+      "تيك توك": 567800
     },
-    "totalFollowers": 3820568
+    "totalFollowers": 1017468
   },
   "592": {
     "name": "بنت نجد",
     "updated": {},
-    "totalFollowers": 31400000
+    "totalFollowers": 1400235
   },
   "594": {
     "name": "سناب الشرقية",
     "updated": {},
-    "totalFollowers": 1095682
+    "totalFollowers": 95682
   },
   "597": {
     "name": "عبير عمر",
     "updated": {
-      "تيك توك": 167100
+      "تيك توك": 166600
     },
-    "totalFollowers": 594605
+    "totalFollowers": 415105
   },
   "600": {
     "name": "لينا",
     "updated": {},
-    "totalFollowers": 4210
+    "totalFollowers": 121000
   },
   "601": {
     "name": "عبير المقرن",
@@ -921,56 +963,56 @@
   "603": {
     "name": "نوف سعود",
     "updated": {},
-    "totalFollowers": 783584
+    "totalFollowers": 345584
   },
   "604": {
     "name": "رميساء",
     "updated": {
       "تيك توك": 16
     },
-    "totalFollowers": 1304067
+    "totalFollowers": 304067
   },
   "607": {
     "name": "عبدالله جميل",
     "updated": {
-      "يوتيوب": 4450000,
-      "تيك توك": 2200000
+      "يوتيوب": 4460000,
+      "تيك توك": 2300000
     },
-    "totalFollowers": 8117940
+    "totalFollowers": 7656940
   },
   "608": {
     "name": "كورة بريك",
     "updated": {
-      "تويتر/X": 65400
+      "تويتر/X": 66300
     },
-    "totalFollowers": 595400
+    "totalFollowers": 66300
   },
   "610": {
     "name": "ماجد هاشم الرشدان",
     "updated": {
-      "تيك توك": 117500
+      "تيك توك": 117200
     },
-    "totalFollowers": 142500
+    "totalFollowers": 117200
   },
   "611": {
     "name": "عبدالله صلاح باخشوين",
     "updated": {
-      "تيك توك": 148700
+      "تيك توك": 149200
     },
-    "totalFollowers": 455537
+    "totalFollowers": 206037
   },
   "613": {
     "name": "وليد | فنادق الشرقية",
     "updated": {
-      "تيك توك": 36100,
+      "تيك توك": 36200,
       "تويتر/X": 20800
     },
-    "totalFollowers": 234701
+    "totalFollowers": 183801
   },
   "618": {
     "name": "أمينة العلي",
     "updated": {},
-    "totalFollowers": 1054208
+    "totalFollowers": 299208
   },
   "620": {
     "name": "عبير عثمان",
@@ -980,9 +1022,9 @@
   "623": {
     "name": "خالد فهد العبيد",
     "updated": {
-      "تيك توك": 69200
+      "تيك توك": 70000
     },
-    "totalFollowers": 99200
+    "totalFollowers": 70000
   },
   "624": {
     "name": "كريمه",
@@ -992,131 +1034,131 @@
   "626": {
     "name": "ريم عبدالعزيز",
     "updated": {},
-    "totalFollowers": 59000
+    "totalFollowers": 143000
   },
   "628": {
     "name": "محمد الرشيدي",
     "updated": {
       "تيك توك": 1100000
     },
-    "totalFollowers": 1440000
+    "totalFollowers": 1100000
   },
   "629": {
     "name": "فاطمه بالحداد",
     "updated": {},
-    "totalFollowers": 193804
+    "totalFollowers": 192804
   },
   "630": {
     "name": "بلوقر وردة",
     "updated": {
-      "تيك توك": 300200
+      "تيك توك": 308300
     },
-    "totalFollowers": 505227
+    "totalFollowers": 491327
   },
   "631": {
     "name": "نايف يجرب",
     "updated": {
-      "تيك توك": 17700
+      "تيك توك": 17600
     },
-    "totalFollowers": 17700
+    "totalFollowers": 17600
   },
   "635": {
     "name": "عبدالعزيز كركدان",
     "updated": {
-      "يوتيوب": 381000,
-      "تيك توك": 213800,
-      "تويتر/X": 160300
+      "يوتيوب": 384000,
+      "تيك توك": 214600,
+      "تويتر/X": 160400
     },
-    "totalFollowers": 755100
+    "totalFollowers": 759000
   },
   "637": {
     "name": "ماريا الزهراني",
     "updated": {
-      "تيك توك": 96000
+      "تيك توك": 96300
     },
-    "totalFollowers": 96000
+    "totalFollowers": 96300
   },
   "639": {
     "name": "احمد بن محسن",
     "updated": {},
-    "totalFollowers": 1185391
+    "totalFollowers": 1081391
   },
   "640": {
     "name": "د/ رانيا رجب",
     "updated": {
-      "تيك توك": 24600
+      "تيك توك": 24500
     },
-    "totalFollowers": 26600
+    "totalFollowers": 24500
   },
   "641": {
     "name": "سناء",
     "updated": {},
-    "totalFollowers": 10000
+    "totalFollowers": 351000
   },
   "643": {
     "name": "بيجر",
     "updated": {
-      "تيك توك": 476000,
-      "تويتر/X": 40500
+      "تيك توك": 477000,
+      "تويتر/X": 40400
     },
-    "totalFollowers": 4229240
+    "totalFollowers": 3130140
   },
   "644": {
     "name": "اغصان",
     "updated": {},
-    "totalFollowers": 46638896
+    "totalFollowers": 1777896
   },
   "645": {
     "name": "كازان",
     "updated": {
-      "تويتر/X": 127500
+      "تويتر/X": 127300
     },
-    "totalFollowers": 127500
+    "totalFollowers": 127300
   },
   "646": {
     "name": "سعد الغنامي",
     "updated": {
-      "تويتر/X": 114000
+      "تويتر/X": 114200
     },
-    "totalFollowers": 114000
+    "totalFollowers": 114200
   },
   "647": {
     "name": "لينا فهد",
     "updated": {
-      "تيك توك": 695700
+      "تيك توك": 692400
     },
-    "totalFollowers": 871700
+    "totalFollowers": 692400
   },
   "649": {
     "name": "حنان بندر",
     "updated": {
-      "تيك توك": 216300
+      "تيك توك": 216100
     },
-    "totalFollowers": 344707
+    "totalFollowers": 318507
   },
   "650": {
     "name": "نهى نبيل",
     "updated": {
       "تيك توك": 2100000
     },
-    "totalFollowers": 20777215
+    "totalFollowers": 14777215
   },
   "651": {
     "name": "عبدالرحمن بخش",
     "updated": {
-      "تيك توك": 786000
+      "تيك توك": 787500
     },
-    "totalFollowers": 24153074
+    "totalFollowers": 1380574
   },
   "653": {
     "name": "جهينة الحميدان",
     "updated": {},
-    "totalFollowers": 341858
+    "totalFollowers": 100858
   },
   "655": {
     "name": "طارق الزعاق",
     "updated": {},
-    "totalFollowers": 369134
+    "totalFollowers": 350134
   },
   "657": {
     "name": "في الزويد",
@@ -1126,7 +1168,7 @@
   "658": {
     "name": "هيلدا ياسين",
     "updated": {},
-    "totalFollowers": 961586
+    "totalFollowers": 760586
   },
   "665": {
     "name": "عشق",
@@ -1138,7 +1180,7 @@
     "updated": {
       "تيك توك": 86100
     },
-    "totalFollowers": 102545
+    "totalFollowers": 102433
   },
   "667": {
     "name": "ياسر الشهراني",
@@ -1150,19 +1192,21 @@
   "669": {
     "name": "صفية مختار",
     "updated": {},
-    "totalFollowers": 44082
+    "totalFollowers": 11082
   },
   "673": {
     "name": "يسرى عبدالله عيسى",
     "updated": {
-      "تيك توك": 251700
+      "تيك توك": 251600
     },
-    "totalFollowers": 433066
+    "totalFollowers": 432966
   },
   "675": {
     "name": "صالحه",
-    "updated": {},
-    "totalFollowers": 23700
+    "updated": {
+      "تيك توك": 41800
+    },
+    "totalFollowers": 59900
   },
   "676": {
     "name": "هتون",
@@ -1173,16 +1217,21 @@
     "name": "مهند زهير",
     "updated": {
       "يوتيوب": 1260,
-      "تيك توك": 176800
+      "تيك توك": 176900
     },
-    "totalFollowers": 959157
+    "totalFollowers": 359257
+  },
+  "688": {
+    "name": "نسمه",
+    "updated": {},
+    "totalFollowers": 5274810
   },
   "690": {
     "name": "اصاله بن حريب",
     "updated": {
-      "تيك توك": 325900
+      "تيك توك": 325800
     },
-    "totalFollowers": 699284
+    "totalFollowers": 657184
   },
   "691": {
     "name": "عبير",
@@ -1192,52 +1241,57 @@
   "693": {
     "name": "مرام العتيبي",
     "updated": {
-      "تيك توك": 83400
+      "تيك توك": 86800
     },
-    "totalFollowers": 83400
+    "totalFollowers": 86800
   },
   "695": {
     "name": "ندى بلوقر",
     "updated": {},
-    "totalFollowers": 247000
+    "totalFollowers": 59005
   },
   "700": {
     "name": "أحمد الفرحان",
-    "updated": {},
-    "totalFollowers": 100000
+    "updated": {
+      "تيك توك": 861000,
+      "تويتر/X": 2416
+    },
+    "totalFollowers": 1281416
   },
   "701": {
     "name": "وصايف القحطاني",
     "updated": {
-      "تيك توك": 273900
+      "تيك توك": 273800
     },
-    "totalFollowers": 377600
+    "totalFollowers": 297500
   },
   "702": {
     "name": "أوقست",
     "updated": {
-      "تيك توك": 359400
+      "تيك توك": 360400
     },
-    "totalFollowers": 359400
+    "totalFollowers": 360400
   },
   "703": {
     "name": "Reeme.days",
     "updated": {
-      "تيك توك": 122200
+      "تيك توك": 121700
     },
-    "totalFollowers": 154954
+    "totalFollowers": 142454
   },
   "704": {
     "name": "هندا العجمي",
     "updated": {
-      "تيك توك": 429300
+      "تيك توك": 429100
     },
-    "totalFollowers": 429300
+    "totalFollowers": 429100
   },
   "713": {
     "name": "فهد الزهراني",
-    "updated": {},
-    "totalFollowers": 350000
+    "updated": {
+      "تويتر/X": 6723
+    },
+    "totalFollowers": 96723
   },
   "714": {
     "name": "فارس الرشيد",
@@ -1256,10 +1310,10 @@
   "718": {
     "name": "حسام الشماسي",
     "updated": {
-      "تيك توك": 42900,
+      "تيك توك": 44400,
       "تويتر/X": 50400
     },
-    "totalFollowers": 424445
+    "totalFollowers": 325845
   },
   "721": {
     "name": "ساره القحطاني",
@@ -1269,16 +1323,16 @@
   "722": {
     "name": "د. لمار",
     "updated": {
-      "تيك توك": 367500
+      "تيك توك": 368300
     },
-    "totalFollowers": 469163
+    "totalFollowers": 387963
   },
   "723": {
     "name": "شهد التويجري",
     "updated": {
-      "تيك توك": 182400
+      "تيك توك": 185600
     },
-    "totalFollowers": 182400
+    "totalFollowers": 185600
   },
   "724": {
     "name": "عيد الفهري",
@@ -1292,7 +1346,7 @@
     "updated": {
       "تيك توك": 37800
     },
-    "totalFollowers": 4232819
+    "totalFollowers": 3371819
   },
   "728": {
     "name": "اسماء",
@@ -1304,72 +1358,72 @@
   "730": {
     "name": "ميعاد العسيري",
     "updated": {
-      "تيك توك": 345200
+      "تيك توك": 348600
     },
-    "totalFollowers": 71445200
+    "totalFollowers": 348600
   },
   "732": {
     "name": "بشاير الشهري",
     "updated": {},
-    "totalFollowers": 486
+    "totalFollowers": 49000
   },
   "733": {
     "name": "امل الياس",
     "updated": {
-      "تيك توك": 140800
+      "تيك توك": 142100
     },
-    "totalFollowers": 315281
+    "totalFollowers": 316581
   },
   "734": {
     "name": "عذاري  صالح",
     "updated": {
-      "تيك توك": 25400
+      "تيك توك": 26200
     },
-    "totalFollowers": 445312
+    "totalFollowers": 115012
   },
   "735": {
     "name": "خلف الجوعان",
     "updated": {
       "يوتيوب": 215000,
-      "تويتر/X": 238000
+      "تويتر/X": 237100
     },
-    "totalFollowers": 1819071
+    "totalFollowers": 1417171
   },
   "736": {
     "name": "عبدالله القفاري",
     "updated": {
-      "تيك توك": 593500,
-      "تويتر/X": 271400
+      "تيك توك": 592900,
+      "تويتر/X": 271000
     },
-    "totalFollowers": 5058586
+    "totalFollowers": 2376586
   },
   "739": {
     "name": "هند محمد",
     "updated": {
-      "تيك توك": 558700
+      "تيك توك": 560200
     },
-    "totalFollowers": 558700
+    "totalFollowers": 560200
   },
   "740": {
     "name": "نائله جاد",
     "updated": {
-      "تيك توك": 183200
+      "تيك توك": 182500
     },
-    "totalFollowers": 346945
+    "totalFollowers": 269245
   },
   "741": {
     "name": "عقاري محترف",
     "updated": {
-      "تيك توك": 49300
+      "تيك توك": 49400
     },
-    "totalFollowers": 301434
+    "totalFollowers": 152534
   },
   "742": {
     "name": "فيصل الخالدي",
     "updated": {
-      "تيك توك": 641
+      "تيك توك": 633
     },
-    "totalFollowers": 202641
+    "totalFollowers": 202633
   },
   "744": {
     "name": "محمد التويجري",
@@ -1381,26 +1435,26 @@
   "748": {
     "name": "فيصل بن محمد",
     "updated": {},
-    "totalFollowers": 813845
+    "totalFollowers": 703845
   },
   "750": {
     "name": "صالحه الغامدي",
     "updated": {
-      "تيك توك": 728600
+      "تيك توك": 726700
     },
-    "totalFollowers": 728600
+    "totalFollowers": 726700
   },
   "754": {
     "name": "بشرى المشاري",
     "updated": {},
-    "totalFollowers": 67000
+    "totalFollowers": 62000
   },
   "756": {
     "name": "سناب هذا السعودي",
     "updated": {
-      "تيك توك": 1276
+      "تيك توك": 1273
     },
-    "totalFollowers": 827276
+    "totalFollowers": 1273
   },
   "757": {
     "name": "نورة الشلاحي",
@@ -1412,21 +1466,21 @@
   "759": {
     "name": "خلود محمد",
     "updated": {
-      "يوتيوب": 2270
+      "يوتيوب": 2300
     },
-    "totalFollowers": 290724
+    "totalFollowers": 280300
   },
   "760": {
     "name": "البدور",
     "updated": {},
-    "totalFollowers": 1394859
+    "totalFollowers": 1345859
   },
   "761": {
     "name": "طبخ ام خليفه",
     "updated": {
-      "تيك توك": 39300
+      "تيك توك": 39600
     },
-    "totalFollowers": 199300
+    "totalFollowers": 63600
   },
   "762": {
     "name": "أفراح الغامدي",
@@ -1435,50 +1489,57 @@
     },
     "totalFollowers": 2197944
   },
+  "764": {
+    "name": "يوسف بابطين",
+    "updated": {},
+    "totalFollowers": 16194
+  },
   "765": {
     "name": "علي القحطاني",
     "updated": {},
-    "totalFollowers": 355200
+    "totalFollowers": 255200
   },
   "767": {
     "name": "غادة البطي",
     "updated": {
-      "تيك توك": 29200
+      "تيك توك": 29100
     },
-    "totalFollowers": 51200
+    "totalFollowers": 29100
   },
   "768": {
     "name": "تركي الغنمي",
     "updated": {
-      "تيك توك": 52600
+      "تيك توك": 53400
     },
-    "totalFollowers": 645600
+    "totalFollowers": 53400
   },
   "771": {
     "name": "الشيف اسومه",
-    "updated": {},
-    "totalFollowers": 30552000
+    "updated": {
+      "تيك توك": 9608
+    },
+    "totalFollowers": 1566308
   },
   "772": {
     "name": "عبدالملك السلمي",
     "updated": {
       "تيك توك": 111800
     },
-    "totalFollowers": 199924
+    "totalFollowers": 159924
   },
   "774": {
     "name": "طارق ناصر السويح",
     "updated": {
-      "تيك توك": 68400
+      "تيك توك": 68600
     },
-    "totalFollowers": 111192
+    "totalFollowers": 108192
   },
   "780": {
     "name": "بدور",
     "updated": {
-      "تيك توك": 897100
+      "تيك توك": 899900
     },
-    "totalFollowers": 1125135
+    "totalFollowers": 1097935
   },
   "782": {
     "name": "هيفاء البطي",
@@ -1495,47 +1556,47 @@
   "834": {
     "name": "تغطيات آيفا",
     "updated": {
-      "تيك توك": 161600
+      "تيك توك": 161500
     },
-    "totalFollowers": 161600
+    "totalFollowers": 161500
   },
   "844": {
     "name": "فاطمة عادل",
     "updated": {
-      "تيك توك": 561000
+      "تيك توك": 564300
     },
-    "totalFollowers": 661000
+    "totalFollowers": 564300
   },
   "847": {
     "name": "تغطيات ساره",
     "updated": {
-      "تيك توك": 102700
+      "تيك توك": 103300
     },
-    "totalFollowers": 102700
+    "totalFollowers": 103300
   },
   "849": {
     "name": "تاق",
     "updated": {},
-    "totalFollowers": 1090049
+    "totalFollowers": 960489
   },
   "852": {
     "name": "أصالة التراث",
     "updated": {
       "تيك توك": 51800
     },
-    "totalFollowers": 106800
+    "totalFollowers": 72800
   },
   "853": {
     "name": "حليمه الشريف",
     "updated": {},
-    "totalFollowers": 99000
+    "totalFollowers": 32000
   },
   "855": {
     "name": "صافيه محمد",
     "updated": {
-      "تيك توك": 21600
+      "تيك توك": 21500
     },
-    "totalFollowers": 21600
+    "totalFollowers": 21500
   },
   "856": {
     "name": "هدى الكبسي",
@@ -1552,14 +1613,14 @@
   "860": {
     "name": "عبدالله الخضيري",
     "updated": {
-      "تيك توك": 56400
+      "تيك توك": 56200
     },
-    "totalFollowers": 56400
+    "totalFollowers": 56200
   },
   "861": {
     "name": "احمد العامر",
     "updated": {},
-    "totalFollowers": 1000000
+    "totalFollowers": 1278000
   },
   "865": {
     "name": "شيخه عبد الرحمن",
@@ -1569,48 +1630,53 @@
   "870": {
     "name": "جولي",
     "updated": {},
-    "totalFollowers": 2058927
+    "totalFollowers": 2048927
   },
   "879": {
     "name": "وليد عبدالله",
     "updated": {
-      "تويتر/X": 162000
+      "تويتر/X": 161800
     },
-    "totalFollowers": 606000
+    "totalFollowers": 605800
+  },
+  "884": {
+    "name": "نورا بنت خالد",
+    "updated": {},
+    "totalFollowers": 729935
   },
   "903": {
     "name": "أريج محمد",
     "updated": {
-      "تيك توك": 271900,
-      "تويتر/X": 9510
+      "تيك توك": 275300,
+      "تويتر/X": 9422
     },
-    "totalFollowers": 719811
+    "totalFollowers": 373123
   },
   "905": {
     "name": "ورد عبدالعزيز",
     "updated": {
-      "تيك توك": 113700
+      "تيك توك": 113300
     },
-    "totalFollowers": 171700
+    "totalFollowers": 113300
   },
   "907": {
     "name": "دارين اسكندر",
     "updated": {},
-    "totalFollowers": 71000
+    "totalFollowers": 284800
   },
   "911": {
     "name": "سارا الشهري",
     "updated": {
-      "تيك توك": 134600
+      "تيك توك": 135400
     },
-    "totalFollowers": 134600
+    "totalFollowers": 135400
   },
   "915": {
     "name": "فعاليات الرياض",
     "updated": {
-      "تيك توك": 383100
+      "تيك توك": 383700
     },
-    "totalFollowers": 383100
+    "totalFollowers": 383700
   },
   "916": {
     "name": "سَم رفيوز",
@@ -1620,23 +1686,23 @@
   "920": {
     "name": "نوفا القرني",
     "updated": {
-      "تيك توك": 662300
+      "تيك توك": 669600
     },
-    "totalFollowers": 827967
+    "totalFollowers": 835267
   },
   "921": {
     "name": "تغطيات الرياض ايثار",
     "updated": {
-      "تيك توك": 130800
+      "تيك توك": 130600
     },
-    "totalFollowers": 130800
+    "totalFollowers": 130600
   },
   "922": {
     "name": "ناي",
     "updated": {
-      "تيك توك": 60700
+      "تيك توك": 60600
     },
-    "totalFollowers": 60700
+    "totalFollowers": 60600
   },
   "923": {
     "name": "_iiicloud",
@@ -1647,9 +1713,7 @@
   },
   "924": {
     "name": "( فهد ) الرياض ترندز",
-    "updated": {
-      "تيك توك": 344100
-    },
+    "updated": {},
     "totalFollowers": 344100
   },
   "925": {
@@ -1662,21 +1726,21 @@
   "926": {
     "name": "نيو تريند",
     "updated": {},
-    "totalFollowers": 59534
+    "totalFollowers": 52534
   },
   "928": {
     "name": "موضي المقاطي",
     "updated": {
-      "تيك توك": 96500
+      "تيك توك": 96400
     },
-    "totalFollowers": 96500
+    "totalFollowers": 96400
   },
   "929": {
     "name": "الفريدة",
     "updated": {
-      "تيك توك": 100700
+      "تيك توك": 100600
     },
-    "totalFollowers": 490872
+    "totalFollowers": 460772
   },
   "930": {
     "name": "اسامه محمد",
@@ -1686,9 +1750,9 @@
   "931": {
     "name": "منى سالم",
     "updated": {
-      "تيك توك": 137100
+      "تيك توك": 138200
     },
-    "totalFollowers": 137100
+    "totalFollowers": 138200
   },
   "932": {
     "name": "رنا",
@@ -1702,64 +1766,76 @@
     "updated": {},
     "totalFollowers": 400000
   },
+  "959": {
+    "name": "عبدالاله العمري",
+    "updated": {
+      "تويتر/X": 222400
+    },
+    "totalFollowers": 1004400
+  },
   "970": {
     "name": "دارين البايض",
     "updated": {},
-    "totalFollowers": 5539750
+    "totalFollowers": 4439750
+  },
+  "971": {
+    "name": "جدة نايت",
+    "updated": {},
+    "totalFollowers": 133579
   },
   "978": {
     "name": "RIYADH LIVE",
     "updated": {
-      "تيك توك": 253500
+      "تيك توك": 253100
     },
-    "totalFollowers": 253500
+    "totalFollowers": 253100
   },
   "982": {
     "name": "منى الجريسي",
     "updated": {
       "تيك توك": 65400
     },
-    "totalFollowers": 145400
+    "totalFollowers": 65400
   },
   "986": {
     "name": "وسام الجنوب",
     "updated": {
       "تيك توك": 263300
     },
-    "totalFollowers": 365300
+    "totalFollowers": 263300
   },
   "988": {
     "name": "خلود محمد",
     "updated": {
       "تيك توك": 111000
     },
-    "totalFollowers": 221221
+    "totalFollowers": 201221
   },
   "990": {
     "name": "غادة العزمان",
     "updated": {
-      "تيك توك": 312300
+      "تيك توك": 313500
     },
-    "totalFollowers": 312300
+    "totalFollowers": 313500
   },
   "991": {
     "name": "بشاير الخضير",
     "updated": {},
-    "totalFollowers": 307688
+    "totalFollowers": 82500
   },
   "1001": {
     "name": "عبير سلطان",
     "updated": {
-      "تيك توك": 113500
+      "تيك توك": 114300
     },
-    "totalFollowers": 156871
+    "totalFollowers": 156571
   },
   "1003": {
     "name": "فوز الشريف",
     "updated": {
-      "تيك توك": 80900
+      "تيك توك": 89000
     },
-    "totalFollowers": 111300
+    "totalFollowers": 89000
   },
   "1004": {
     "name": "عبير علي",
@@ -1769,44 +1845,44 @@
   "1007": {
     "name": "بدّورا",
     "updated": {
-      "تيك توك": 269800
+      "تيك توك": 269600
     },
-    "totalFollowers": 269800
+    "totalFollowers": 269600
   },
   "1009": {
     "name": "Sarah vibes",
     "updated": {
-      "تيك توك": 191600
+      "تيك توك": 191800
     },
-    "totalFollowers": 191600
+    "totalFollowers": 191800
   },
   "1010": {
     "name": "نــوره سيـف",
     "updated": {
-      "تيك توك": 179000
+      "تيك توك": 179100
     },
-    "totalFollowers": 179000
+    "totalFollowers": 179100
   },
   "1011": {
     "name": "روز البقمي",
     "updated": {
-      "تيك توك": 223900
+      "تيك توك": 223400
     },
-    "totalFollowers": 223900
+    "totalFollowers": 223400
   },
   "1012": {
     "name": "حصه البقمي",
     "updated": {
-      "تيك توك": 197300
+      "تيك توك": 197100
     },
-    "totalFollowers": 227300
+    "totalFollowers": 217100
   },
   "1013": {
     "name": "البندري عبدالله",
     "updated": {
-      "تيك توك": 134600
+      "تيك توك": 134500
     },
-    "totalFollowers": 148600
+    "totalFollowers": 147500
   },
   "1016": {
     "name": "تغطيات | هـنـو",
@@ -1816,16 +1892,16 @@
   "1029": {
     "name": "نوره الشهراني",
     "updated": {
-      "تيك توك": 145900
+      "تيك توك": 145700
     },
-    "totalFollowers": 145900
+    "totalFollowers": 145700
   },
   "1034": {
     "name": "دليل السعودية",
     "updated": {
-      "تيك توك": 222700
+      "تيك توك": 222900
     },
-    "totalFollowers": 321044
+    "totalFollowers": 321244
   },
   "1035": {
     "name": "نوره الشلاحي",
@@ -1837,30 +1913,30 @@
   "1041": {
     "name": "تغطيات لفة",
     "updated": {
-      "تيك توك": 59400
+      "تيك توك": 59200
     },
-    "totalFollowers": 146189
+    "totalFollowers": 145989
   },
   "1043": {
     "name": "مون",
     "updated": {
-      "تيك توك": 225100
+      "تيك توك": 225300
     },
-    "totalFollowers": 225100
+    "totalFollowers": 225300
   },
   "1044": {
     "name": "بانوراما",
     "updated": {
-      "تيك توك": 217100
+      "تيك توك": 217000
     },
-    "totalFollowers": 217100
+    "totalFollowers": 217000
   },
   "1045": {
     "name": "امجاد",
     "updated": {
-      "تيك توك": 108300
+      "تيك توك": 108400
     },
-    "totalFollowers": 108300
+    "totalFollowers": 108400
   },
   "1046": {
     "name": "سهام صالح",
@@ -1879,16 +1955,16 @@
   "1049": {
     "name": "سارة تغطيات",
     "updated": {
-      "تيك توك": 112000
+      "تيك توك": 112200
     },
-    "totalFollowers": 112000
+    "totalFollowers": 112200
   },
   "1051": {
     "name": "نورا المنصور",
     "updated": {
-      "تيك توك": 36400
+      "تيك توك": 36300
     },
-    "totalFollowers": 36400
+    "totalFollowers": 36300
   },
   "1052": {
     "name": "تغطيات حنان",
@@ -1900,9 +1976,14 @@
   "1053": {
     "name": "امجاد الغنانمي",
     "updated": {
-      "تيك توك": 64300
+      "تيك توك": 64400
     },
-    "totalFollowers": 64300
+    "totalFollowers": 64400
+  },
+  "1054": {
+    "name": "blogger.mona1",
+    "updated": {},
+    "totalFollowers": 50518
   },
   "1055": {
     "name": "حور",
@@ -1912,16 +1993,16 @@
   "1060": {
     "name": "بلوقر ايمان",
     "updated": {
-      "تيك توك": 75200
+      "تيك توك": 75600
     },
-    "totalFollowers": 75200
+    "totalFollowers": 75600
   },
   "1064": {
     "name": "بنات الحمدانية",
     "updated": {
-      "تيك توك": 59300
+      "تيك توك": 60300
     },
-    "totalFollowers": 140200
+    "totalFollowers": 89200
   },
   "1075": {
     "name": "يومياتي | ولاء",
@@ -1935,28 +2016,35 @@
     "updated": {
       "تيك توك": 96700
     },
-    "totalFollowers": 158400
+    "totalFollowers": 96700
+  },
+  "1088": {
+    "name": "علي لاجامي",
+    "updated": {
+      "تويتر/X": 104900
+    },
+    "totalFollowers": 675900
   },
   "1089": {
     "name": "فــيّ 🌴",
     "updated": {
-      "تيك توك": 94000
+      "تيك توك": 93400
     },
-    "totalFollowers": 94000
+    "totalFollowers": 93400
   },
   "1090": {
     "name": "دعاء وليد",
     "updated": {
-      "تيك توك": 140700
+      "تيك توك": 142000
     },
-    "totalFollowers": 148700
+    "totalFollowers": 142000
   },
   "1097": {
     "name": "بسمه عبدالرحمن",
     "updated": {
-      "تيك توك": 128700
+      "تيك توك": 128600
     },
-    "totalFollowers": 128700
+    "totalFollowers": 128600
   },
   "1098": {
     "name": "ساره القحطاني",
@@ -1968,16 +2056,16 @@
   "1099": {
     "name": "اشواق",
     "updated": {
-      "تيك توك": 113900
+      "تيك توك": 115000
     },
-    "totalFollowers": 129695
+    "totalFollowers": 130795
   },
   "1102": {
     "name": "بلوقر نون",
     "updated": {
-      "تيك توك": 88700
+      "تيك توك": 92100
     },
-    "totalFollowers": 88700
+    "totalFollowers": 92100
   },
   "1103": {
     "name": "فاطمه عسيري",
@@ -1989,35 +2077,35 @@
     "updated": {
       "تيك توك": 131400
     },
-    "totalFollowers": 148700
+    "totalFollowers": 131400
   },
   "1105": {
     "name": "أميرة المطيري",
     "updated": {
-      "تيك توك": 143800
+      "تيك توك": 144200
     },
-    "totalFollowers": 197500
+    "totalFollowers": 163900
   },
   "1106": {
     "name": "زهراء طالب",
     "updated": {
-      "تيك توك": 150000
+      "تيك توك": 151600
     },
-    "totalFollowers": 183800
+    "totalFollowers": 169400
   },
   "1107": {
     "name": "امل المطيري",
     "updated": {
-      "تيك توك": 192200
+      "تيك توك": 192700
     },
-    "totalFollowers": 292200
+    "totalFollowers": 192700
   },
   "1108": {
     "name": "زهره الشهري",
     "updated": {
-      "تيك توك": 167700
+      "تيك توك": 167900
     },
-    "totalFollowers": 167700
+    "totalFollowers": 167900
   },
   "1109": {
     "name": "طيف الزهراني",
@@ -2027,30 +2115,30 @@
   "1110": {
     "name": "خلود العنزي",
     "updated": {
-      "تيك توك": 178100
+      "تيك توك": 178700
     },
-    "totalFollowers": 178100
+    "totalFollowers": 178700
   },
   "1111": {
     "name": "اريج القحطاني",
     "updated": {
-      "تيك توك": 69800
+      "تيك توك": 70200
     },
-    "totalFollowers": 84400
+    "totalFollowers": 70200
   },
   "1112": {
     "name": "كيان",
     "updated": {
       "تيك توك": 107800
     },
-    "totalFollowers": 128593
+    "totalFollowers": 117393
   },
   "1113": {
     "name": "الكادي ( دلال الحارثي)",
     "updated": {
-      "تيك توك": 58800
+      "تيك توك": 58900
     },
-    "totalFollowers": 81800
+    "totalFollowers": 58900
   },
   "1115": {
     "name": "بشرى البقمي",
@@ -2060,23 +2148,23 @@
   "1117": {
     "name": "عبير محمد",
     "updated": {
-      "تيك توك": 129400
+      "تيك توك": 129700
     },
-    "totalFollowers": 147200
+    "totalFollowers": 147500
   },
   "1119": {
     "name": "عبير البارقي",
     "updated": {
-      "تيك توك": 140800
+      "تيك توك": 142000
     },
-    "totalFollowers": 140800
+    "totalFollowers": 142000
   },
   "1121": {
     "name": "أمل المطلق",
     "updated": {
-      "تيك توك": 22500
+      "تيك توك": 22600
     },
-    "totalFollowers": 42500
+    "totalFollowers": 22600
   },
   "1122": {
     "name": "نورة المطيري",
@@ -2086,9 +2174,9 @@
   "1123": {
     "name": "تغطيات الرياض",
     "updated": {
-      "تيك توك": 90400
+      "تيك توك": 90300
     },
-    "totalFollowers": 92787
+    "totalFollowers": 90687
   },
   "1125": {
     "name": "الوفاء والطيب",
@@ -2096,21 +2184,21 @@
       "يوتيوب": 22,
       "تيك توك": 68800
     },
-    "totalFollowers": 163242
+    "totalFollowers": 93242
   },
   "1131": {
     "name": "نور آل قيس",
     "updated": {
-      "تيك توك": 244700
+      "تيك توك": 244300
     },
-    "totalFollowers": 437500
+    "totalFollowers": 262100
   },
   "1133": {
     "name": "eman gabba",
     "updated": {
-      "تيك توك": 107500
+      "تيك توك": 107900
     },
-    "totalFollowers": 254617
+    "totalFollowers": 114391
   },
   "1159": {
     "name": "العطا للتغطيات",
@@ -2120,45 +2208,45 @@
   "1168": {
     "name": "ميم",
     "updated": {
-      "تيك توك": 94100
+      "تيك توك": 94200
     },
-    "totalFollowers": 98100
+    "totalFollowers": 94200
   },
   "1170": {
     "name": "فوز العلكمي",
     "updated": {
-      "تيك توك": 63000
+      "تيك توك": 65800
     },
-    "totalFollowers": 133000
+    "totalFollowers": 115800
   },
   "1172": {
     "name": "ميمي القحطاني",
     "updated": {
-      "تيك توك": 227400
+      "تيك توك": 227700
     },
-    "totalFollowers": 250700
+    "totalFollowers": 243700
   },
   "1173": {
     "name": "نرجس العوامي",
     "updated": {
-      "تيك توك": 109700,
+      "تيك توك": 110400,
       "تويتر/X": 56400
     },
-    "totalFollowers": 1191059
+    "totalFollowers": 287800
   },
   "1181": {
     "name": "ريڤيو الرياض",
     "updated": {
-      "تيك توك": 323700
+      "تيك توك": 323800
     },
-    "totalFollowers": 323700
+    "totalFollowers": 323800
   },
   "1182": {
     "name": "باب الرياض",
     "updated": {
-      "تيك توك": 197000
+      "تيك توك": 196700
     },
-    "totalFollowers": 197000
+    "totalFollowers": 196700
   },
   "1183": {
     "name": "روز",
@@ -2171,6 +2259,13 @@
       "تيك توك": 84700
     },
     "totalFollowers": 84700
+  },
+  "1188": {
+    "name": "محمد البريك",
+    "updated": {
+      "تويتر/X": 601200
+    },
+    "totalFollowers": 2186700
   },
   "200001": {
     "name": "أبو فلة",
@@ -2189,22 +2284,22 @@
   "200003": {
     "name": "دحومي999",
     "updated": {
-      "يوتيوب": 9920000
+      "يوتيوب": 10000000
     },
-    "totalFollowers": 9920000
+    "totalFollowers": 10000000
   },
   "200004": {
     "name": "نجود الشمري",
     "updated": {
       "يوتيوب": 1810000,
-      "تويتر/X": 89600
+      "تويتر/X": 89500
     },
-    "totalFollowers": 1899600
+    "totalFollowers": 1899500
   },
   "1783000246776": {
     "name": "ميتو الشامسي",
     "updated": {},
-    "totalFollowers": 26200000
+    "totalFollowers": 24200000
   },
   "1783000246777": {
     "name": "أحمد الشقيري",
@@ -2216,29 +2311,27 @@
   "1783000246778": {
     "name": "بدر الزهراني",
     "updated": {},
-    "totalFollowers": 11800000
+    "totalFollowers": 10700000
   },
   "1783000246779": {
     "name": "عبدالعزيز المسفر",
     "updated": {},
-    "totalFollowers": 11900000
+    "totalFollowers": 10300000
   },
   "1783000246780": {
     "name": "سارة مهند",
     "updated": {},
-    "totalFollowers": 10100000
+    "totalFollowers": 8800000
   },
   "1783000246781": {
     "name": "ملكة كابلي",
     "updated": {},
-    "totalFollowers": 5800000
+    "totalFollowers": 5000000
   },
   "1783000246782": {
     "name": "أسيل عمران",
-    "updated": {
-      "تيك توك": 2
-    },
-    "totalFollowers": 3000002
+    "updated": {},
+    "totalFollowers": 2100000
   },
   "1783000246783": {
     "name": "مشهور الدبيان",
@@ -2248,24 +2341,24 @@
   "1783000246784": {
     "name": "أميرة النسيم",
     "updated": {},
-    "totalFollowers": 3650000
+    "totalFollowers": 2800000
   },
   "1783000246785": {
     "name": "نورة البلوي",
     "updated": {},
-    "totalFollowers": 3050000
+    "totalFollowers": 2350000
   },
   "1783000246786": {
     "name": "دانه الطويرش",
     "updated": {},
-    "totalFollowers": 2730000
+    "totalFollowers": 2080000
   },
   "1783000246787": {
     "name": "هيا صوان",
     "updated": {
-      "تيك توك": 157500
+      "تيك توك": 157700
     },
-    "totalFollowers": 2307500
+    "totalFollowers": 1657700
   },
   "1783000246788": {
     "name": "سعد القحطاني",
@@ -2275,43 +2368,37 @@
   "1783000246789": {
     "name": "سعودي باكر",
     "updated": {},
-    "totalFollowers": 2550000
+    "totalFollowers": 2000000
   },
   "1783000246790": {
     "name": "عبدالرحمن الشهراني",
     "updated": {},
-    "totalFollowers": 2170000
+    "totalFollowers": 1700000
   },
   "1783000246791": {
     "name": "روان عبدالوهاب",
-    "updated": {
-      "تيك توك": 2
-    },
-    "totalFollowers": 1350002
+    "updated": {},
+    "totalFollowers": 950000
   },
   "1783000246792": {
     "name": "محمد الغامدي",
-    "updated": {
-      "تيك توك": 120
-    },
-    "totalFollowers": 2500120
+    "updated": {},
+    "totalFollowers": 1700000
   },
   "1783000246793": {
     "name": "نوف العنزي",
-    "updated": {
-      "تيك توك": 5
-    },
-    "totalFollowers": 2050005
+    "updated": {},
+    "totalFollowers": 1400000
   },
   "1783000246794": {
     "name": "أحمد الدوسري",
     "updated": {},
-    "totalFollowers": 4020000
+    "totalFollowers": 3500000
   },
   "1783000246795": {
     "name": "أحمد البسام",
     "updated": {},
-    "totalFollowers": 4200000
+    "totalFollowers": 3600000
   },
   "1783000246796": {
     "name": "عمر الحسن",
@@ -2336,37 +2423,37 @@
   "1783000246800": {
     "name": "ريان القرشي",
     "updated": {},
-    "totalFollowers": 1900000
+    "totalFollowers": 1500000
   },
   "1783000246801": {
     "name": "نورة الحربي",
     "updated": {},
-    "totalFollowers": 1660000
+    "totalFollowers": 1310000
   },
   "1783000246802": {
     "name": "ياسمين الميمني",
     "updated": {},
-    "totalFollowers": 1750000
+    "totalFollowers": 1380000
   },
   "1783000246803": {
     "name": "لين برناوي",
     "updated": {},
-    "totalFollowers": 1480000
+    "totalFollowers": 1170000
   },
   "1783000246804": {
     "name": "هند القحطاني",
     "updated": {},
-    "totalFollowers": 1800000
+    "totalFollowers": 1420000
   },
   "1783000246805": {
     "name": "شهد الزهراني",
     "updated": {},
-    "totalFollowers": 2500000
+    "totalFollowers": 2000000
   },
   "1783000246806": {
     "name": "إلين سليمان",
     "updated": {},
-    "totalFollowers": 2120000
+    "totalFollowers": 1700000
   },
   "1783000246807": {
     "name": "خالد الغامدي",
@@ -2390,10 +2477,8 @@
   },
   "1783000246812": {
     "name": "لمياء الشريف",
-    "updated": {
-      "تويتر/X": 2
-    },
-    "totalFollowers": 1100002
+    "updated": {},
+    "totalFollowers": 1100000
   },
   "1783000246813": {
     "name": "رامي العجلان",
@@ -2402,22 +2487,18 @@
   },
   "1783000246814": {
     "name": "ماجد الراشد",
-    "updated": {
-      "تيك توك": 58
-    },
-    "totalFollowers": 1260058
+    "updated": {},
+    "totalFollowers": 880000
   },
   "1783000246815": {
     "name": "هنا الشهري",
-    "updated": {
-      "تيك توك": 163
-    },
-    "totalFollowers": 1240163
+    "updated": {},
+    "totalFollowers": 860000
   },
   "1783000246816": {
     "name": "ريما العمري",
     "updated": {},
-    "totalFollowers": 3340000
+    "totalFollowers": 2800000
   },
   "1783000246817": {
     "name": "ريان حمزة",
@@ -2432,47 +2513,39 @@
   "1783000246819": {
     "name": "ميا الزهراني",
     "updated": {},
-    "totalFollowers": 2850000
+    "totalFollowers": 2520000
   },
   "1783000246820": {
     "name": "هند الزهراني",
     "updated": {},
-    "totalFollowers": 3700000
+    "totalFollowers": 3200000
   },
   "1783000246821": {
     "name": "Model Roz",
-    "updated": {
-      "تيك توك": 84
-    },
-    "totalFollowers": 14200084
+    "updated": {},
+    "totalFollowers": 14200000
   },
   "1783000246822": {
     "name": "علانود بدر",
     "updated": {
-      "تيك توك": 79300
+      "تيك توك": 79700
     },
-    "totalFollowers": 2779300
+    "totalFollowers": 2779700
   },
   "1783000246823": {
     "name": "هالة عبدالله",
-    "updated": {
-      "تيك توك": 32
-    },
-    "totalFollowers": 1900032
+    "updated": {},
+    "totalFollowers": 1900000
   },
   "1783000246824": {
     "name": "نجود الرميحي",
-    "updated": {
-      "تيك توك": 65
-    },
-    "totalFollowers": 1200065
+    "updated": {},
+    "totalFollowers": 1200000
   },
   "1783000246825": {
     "name": "أنس إسكندر",
-    "updated": {
-      "تيك توك": 231
-    },
-    "totalFollowers": 1600231
+    "updated": {},
+    "totalFollowers": 1600000
   },
   "1783000246826": {
     "name": "فيراس المبارك",
@@ -2513,18 +2586,15 @@
   },
   "1783000246839": {
     "name": "بيسان إسماعيل",
-    "updated": {
-      "تيك توك": 1456
-    },
-    "totalFollowers": 2101456
+    "updated": {},
+    "totalFollowers": 2100000
   },
   "1783000246840": {
     "name": "نور ستارز",
     "updated": {
-      "يوتيوب": 7,
-      "تيك توك": 168
+      "يوتيوب": 22400000
     },
-    "totalFollowers": 12700175
+    "totalFollowers": 35100000
   },
   "1783000246841": {
     "name": "جومانة خان",
@@ -2533,10 +2603,8 @@
   },
   "1783000246842": {
     "name": "فاريال فيري",
-    "updated": {
-      "تيك توك": 160
-    },
-    "totalFollowers": 3200160
+    "updated": {},
+    "totalFollowers": 3200000
   },
   "1783000246843": {
     "name": "زيبا جولي",
@@ -2545,10 +2613,8 @@
   },
   "1783000246844": {
     "name": "خالد العامري",
-    "updated": {
-      "تيك توك": 233
-    },
-    "totalFollowers": 15600233
+    "updated": {},
+    "totalFollowers": 15600000
   },
   "1783000246845": {
     "name": "نوها نبيل",
@@ -2559,32 +2625,23 @@
   },
   "1783000246846": {
     "name": "نور عريضة",
-    "updated": {
-      "تيك توك": 1
-    },
-    "totalFollowers": 4200001
+    "updated": {},
+    "totalFollowers": 4200000
   },
   "1783000246847": {
     "name": "إلهام الفضالة",
-    "updated": {
-      "تيك توك": 446
-    },
-    "totalFollowers": 2900446
+    "updated": {},
+    "totalFollowers": 2900000
   },
   "1783000246848": {
     "name": "رون بن حسين",
-    "updated": {
-      "تيك توك": 25
-    },
-    "totalFollowers": 3600025
+    "updated": {},
+    "totalFollowers": 3600000
   },
   "1783000246849": {
     "name": "أحمد الخفاجي",
-    "updated": {
-      "تيك توك": 11,
-      "تويتر/X": 2
-    },
-    "totalFollowers": 2400013
+    "updated": {},
+    "totalFollowers": 2400000
   },
   "1783000246850": {
     "name": "أنس بوخش",
@@ -2605,17 +2662,13 @@
   },
   "1783000246853": {
     "name": "منى الشامسي",
-    "updated": {
-      "تيك توك": 1408
-    },
-    "totalFollowers": 1601408
+    "updated": {},
+    "totalFollowers": 1600000
   },
   "1783000246854": {
     "name": "لطيفة المكتوم",
-    "updated": {
-      "تيك توك": 4
-    },
-    "totalFollowers": 4800004
+    "updated": {},
+    "totalFollowers": 4800000
   },
   "1783000246855": {
     "name": "أحمد الهاشمي",
@@ -2625,7 +2678,7 @@
   "1783000246856": {
     "name": "تيم الفلاسي",
     "updated": {},
-    "totalFollowers": 6600000
+    "totalFollowers": 4400000
   },
   "1783000246858": {
     "name": "عبدالله الجابري",
@@ -2644,10 +2697,8 @@
   },
   "1783000246861": {
     "name": "أحمد شحادة",
-    "updated": {
-      "تيك توك": 1170
-    },
-    "totalFollowers": 1401170
+    "updated": {},
+    "totalFollowers": 1400000
   },
   "1783000246862": {
     "name": "ميتو UAE",
@@ -2676,24 +2727,20 @@
   },
   "1783000246867": {
     "name": "دلال الدوب",
-    "updated": {
-      "تيك توك": 2
-    },
-    "totalFollowers": 5200002
+    "updated": {},
+    "totalFollowers": 5200000
   },
   "1783000246868": {
     "name": "دانا العلي",
-    "updated": {
-      "تيك توك": 82
-    },
-    "totalFollowers": 2800082
+    "updated": {},
+    "totalFollowers": 2800000
   },
   "1783000246869": {
     "name": "جاسم رجب",
     "updated": {
-      "تيك توك": 6200000
+      "تيك توك": 6300000
     },
-    "totalFollowers": 8100000
+    "totalFollowers": 8200000
   },
   "1783000246870": {
     "name": "الدكتورة خلود",
@@ -2803,7 +2850,7 @@
   "1783000246892": {
     "name": "رضا حمادة",
     "updated": {},
-    "totalFollowers": 3550000
+    "totalFollowers": 3050000
   },
   "1783000246893": {
     "name": "نور العلوي",
@@ -2832,10 +2879,8 @@
   },
   "1783000246898": {
     "name": "أحمد البحراني",
-    "updated": {
-      "تيك توك": 609
-    },
-    "totalFollowers": 780609
+    "updated": {},
+    "totalFollowers": 780000
   },
   "1783000246900": {
     "name": "علي الكبيسي",
@@ -2869,10 +2914,8 @@
   },
   "1783000246907": {
     "name": "خليفة القطري",
-    "updated": {
-      "تيك توك": 11
-    },
-    "totalFollowers": 920011
+    "updated": {},
+    "totalFollowers": 920000
   },
   "1783000246908": {
     "name": "أميرة الكواري",
@@ -2952,7 +2995,7 @@
   "1783000246923": {
     "name": "مي الحوساوي",
     "updated": {},
-    "totalFollowers": 2050000
+    "totalFollowers": 1750000
   },
   "1783000246924": {
     "name": "عبدالله السديس",
@@ -2962,7 +3005,7 @@
   "1783000246925": {
     "name": "رهف العتيبي",
     "updated": {},
-    "totalFollowers": 1800000
+    "totalFollowers": 1530000
   },
   "1783000246926": {
     "name": "بندر الحقيل",
@@ -2977,14 +3020,12 @@
   "1783000246928": {
     "name": "كريم فرح",
     "updated": {},
-    "totalFollowers": 1610000
+    "totalFollowers": 1370000
   },
   "1783000246929": {
     "name": "نداء السعيد",
-    "updated": {
-      "تيك توك": 93
-    },
-    "totalFollowers": 890093
+    "updated": {},
+    "totalFollowers": 610000
   },
   "1783000246930": {
     "name": "سلمى القحطاني",
@@ -2994,14 +3035,12 @@
   "1783000246931": {
     "name": "غادة الحسين",
     "updated": {},
-    "totalFollowers": 2450000
+    "totalFollowers": 2120000
   },
   "1783000246932": {
     "name": "محمد الصقر",
-    "updated": {
-      "تيك توك": 1785
-    },
-    "totalFollowers": 1251785
+    "updated": {},
+    "totalFollowers": 850000
   },
   "1783000246933": {
     "name": "أمل الزهراني",
@@ -3016,12 +3055,12 @@
   "1783000246935": {
     "name": "حنان العنزي",
     "updated": {},
-    "totalFollowers": 1640000
+    "totalFollowers": 1390000
   },
   "1783000246936": {
     "name": "فيصل الأحمدي",
     "updated": {},
-    "totalFollowers": 2000000
+    "totalFollowers": 1720000
   },
   "1783000246937": {
     "name": "ريحانة المطيري",
@@ -3041,7 +3080,7 @@
   "1783000246940": {
     "name": "ريم الحوشان",
     "updated": {},
-    "totalFollowers": 2090000
+    "totalFollowers": 1780000
   },
   "1783000246941": {
     "name": "مصطفى الدخيل",
@@ -3056,7 +3095,7 @@
   "1783000246943": {
     "name": "سلطان المطيري",
     "updated": {},
-    "totalFollowers": 2290000
+    "totalFollowers": 1950000
   },
   "1783000246944": {
     "name": "شروق السبيعي",
@@ -3066,7 +3105,7 @@
   "1783000246945": {
     "name": "سامي الجهني",
     "updated": {},
-    "totalFollowers": 1950000
+    "totalFollowers": 1680000
   },
   "1783000246946": {
     "name": "وفاء المطيري",
@@ -3137,5 +3176,65 @@
     "name": "عمر العلي",
     "updated": {},
     "totalFollowers": 4500000
+  },
+  "1783000246857": {
+    "name": "الدكتورة مهرا لطفي",
+    "updated": {},
+    "totalFollowers": 1600000
+  },
+  "1783000246810": {
+    "name": "نوال العمري",
+    "updated": {},
+    "totalFollowers": 980000
+  },
+  "1783000246881": {
+    "name": "بسمة الفهد",
+    "updated": {},
+    "totalFollowers": 950000
+  },
+  "1783000246904": {
+    "name": "فاطمة الكواري",
+    "updated": {},
+    "totalFollowers": 950000
+  },
+  "1783000246948": {
+    "name": "إيمان محمد",
+    "updated": {},
+    "totalFollowers": 680000
+  },
+  "1783000246899": {
+    "name": "مريم النعيمي",
+    "updated": {},
+    "totalFollowers": 560000
+  },
+  "1783000246829": {
+    "name": "ماكس ثامر",
+    "updated": {},
+    "totalFollowers": 93600
+  },
+  "1783000246831": {
+    "name": "علي بوقامي",
+    "updated": {},
+    "totalFollowers": 92300
+  },
+  "1783000246834": {
+    "name": "مرام النهلة",
+    "updated": {},
+    "totalFollowers": 71200
+  },
+  "1783000246830": {
+    "name": "فوز العبدالله",
+    "updated": {},
+    "totalFollowers": 70900
+  },
+  "1783000246832": {
+    "name": "طيف الشهراني",
+    "updated": {},
+    "totalFollowers": 35200
+  },
+  "1783000246833": {
+    "name": "صدون مك",
+    "updated": {},
+    "totalFollowers": 29800
   }
 }

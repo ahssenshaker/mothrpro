@@ -1,15 +1,5 @@
 {
-  "fixed": [
-    {
-      "name": "نور ستارز",
-      "id": "1783000246840",
-      "platform": "يوتيوب",
-      "newUrl": "https://www.youtube.com/@noorstars",
-      "newCount": 22400000,
-      "oldUrl": "https://www.youtube.com/@NoorStars",
-      "storedCount": 25000000
-    }
-  ],
+  "fixed": [],
   "blocked": [
     {
       "name": "أسيل عمران",
@@ -86,7 +76,13 @@
     {
       "name": "نور ستارز",
       "id": "1783000246840",
-      "platform": "تيك توك"
+      "platform": "تيك توك",
+      "wasAlreadyBlocked": true
+    },
+    {
+      "name": "نور ستارز",
+      "id": "1783000246840",
+      "platform": "يوتيوب"
     },
     {
       "name": "فاريال فيري",
@@ -97,7 +93,8 @@
     {
       "name": "خالد العامري",
       "id": "1783000246844",
-      "platform": "تيك توك"
+      "platform": "تيك توك",
+      "wasAlreadyBlocked": true
     },
     {
       "name": "نور عريضة",
