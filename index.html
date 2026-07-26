@@ -624,7 +624,7 @@ padding:7px 10px;
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px">
       <div class="auth-sub" style="margin-bottom:0" data-i18n="auth.sub">دليل المؤثرين الموثّق · 512 مؤثر</div>
       <div style="margin-top:10px;background:linear-gradient(135deg,rgba(246,199,77,.12),rgba(99,179,237,.1));border:1px solid rgba(246,199,77,.3);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.7">
-        🎁 <strong>جرّب برو مجاناً يومين</strong> — وصول كامل لجميع البيانات والأسعار فور التسجيل
+        🎁 <strong>جرّب برو مجاناً يوماً كاملاً</strong> — وصول كامل لجميع البيانات والأسعار فور التسجيل
       </div>
       <button class="lang-toggle" id="authLangBtn" onclick="toggleLang()">EN</button>
     </div>
@@ -3061,7 +3061,7 @@ function renderAdminStats() {
   const now = new Date();
   const trial = allSubsData.filter(s => s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now).length;
   const pro = allSubsData.filter(s => s.plan === 'pro' && !s.expires_at).length;
-  const free = allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending').length;
+  const free = allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending' || (s.plan === 'pro' && s.expires_at && new Date(s.expires_at) <= now)).length;
   document.getElementById('statTotal').textContent = allSubsData.length;
   document.getElementById('statPro').textContent = pro;
   document.getElementById('statTrial').textContent = trial;
@@ -3074,7 +3074,8 @@ function renderAdminTable(data) {
   tbody.innerHTML = data.map(s => {
     const now = new Date();
     const isTrial = s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now;
-    const isPro = s.plan === 'pro' && !isTrial;
+    const isExpiredTrial = s.plan === 'pro' && s.expires_at && new Date(s.expires_at) <= now;
+    const isPro = s.plan === 'pro' && !s.expires_at;
     const isAdminUser = s.plan === 'admin';
     const activationDate = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
     const expiryDate = s.expires_at ? new Date(s.expires_at).toLocaleDateString('ar-SA') : null;
@@ -3086,6 +3087,9 @@ function renderAdminTable(data) {
     } else if (isTrial) {
       planBadge = `<span class="plan-badge-trial">🎁 تجربة</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء التجربة</button>`;
+    } else if (isExpiredTrial) {
+      planBadge = `<span class="plan-badge-free" style="color:#f87171">منتهية</span>`;
+      actionBtn = `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`;
     } else if (isPro) {
       planBadge = `<span class="plan-badge-pro">⭐ برو</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`;
@@ -3173,7 +3177,7 @@ async function adminGrantTrial() {
   const email = document.getElementById('addSubEmail').value.trim();
   const msg = document.getElementById('addSubMsg');
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
-  if (!confirm('منح تجربة مجانية 48 ساعة لـ ' + email + '؟ (بدون إرسال إيميل)')) return;
+  if (!confirm('منح تجربة مجانية 24 ساعة لـ ' + email + '؟ (بدون إرسال إيميل)')) return;
   msg.textContent = 'جاري منح التجربة...'; msg.className = 'admin-msg';
   try {
     const { data: { session } } = await supa.auth.getSession();

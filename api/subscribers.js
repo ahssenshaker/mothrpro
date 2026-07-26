@@ -80,7 +80,7 @@ export default async function handler(req, res) {
     if (!action) return res.status(400).json({ error: 'action required' })
 
     if (action === 'grant-trial') {
-      // Grant a 48-hour free trial — does NOT send email (user sees welcome popup on site)
+      // Grant a 24-hour free trial — does NOT send email (user sees welcome popup on site)
       let findQuery = supabase.from('subscribers').select('id, email')
       if (id) {
         findQuery = findQuery.eq('id', id)
@@ -92,7 +92,7 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
-      const trialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
+      const trialEnd = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
       const { error: updateErr } = await supabase
         .from('subscribers')
         .update({ plan: 'pro', expires_at: trialEnd, activated_at: new Date().toISOString(), reminder_sent_at: null })
