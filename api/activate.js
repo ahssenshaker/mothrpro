@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     // دفع سابق بدون حساب — فعّله الآن
     await supabase
       .from('subscribers')
-      .update({ id: user.id, plan: 'pro', activated_at: new Date().toISOString() })
+      .update({ id: user.id, plan: 'pro', activated_at: new Date().toISOString(), expires_at: null })
       .eq('email', email)
     console.log('✅ Activated pending subscriber:', email)
     return res.status(200).json({ activated: true, plan: 'pro' })

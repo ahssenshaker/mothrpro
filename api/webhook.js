@@ -72,6 +72,21 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, ignored: eventName })
   }
 
+  // subscription_updated fires for any change — including cancellations.
+  // If the subscription is no longer active, treat it as a revoke instead.
+  if (eventName === 'subscription_updated') {
+    const status = attrs.status || ''
+    const inactiveStatuses = ['cancelled', 'expired', 'paused', 'unpaid', 'past_due']
+    if (inactiveStatuses.includes(status)) {
+      await supabase
+        .from('subscribers')
+        .update({ plan: 'free' })
+        .eq('email', accountEmail)
+      console.log('🔴 Revoked pro via subscription_updated (status:', status, ') for', accountEmail)
+      return res.status(200).json({ ok: true })
+    }
+  }
+
   const { data: sub } = await supabase
     .from('subscribers')
     .select('id')
@@ -81,7 +96,7 @@ export default async function handler(req, res) {
   if (sub) {
     await supabase
       .from('subscribers')
-      .update({ plan: 'pro', activated_at: new Date().toISOString() })
+      .update({ plan: 'pro', activated_at: new Date().toISOString(), expires_at: null })
       .eq('email', accountEmail)
     console.log('✅ Activated pro for', accountEmail)
   } else {

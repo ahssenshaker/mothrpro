@@ -1,25 +1,27 @@
 {
   "version": 2,
-  "crons": [
-    {
-      "path": "/api/warmup",
-      "schedule": "*/5 * * * *"
-    }
+  "rewrites": [
+    { "source": "/thankyou",  "destination": "/thankyou.html"  },
+    { "source": "/privacy",   "destination": "/privacy.html"   },
+    { "source": "/refund",    "destination": "/refund.html"    },
+    { "source": "/landing",   "destination": "/landing.html"   },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/:path*",    "destination": "/index.html"     }
   ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/thankyou.html", "dest": "/thankyou.html" },
-    { "src": "/thankyou", "dest": "/thankyou.html" },
-    { "src": "/privacy.html", "dest": "/privacy.html" },
-    { "src": "/privacy", "dest": "/privacy.html" },
-    { "src": "/refund.html", "dest": "/refund.html" },
-    { "src": "/refund", "dest": "/refund.html" },
-    { "src": "/landing.html", "dest": "/landing.html" },
-    { "src": "/landing", "dest": "/landing.html" },
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/robots.txt", "dest": "/robots.txt" },
-    { "src": "^/$", "dest": "/index.html" },
-    { "src": "^/(.*)$", "dest": "/index.html" }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-XSS-Protection",       "value": "1; mode=block" },
+        { "key": "Referrer-Policy",         "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy",      "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "X-Frame-Options",         "value": "DENY" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://pvafqzhowebbmahbonfm.supabase.co wss://pvafqzhowebbmahbonfm.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://api.resend.com; frame-src https://moatherpro.lemonsqueezy.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+        }
+      ]
+    }
   ]
 }

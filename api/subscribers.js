@@ -1,26 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
+import { resolveAdmin } from './_auth.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 )
-
-async function resolveAdmin(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  try {
-    const { data: { user } } = await supabase.auth.getUser(token)
-    if (!user) return null
-    const { data: sub } = await supabase
-      .from('subscribers')
-      .select('plan')
-      .eq('id', user.id)
-      .single()
-    return sub?.plan === 'admin' ? user : null
-  } catch {
-    return null
-  }
-}
 
 async function sendPlanEmail(email, action) {
   const key = process.env.RESEND_API_KEY
@@ -96,7 +80,7 @@ export default async function handler(req, res) {
     if (!action) return res.status(400).json({ error: 'action required' })
 
     if (action === 'grant-trial') {
-      // Grant a 48-hour free trial — does NOT send email (user sees welcome popup on site)
+      // Grant a 24-hour free trial — does NOT send email (user sees welcome popup on site)
       let findQuery = supabase.from('subscribers').select('id, email')
       if (id) {
         findQuery = findQuery.eq('id', id)
@@ -108,7 +92,7 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
-      const trialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
+      const trialEnd = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
       const { error: updateErr } = await supabase
         .from('subscribers')
         .update({ plan: 'pro', expires_at: trialEnd, activated_at: new Date().toISOString() })
@@ -129,9 +113,10 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
+      // Clear expires_at so a former trial user gets a permanent subscription
       const updates = action === 'activate'
-        ? { plan: 'pro', activated_at: new Date().toISOString() }
-        : { plan: 'admin' }
+        ? { plan: 'pro', activated_at: new Date().toISOString(), expires_at: null }
+        : { plan: 'admin', expires_at: null }
 
       const { error: updateErr } = await supabase
         .from('subscribers')
