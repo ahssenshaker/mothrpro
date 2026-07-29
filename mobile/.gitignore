@@ -8,5 +8,5 @@ dist/
 *.mobileprovision
 *.orig.*
 web-build/
-# android/ and ios/ are committed (bare workflow)
+android/
 ios/
