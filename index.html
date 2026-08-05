@@ -724,6 +724,7 @@ padding:7px 10px;
     <span class="user-bar-plan free" id="userPlanBadge" data-i18n="bar.plan.free" onclick="openMyPlan()" title="عرض اشتراكك">مجاني</span>
     <button class="user-bar-upgrade" id="upgradeBtn" onclick="openUpgrade()" data-i18n="bar.upgrade">⭐ ترقية للبرو</button>
     <button id="adminDashBtn" style="display:none;background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:5px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer" onclick="openAdminDash()" data-i18n="bar.admin">⚙️ الأدمن</button>
+    <button onclick="openTour()" title="دليل الاستخدام" style="background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:50%;width:28px;height:28px;font-family:inherit;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1" id="tourGuideBtn">❓</button>
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="تبديل الوضع المظلم/الفاتح">🌙</button>
     <button class="lang-toggle" id="barLangBtn" onclick="toggleLang()">EN</button>
     <button class="user-bar-logout" onclick="handleLogout()" data-i18n="bar.logout">خروج</button>
@@ -1694,6 +1695,11 @@ async function showDashboard() {
   document.getElementById('userEmail').textContent = currentUser.email;
   // Clear any stale "0 نتيجة" that initLang() may have written before data loaded
   const ri = document.getElementById('resultInfo'); if (ri) ri.textContent = '';
+
+  // Show tour on first login
+  if (!localStorage.getItem('tour_seen')) {
+    setTimeout(openTour, 800);
+  }
 
   const isAdmin = userPlan === 'admin';
 
@@ -3557,12 +3563,7 @@ function _renderTourStep() {
   ).join('');
 }
 
-// Auto-show tour on first visit (before login)
-(function() {
-  if (!localStorage.getItem('tour_seen')) {
-    setTimeout(openTour, 600);
-  }
-})();
+// Tour is shown after login — see showDashboard()
 
 // ═══════════════════════════════════════════
 // CANCEL TRIAL
