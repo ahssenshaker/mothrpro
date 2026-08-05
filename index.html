@@ -470,6 +470,7 @@ body.is-admin .card:hover .card-admin-actions{opacity:1}
 .plan-badge-pro{background:rgba(99,179,237,.15);color:var(--accent);border:1px solid rgba(99,179,237,.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
 .plan-badge-free{background:rgba(100,116,139,.1);color:var(--muted2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px}
 .plan-badge-trial{background:rgba(251,191,36,.15);color:#f59e0b;border:1px solid rgba(251,191,36,.35);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
+.plan-badge-credits{background:rgba(246,199,77,.12);color:var(--gold);border:1px solid rgba(246,199,77,.3);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
 .admin-action-btn{padding:4px 10px;border-radius:6px;border:none;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
 .btn-activate{background:rgba(104,211,145,.15);color:var(--green);border:1px solid rgba(104,211,145,.3)}
 .btn-activate:hover{background:rgba(104,211,145,.3)}
@@ -3201,6 +3202,7 @@ initLang();
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="adminFilterSubs('all',this)">الكل</button>
       <button class="admin-tab" onclick="adminFilterSubs('pro',this)">برو</button>
+      <button class="admin-tab" onclick="adminFilterSubs('credits',this)">كريدت</button>
       <button class="admin-tab" onclick="adminFilterSubs('trial',this)">تجربة</button>
       <button class="admin-tab" onclick="adminFilterSubs('free',this)">مجاني</button>
     </div>
@@ -3268,26 +3270,37 @@ function renderAdminTable(data) {
   if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted2);padding:20px">لا يوجد مستخدمون</td></tr>'; return; }
   tbody.innerHTML = data.map(s => {
     const now = new Date();
-    const isTrial = s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now;
-    const isExpiredTrial = s.plan === 'pro' && s.expires_at && new Date(s.expires_at) <= now;
-    const isPro = s.plan === 'pro' && !s.expires_at;
-    const isAdminUser = s.plan === 'admin';
+    const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
+    const expiresMs = s.expires_at ? new Date(s.expires_at) - now : null;
+    const isAdminUser  = s.plan === 'admin';
+    const isCredits    = s.plan === 'credits';
+    const isTrial      = s.plan === 'pro' && s.expires_at && expiresMs > 0 && expiresMs <= TWO_DAYS;
+    const isExpiredPro = s.plan === 'pro' && s.expires_at && expiresMs <= 0;
+    const isAnnualPro  = s.plan === 'pro' && s.expires_at && expiresMs > TWO_DAYS;
+    const isLifetime   = s.plan === 'pro' && !s.expires_at;
     const activationDate = s.activated_at ? new Date(s.activated_at).toLocaleDateString('ar-SA') : '-';
-    const expiryDate = s.expires_at ? new Date(s.expires_at).toLocaleDateString('ar-SA') : null;
-    const date = isTrial ? `<span style="color:#f59e0b">ينتهي ${expiryDate}</span>` : activationDate;
+    const expiryDate     = s.expires_at ? new Date(s.expires_at).toLocaleDateString('ar-SA') : null;
+    const date = (isTrial || isAnnualPro) ? `<span style="color:#f59e0b">ينتهي ${expiryDate}</span>` : activationDate;
     let planBadge, actionBtn;
     if (isAdminUser) {
       planBadge = `<span class="plan-badge-pro" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">👑 أدمن</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء الأدمن</button>`;
+    } else if (isCredits) {
+      const cr = s.credits_remaining || 0;
+      planBadge = `<span class="plan-badge-credits">⚡ كريدت (${cr} كريدت)</span>`;
+      actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء</button>`;
     } else if (isTrial) {
       planBadge = `<span class="plan-badge-trial">🎁 تجربة</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء التجربة</button>`;
-    } else if (isExpiredTrial) {
+    } else if (isExpiredPro) {
       planBadge = `<span class="plan-badge-free" style="color:#f87171">منتهية</span>`;
       actionBtn = `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`;
-    } else if (isPro) {
+    } else if (isAnnualPro) {
       planBadge = `<span class="plan-badge-pro">⭐ برو</span>`;
       actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو</button>`;
+    } else if (isLifetime) {
+      planBadge = `<span class="plan-badge-pro">♾️ برو بلس</span>`;
+      actionBtn = `<button class="admin-action-btn btn-revoke" onclick="adminRevokeSub('${s.id}','${s.email}')">إلغاء البرو بلس</button>`;
     } else {
       planBadge = `<span class="plan-badge-free">مجاني</span>`;
       actionBtn = `<button class="admin-action-btn btn-activate" onclick="adminActivateById('${s.id}','${s.email}')">تفعيل برو</button>`;
@@ -3307,9 +3320,13 @@ function adminFilterSubs(filter, btn) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   const now = new Date();
+  const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
   const filtered = filter === 'all' ? allSubsData :
-    filter === 'pro' ? allSubsData.filter(s => s.plan === 'pro' && !s.expires_at) :
-    filter === 'trial' ? allSubsData.filter(s => s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now) :
+    filter === 'pro' ? allSubsData.filter(s =>
+      s.plan === 'pro' && (!s.expires_at || (new Date(s.expires_at) - now) > TWO_DAYS)) :
+    filter === 'trial' ? allSubsData.filter(s =>
+      s.plan === 'pro' && s.expires_at && (new Date(s.expires_at) - now) > 0 && (new Date(s.expires_at) - now) <= TWO_DAYS) :
+    filter === 'credits' ? allSubsData.filter(s => s.plan === 'credits') :
     allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending');
   renderAdminTable(filtered);
 }
