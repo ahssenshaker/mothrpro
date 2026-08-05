@@ -1849,6 +1849,8 @@ function openMyPlan() {
   const isPro = plan === 'pro';
   const isAdm = plan === 'admin';
   const isCredits = plan === 'credits';
+  const isAnnualPro = isPro && !!sub?.expires_at;
+  const isLifetimePro = isPro && !sub?.expires_at;
 
   // Avatar & email
   document.getElementById('mpAvatar').textContent = (currentUser.email || '?')[0].toUpperCase();
@@ -1902,11 +1904,18 @@ function openMyPlan() {
 
   // Upgrade CTA
   const ctaSec = document.getElementById('mpCta');
-  if (plan === 'free' || isTrial || isCredits) {
+  const ctaBtn = document.getElementById('mpCtaBtn');
+  if (isAnnualPro) {
+    // Annual Pro → offer one-click upgrade to lifetime برو بلس
+    document.getElementById('mpCtaLabel').textContent = isAr ? 'الترقية لبرو بلس (مدى الحياة)' : 'Upgrade to Pro Plus (Lifetime)';
+    ctaBtn.onclick = () => { closeMyPlan(); window.open(buildLsUrl('lifetime'), '_blank'); };
+    ctaSec.style.display = 'block';
+  } else if (plan === 'free' || isTrial || isCredits) {
     const ctaLabel = isCredits
       ? (isAr ? 'ترقية لبرو أو برو بلس' : 'Upgrade to Pro or Pro Plus')
       : (isAr ? 'ترقية — من 49 ريال' : 'Upgrade — from 49 SAR');
     document.getElementById('mpCtaLabel').textContent = ctaLabel;
+    ctaBtn.onclick = () => { closeMyPlan(); openUpgrade(); };
     ctaSec.style.display = 'block';
   } else {
     ctaSec.style.display = 'none';
@@ -3088,7 +3097,7 @@ initLang();
     </div>
     <div class="myplan-rows" id="mpRows"></div>
     <div class="myplan-cta" id="mpCta" style="display:none">
-      <button class="user-bar-upgrade" onclick="closeMyPlan();openUpgrade()">⭐ <span id="mpCtaLabel">ترقية للبرو</span></button>
+      <button class="user-bar-upgrade" id="mpCtaBtn" onclick="closeMyPlan();openUpgrade()">⭐ <span id="mpCtaLabel">ترقية للبرو</span></button>
     </div>
     <div class="myplan-footer">
       <button class="user-bar-logout" onclick="handleLogout()"><span id="mpLogoutLabel">خروج</span></button>
