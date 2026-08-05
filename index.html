@@ -1711,14 +1711,6 @@ async function showDashboard() {
   // Apply role-based UI restrictions immediately — before the slow data fetch
   // so non-admin users never briefly see the admin panel button
   applyProRestrictions();
-  // Show trial welcome popup for new trial users
-  if (userTrialExpiresAt) {
-    const shownKey = 'trial_welcome_shown_' + currentUser.id;
-    if (!localStorage.getItem(shownKey)) {
-      localStorage.setItem(shownKey, '1');
-      setTimeout(() => showTrialWelcome(), 800);
-    }
-  }
   // Popup is now triggered on influencer card click, not on page load
 
   // Fetch influencer data from secure API
@@ -1799,24 +1791,10 @@ function updatePlanBadge(isAdmin) {
     if (upgradeBtn) upgradeBtn.style.display = 'none';
     if (trialBanner) trialBanner.classList.remove('visible');
   } else if (userPlan === 'pro') {
-    if (userTrialExpiresAt) {
-      // Trial user
-      badge.textContent = '🎁 تجربة مجانية';
-      badge.className = 'user-bar-plan';
-      if (upgradeBtn) upgradeBtn.style.display = '';
-      if (trialBanner && trialDaysEl) {
-        const msLeft = userTrialExpiresAt - new Date();
-        const hoursLeft = Math.max(0, Math.ceil(msLeft / 3600000));
-        const daysLeft = Math.ceil(hoursLeft / 24);
-        trialDaysEl.textContent = daysLeft > 0 ? `متبقي ${daysLeft} ${daysLeft === 1 ? 'يوم' : 'أيام'}` : 'ينتهي اليوم';
-        trialBanner.classList.add('visible');
-      }
-    } else {
-      badge.textContent = t('bar.plan.pro');
-      badge.className = 'user-bar-plan';
-      if (upgradeBtn) upgradeBtn.style.display = 'none';
-      if (trialBanner) trialBanner.classList.remove('visible');
-    }
+    badge.textContent = t('bar.plan.pro');
+    badge.className = 'user-bar-plan';
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+    if (trialBanner) trialBanner.classList.remove('visible');
   } else if (userPlan === 'credits') {
     badge.textContent = `⚡ ${userCreditsRemaining} كريدت`;
     badge.className = 'user-bar-plan';
@@ -1863,8 +1841,8 @@ function openMyPlan() {
   const isAr = (localStorage.getItem('lang') || 'ar') === 'ar';
   const sub = _subscriberData;
   const plan = sub?.plan || 'free';
-  const isTrial = plan === 'pro' && !!sub?.expires_at;
-  const isPro = plan === 'pro' && !sub?.expires_at;
+  const isTrial = false; // trials no longer shown to users; admin-granted expiry shown as regular Pro
+  const isPro = plan === 'pro';
   const isAdm = plan === 'admin';
   const isCredits = plan === 'credits';
 
@@ -1898,17 +1876,6 @@ function openMyPlan() {
     }
   }
 
-  // Trial bar
-  if (isTrial && sub.expires_at) {
-    const hrs = Math.max(0, Math.round((new Date(sub.expires_at) - Date.now()) / 3_600_000));
-    document.getElementById('mpTrialHrs').textContent = hrs;
-    document.getElementById('mpTrialLabel').textContent = isAr ? 'ساعة متبقية' : 'hours remaining';
-    document.getElementById('mpTrialTitle').textContent = isAr ? 'ينتهي اشتراكك التجريبي' : 'Your trial is ending soon';
-    document.getElementById('mpTrialExpiry').textContent = new Date(sub.expires_at).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {year:'numeric',month:'long',day:'numeric'});
-    document.getElementById('mpTrialBar').style.display = 'flex';
-  } else {
-    document.getElementById('mpTrialBar').style.display = 'none';
-  }
 
   // Info rows
   const fmt = iso => iso ? new Date(iso).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
@@ -1943,12 +1910,9 @@ function openMyPlan() {
 
   document.getElementById('mpLogoutLabel').textContent = isAr ? 'تسجيل الخروج' : 'Sign Out';
 
-  // Show cancel-trial button only for active trial users (not credits)
+  // Cancel-trial button hidden from users — admin manages trials via admin panel
   const cancelBtn = document.getElementById('mpCancelTrialBtn');
-  if (cancelBtn) {
-    cancelBtn.style.display = isTrial ? '' : 'none';
-    cancelBtn.textContent = isAr ? 'إلغاء التجربة' : 'Cancel Trial';
-  }
+  if (cancelBtn) cancelBtn.style.display = 'none';
 
   document.getElementById('myPlanOverlay').classList.add('open');
 }
@@ -3160,16 +3124,6 @@ initLang();
       <div class="myplan-email" id="mpEmail"></div>
       <span class="myplan-badge mp-free" id="mpBadge"></span>
     </div>
-    <div class="myplan-trial-bar" id="mpTrialBar" style="display:none">
-      <div>
-        <div class="myplan-trial-hrs" id="mpTrialHrs">—</div>
-        <div id="mpTrialLabel">ساعة متبقية</div>
-      </div>
-      <div style="flex:1">
-        <div style="font-weight:700;color:var(--gold);margin-bottom:2px" id="mpTrialTitle">ينتهي اشتراكك التجريبي</div>
-        <div id="mpTrialExpiry" style="font-size:11px"></div>
-      </div>
-    </div>
     <div class="myplan-credits-bar" id="mpCreditsBar" style="display:none">
       <span style="font-size:22px">⚡</span>
       <div style="flex:1">
@@ -3206,23 +3160,6 @@ initLang();
         <button class="tour-btn-next" id="tourNextBtn" onclick="tourNext()">التالي ←</button>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ADMIN DASHBOARD MODAL -->
-<div class="trial-welcome-overlay" id="trialWelcomeOverlay">
-  <div class="trial-welcome-box">
-    <div class="trial-welcome-icon">🎁</div>
-    <div class="trial-welcome-title">مبروك! حصلت على تجربة مجانية</div>
-    <div class="trial-welcome-sub">لديك <strong>يومان كاملان</strong> للوصول لجميع بيانات المؤثرين</div>
-    <div class="trial-welcome-features">
-      <span>✓</span> أسعار المؤثرين الفعلية<br>
-      <span>✓</span> نسب التفاعل والإحصائيات التفصيلية<br>
-      <span>✓</span> بيانات الجمهور (العمر والجنس)<br>
-      <span>✓</span> روابط التواصل المباشرة
-    </div>
-    <button class="trial-welcome-btn" onclick="closeTrialWelcome()">ابدأ الاستكشاف ⭐</button>
-    <span class="trial-welcome-skip" onclick="closeTrialWelcome()">تخطي</span>
   </div>
 </div>
 
