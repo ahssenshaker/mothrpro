@@ -2965,99 +2965,45 @@ window.cardHTML = function(d) {
 // Patch openModal to gate sensitive data
 const _origOpenModal = openModal;
 window.openModal = function(id) {
-  _origOpenModal(id);
-  // Credits users: locked influencers get blur + unlock banner; unlocked ones get full access
-  if (userPlan === 'credits') {
-    setTimeout(() => {
-      const infId = String(id);
-      if (userUnlockedIds.has(infId)) return; // already unlocked — full access
-      // Blur sensitive data
-      document.querySelectorAll('.mph-url, .visit-btn').forEach(el => {
-        el.style.visibility = 'hidden';
-        el.style.pointerEvents = 'none';
-      });
-      document.querySelectorAll('.price-val').forEach(el => {
-        el.style.filter = 'blur(8px)';
-        el.style.userSelect = 'none';
-        el.style.pointerEvents = 'none';
-      });
-      document.querySelectorAll('.prices-grid').forEach(el => {
-        el.style.position = 'relative';
-      });
-      document.querySelectorAll('.gbar-modal, .gbar-modal ~ div').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.pointerEvents = 'none';
-        el.style.userSelect = 'none';
-      });
-      document.querySelectorAll('.age-pill').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.userSelect = 'none';
-      });
-      document.querySelectorAll('.ps').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.userSelect = 'none';
-        el.style.pointerEvents = 'none';
-      });
-      // Add unlock banner
-      const modal = document.querySelector('.modal-inner');
-      if (modal && !modal.querySelector('.unlock-banner')) {
-        const banner = document.createElement('div');
-        banner.className = 'unlock-banner';
-        const credLeft = userCreditsRemaining;
-        banner.innerHTML = `<div class="unlock-banner-title">⚡ فتح هذا المؤثر</div>
+  // Credits user + influencer not yet unlocked → show lock-only modal (no data at all)
+  if (userPlan === 'credits' && !userUnlockedIds.has(String(id))) {
+    if (userCreditsRemaining <= 0) { openUpgrade(); return; }
+    const d = DATA.find(x => x.id === id);
+    if (!d) return;
+    const credLeft = userCreditsRemaining;
+    const cvEl = d.cover
+      ? `<img class="modal-cover" src="${d.cover}" onerror="this.className='modal-cover-ph'">`
+      : `<div class="modal-cover-ph"></div>`;
+    const avEl = d.avatar
+      ? `<img class="modal-av" src="${d.avatar}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="modal-av-ph" style="display:none">${esc(d.name[0])}</div>`
+      : `<div class="modal-av-ph">${esc(d.name[0])}</div>`;
+    document.getElementById('modalContent').innerHTML = `
+      ${cvEl}
+      <div class="modal-inner" style="padding-top:20px">
+        <div class="modal-head">${avEl}<div>
+          <div class="modal-name">${esc(tf(d,'name'))}</div>
+          <div class="modal-spec">${esc(tf(d,'specialization')||'')}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+            ${getTierBadge(d.tier)}
+            <span class="badge b-region">#${d.rank} ${t('modal.rank_badge')}</span>
+            <span class="badge b-region">${esc(d.rangeLabel)}</span>
+          </div>
+        </div></div>
+        <div class="unlock-banner" style="margin-top:20px">
+          <div class="unlock-banner-title">⚡ فتح هذا المؤثر</div>
           <div class="unlock-banner-sub">لديك <strong style="color:var(--gold)">${credLeft}</strong> كريدت متبقي — كل كريدت يفتح ملف مؤثر واحد بشكل دائم</div>
-          <button class="unlock-btn" id="unlockBannerBtn" onclick="unlockInfluencer(${infId})" ${credLeft <= 0 ? 'disabled' : ''}>
+          <button class="unlock-btn" id="unlockBannerBtn" onclick="unlockInfluencer(${id})" ${credLeft <= 0 ? 'disabled' : ''}>
             ${credLeft > 0 ? '🔓 فتح هذا المؤثر (كريدت واحد)' : '❌ لا يوجد كريدت — اشترِ المزيد'}
           </button>
-          ${credLeft <= 0 ? `<div style="margin-top:10px"><button onclick="closeModal();setTimeout(openUpgrade,100)" style="background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:8px;padding:7px 16px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">⚡ اشتر كريدت</button></div>` : ''}`;
-        modal.insertBefore(banner, modal.firstChild);
-      }
-    }, 50);
+          ${credLeft <= 0 ? `<div style="margin-top:10px"><button onclick="closeModal();setTimeout(openUpgrade,100)" style="background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:8px;padding:7px 16px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">⚡ اشتر كريدت</button></div>` : ''}
+        </div>
+      </div>`;
+    document.getElementById('overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
     return;
   }
-  if (userPlan === 'free') {
-    // Hide sensitive data in modal
-    setTimeout(() => {
-      // Hide URLs
-      document.querySelectorAll('.mph-url, .visit-btn').forEach(el => {
-        el.style.visibility = 'hidden';
-        el.style.pointerEvents = 'none';
-      });
-      // Hide prices
-      document.querySelectorAll('.price-val').forEach(el => {
-        el.style.filter = 'blur(8px)';
-        el.style.userSelect = 'none';
-        el.style.pointerEvents = 'none';
-      });
-      document.querySelectorAll('.prices-grid').forEach(el => {
-        el.style.position = 'relative';
-      });
-      // Hide audience stats (gender distribution, age, engagement rate, posts/week) — pro-only per comparison table
-      document.querySelectorAll('.gbar-modal, .gbar-modal ~ div').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.pointerEvents = 'none';
-        el.style.userSelect = 'none';
-      });
-      document.querySelectorAll('.age-pill').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.userSelect = 'none';
-      });
-      document.querySelectorAll('.ps').forEach(el => {
-        el.style.filter = 'blur(6px)';
-        el.style.userSelect = 'none';
-        el.style.pointerEvents = 'none';
-      });
-      // Add upgrade notice in modal
-      const modal = document.querySelector('.modal-inner');
-      if (modal && !modal.querySelector('.pro-upgrade-notice')) {
-        const notice = document.createElement('div');
-        notice.className = 'pro-upgrade-notice';
-        notice.style.cssText = 'background:rgba(99,179,237,.08);border:1px solid rgba(99,179,237,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
-        notice.innerHTML = '<span style="font-size:13px;color:var(--muted2)">🔒 الأسعار والروابط وإحصاءات الجمهور للمشتركين فقط</span><button onclick="closeModal();setTimeout(openUpgrade,100)" style="background:var(--accent);color:var(--bg);border:none;border-radius:8px;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">ترقية للبرو</button>';
-        modal.insertBefore(notice, modal.firstChild);
-      }
-    }, 50);
-  }
+  // All other plans (pro, admin, credits+unlocked) → full card
+  _origOpenModal(id);
 };
 
 async function unlockInfluencer(influencerId) {
@@ -3077,10 +3023,14 @@ async function unlockInfluencer(influencerId) {
     // Update local state
     userUnlockedIds.add(String(influencerId));
     userCreditsRemaining = json.credits_remaining;
+    if (json.plan) userPlan = json.plan;
     updatePlanBadge();
-    // Reload modal content with full access
+    // Reload modal with full access, then if credits exhausted show upgrade
     closeModal();
-    setTimeout(() => openModal(influencerId), 100);
+    setTimeout(() => {
+      openModal(influencerId);
+      if (userPlan === 'free') setTimeout(openUpgrade, 400);
+    }, 100);
   } catch(e) {
     if (btn) { btn.disabled = false; btn.textContent = '⚠️ ' + (e.message || 'خطأ'); }
   }

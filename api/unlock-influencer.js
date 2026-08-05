@@ -40,15 +40,19 @@ export default async function handler(req, res) {
     return res.status(402).json({ error: 'No credits remaining' })
   }
 
+  const newCredits = sub.credits_remaining - 1
+  const updates = {
+    credits_remaining: newCredits,
+    unlocked_ids: [...unlocked, infId],
+  }
+  if (newCredits <= 0) updates.plan = 'free'
+
   const { error: updateErr } = await supabase
     .from('subscribers')
-    .update({
-      credits_remaining: sub.credits_remaining - 1,
-      unlocked_ids: [...unlocked, infId],
-    })
+    .update(updates)
     .eq('id', user.id)
 
   if (updateErr) return res.status(500).json({ error: updateErr.message })
 
-  return res.status(200).json({ ok: true, credits_remaining: sub.credits_remaining - 1 })
+  return res.status(200).json({ ok: true, credits_remaining: newCredits, plan: newCredits <= 0 ? 'free' : 'credits' })
 }
