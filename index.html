@@ -2967,6 +2967,7 @@ const _origOpenModal = openModal;
 window.openModal = function(id) {
   // Credits user + influencer not yet unlocked → show lock-only modal (no data at all)
   if (userPlan === 'credits' && !userUnlockedIds.has(String(id))) {
+    if (userCreditsRemaining <= 0) { openUpgrade(); return; }
     const d = DATA.find(x => x.id === id);
     if (!d) return;
     const credLeft = userCreditsRemaining;
@@ -3022,10 +3023,14 @@ async function unlockInfluencer(influencerId) {
     // Update local state
     userUnlockedIds.add(String(influencerId));
     userCreditsRemaining = json.credits_remaining;
+    if (json.plan) userPlan = json.plan;
     updatePlanBadge();
-    // Reload modal content with full access
+    // Reload modal with full access, then if credits exhausted show upgrade
     closeModal();
-    setTimeout(() => openModal(influencerId), 100);
+    setTimeout(() => {
+      openModal(influencerId);
+      if (userPlan === 'free') setTimeout(openUpgrade, 400);
+    }, 100);
   } catch(e) {
     if (btn) { btn.disabled = false; btn.textContent = '⚠️ ' + (e.message || 'خطأ'); }
   }
