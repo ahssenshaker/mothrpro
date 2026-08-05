@@ -3034,12 +3034,9 @@ async function unlockInfluencer(influencerId) {
     userCreditsRemaining = json.credits_remaining;
     if (json.plan) userPlan = json.plan;
     updatePlanBadge();
-    // Reload modal with full access, then if credits exhausted show upgrade
+    // Reload modal with full access (upgrade popup fires next time user clicks a locked influencer)
     closeModal();
-    setTimeout(() => {
-      openModal(influencerId);
-      if (userPlan === 'free') setTimeout(openUpgrade, 400);
-    }, 100);
+    setTimeout(() => openModal(influencerId), 100);
   } catch(e) {
     if (btn) { btn.disabled = false; btn.textContent = '⚠️ ' + (e.message || 'خطأ'); }
   }
