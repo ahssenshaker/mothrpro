@@ -607,6 +607,31 @@ padding:7px 10px;
 }
 }
 
+/* TOUR GUIDE */
+.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);z-index:9800;display:none;align-items:center;justify-content:center;padding:20px}
+.tour-overlay.visible{display:flex}
+.tour-box{background:var(--s1);border:1px solid var(--border2);border-radius:24px;max-width:440px;width:100%;overflow:hidden;animation:popIn .3s ease}
+.tour-header{background:linear-gradient(135deg,var(--s2),var(--s3));padding:30px 28px 24px;text-align:center;position:relative}
+.tour-close-x{position:absolute;top:14px;left:14px;background:var(--s2);border:1px solid var(--border);color:var(--muted2);border-radius:8px;width:30px;height:30px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.tour-close-x:hover{color:var(--text);border-color:var(--accent)}
+.tour-step-icon{font-size:50px;margin-bottom:14px}
+.tour-step-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px}
+.tour-step-sub{color:var(--muted2);font-size:13px}
+.tour-body{padding:20px 24px 24px}
+.tour-dots{display:flex;justify-content:center;gap:7px;margin-bottom:18px}
+.tour-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.3s}
+.tour-dot.active{background:var(--accent);width:22px;border-radius:4px}
+.tour-content{font-size:13px;color:var(--text);line-height:1.85;margin-bottom:20px}
+.tour-tag{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;margin:3px}
+.tour-actions{display:flex;gap:10px}
+.tour-btn-next{flex:1;background:var(--accent);color:var(--bg);border:none;border-radius:11px;padding:13px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.tour-btn-next:hover{opacity:.88}
+.tour-btn-skip{background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:11px;padding:13px 18px;font-family:inherit;font-size:13px;cursor:pointer;transition:.2s}
+.tour-btn-skip:hover{color:var(--text);border-color:var(--muted)}
+/* Cancel trial button in myplan footer */
+.mp-cancel-trial-btn{background:transparent;border:1px solid rgba(252,129,129,.3);color:var(--red);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:12px;cursor:pointer;transition:.2s;white-space:nowrap}
+.mp-cancel-trial-btn:hover{background:rgba(252,129,129,.08);border-color:var(--red)}
+
 </style>
 <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 <style>
@@ -655,6 +680,9 @@ padding:7px 10px;
       <div>✓ <span data-i18n="auth.feat1">عرض أسماء وتخصصات المؤثرين</span> — <span data-i18n="auth.feat.free">مجاني</span></div>
       <div>🔒 <span data-i18n="auth.feat2">الأرقام والأسعار والروابط</span> — <span data-i18n="auth.feat.pro">اشتراك برو</span></div>
       <div>🔒 <span data-i18n="auth.feat3">بيانات الجمهور والمناطق</span> — <span data-i18n="auth.feat.pro">اشتراك برو</span></div>
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <button onclick="openTour()" style="background:transparent;border:none;color:var(--accent);font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline;padding:0" data-i18n="tour.link">❓ كيف يعمل مؤثر برو؟</button>
     </div>
   </div>
 </div>
@@ -972,6 +1000,7 @@ const TRANSLATIONS = {
     'auth.feat3': 'بيانات الجمهور والمناطق',
     'auth.feat.free': 'مجاني',
     'auth.feat.pro': 'اشتراك برو',
+    'tour.link': '❓ كيف يعمل مؤثر برو؟',
     'err.empty_fields': 'يرجى إدخال البريد وكلمة المرور',
     'err.invalid_credentials': 'البريد أو كلمة المرور غير صحيحة',
     'err.email_confirmed': 'تم إرسال رسالة تأكيد للبريد الإلكتروني ✓',
@@ -1160,6 +1189,7 @@ const TRANSLATIONS = {
     'auth.feat3': 'Audience data & regions',
     'auth.feat.free': 'Free',
     'auth.feat.pro': 'Pro subscription',
+    'tour.link': '❓ How does Moather Pro work?',
     'err.empty_fields': 'Please enter your email and password',
     'err.invalid_credentials': 'Incorrect email or password',
     'err.email_confirmed': 'Confirmation email sent ✓',
@@ -1813,6 +1843,14 @@ function openMyPlan() {
   }
 
   document.getElementById('mpLogoutLabel').textContent = isAr ? 'تسجيل الخروج' : 'Sign Out';
+
+  // Show cancel-trial button only for active trial users
+  const cancelBtn = document.getElementById('mpCancelTrialBtn');
+  if (cancelBtn) {
+    cancelBtn.style.display = isTrial ? '' : 'none';
+    cancelBtn.textContent = isAr ? 'إلغاء التجربة' : 'Cancel Trial';
+  }
+
   document.getElementById('myPlanOverlay').classList.add('open');
 }
 
@@ -2957,6 +2995,27 @@ initLang();
     </div>
     <div class="myplan-footer">
       <button class="user-bar-logout" onclick="handleLogout()"><span id="mpLogoutLabel">خروج</span></button>
+      <button class="mp-cancel-trial-btn" id="mpCancelTrialBtn" style="display:none" onclick="cancelTrial()">إلغاء التجربة</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOUR GUIDE -->
+<div class="tour-overlay" id="tourOverlay">
+  <div class="tour-box">
+    <button class="tour-close-x" onclick="closeTour()">✕</button>
+    <div class="tour-header">
+      <div class="tour-step-icon" id="tourIcon">🌟</div>
+      <div class="tour-step-title" id="tourTitle"></div>
+      <div class="tour-step-sub" id="tourSub"></div>
+    </div>
+    <div class="tour-body">
+      <div class="tour-dots" id="tourDots"></div>
+      <div class="tour-content" id="tourContent"></div>
+      <div class="tour-actions">
+        <button class="tour-btn-skip" id="tourSkipBtn" onclick="closeTour()">تخطي</button>
+        <button class="tour-btn-next" id="tourNextBtn" onclick="tourNext()">التالي ←</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3136,6 +3195,225 @@ function showTrialWelcome() {
 function closeTrialWelcome() {
   const overlay = document.getElementById('trialWelcomeOverlay');
   if (overlay) overlay.classList.remove('visible');
+}
+
+// ═══════════════════════════════════════════
+// TOUR GUIDE
+// ═══════════════════════════════════════════
+const TOUR_STEPS_AR = [
+  {
+    icon: '🌟',
+    title: 'ما هو مؤثر برو؟',
+    sub: 'دليل المؤثرين الموثّق في السوق الخليجي',
+    content: `<p>مؤثر برو هو أول دليل موثّق للمؤثرين في المملكة والخليج، يضم <strong>+500 مؤثر</strong> مع بياناتهم الفعلية:</p>
+      <div style="display:flex;flex-wrap:wrap;margin-top:12px">
+        <span class="tour-tag">📊 أسعار فعلية</span>
+        <span class="tour-tag">📈 نسب تفاعل</span>
+        <span class="tour-tag">👥 بيانات جمهور</span>
+        <span class="tour-tag">🔗 روابط حسابات</span>
+      </div>`
+  },
+  {
+    icon: '📊',
+    title: 'التصنيفات (Tiers)',
+    sub: 'كيف نصنّف المؤثرين حسب حجم المتابعين؟',
+    content: `<div style="display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔥 ألفا</span><span style="color:var(--muted2);font-size:12px">أكثر من 5 مليون متابع</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">⭐ ميجا</span><span style="color:var(--muted2);font-size:12px">من 1M إلى 5M متابع</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">💠 ماكرو</span><span style="color:var(--muted2);font-size:12px">من 100K إلى 1M متابع</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔹 ميكرو</span><span style="color:var(--muted2);font-size:12px">من 10K إلى 100K متابع</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔸 نانو</span><span style="color:var(--muted2);font-size:12px">أقل من 10K متابع</span></div>
+    </div>`
+  },
+  {
+    icon: '💡',
+    title: 'نسبة التفاعل',
+    sub: 'مؤشر قوة المؤثر الحقيقية — أهم من عدد المتابعين',
+    content: `<p style="margin-bottom:12px">نسبة التفاعل = (إعجابات + تعليقات) ÷ متابعين × 100</p>
+      <div style="background:var(--s2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between"><span>🟢 ممتاز</span><span style="color:var(--green);font-weight:700">أكثر من 6%</span></div>
+        <div style="display:flex;justify-content:space-between"><span>🟡 جيد</span><span style="color:var(--gold);font-weight:700">3% — 6%</span></div>
+        <div style="display:flex;justify-content:space-between"><span>🔴 منخفض</span><span style="color:var(--red);font-weight:700">أقل من 3%</span></div>
+      </div>
+      <p style="margin-top:12px;color:var(--muted2);font-size:12px;background:var(--s2);border-radius:8px;padding:10px">💡 مؤثر بـ 50K متابع وتفاعل 8% أفضل توصيةً من مؤثر بـ 500K وتفاعل 1%</p>`
+  },
+  {
+    icon: '💰',
+    title: 'الأسعار الفعلية',
+    sub: 'لا تخمين — بيانات حقيقية من السوق',
+    content: `<p>الأسعار مجمّعة من:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">📋 <span>عروض المؤثرين المباشرة</span></div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">🤝 <span>صفقات تعاون منفّذة فعلياً</span></div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">📊 <span>بيانات السوق الخليجية</span></div>
+      </div>
+      <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.2);border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:var(--muted2)">
+        🔒 الأسعار والبيانات التفصيلية متاحة لمشتركي برو فقط
+      </div>`
+  },
+  {
+    icon: '🔍',
+    title: 'كيف تبحث وتصفّي؟',
+    sub: 'أدوات البحث تساعدك تلاقي المؤثر المناسب بسرعة',
+    content: `<div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">🔍</span><span>ابحث بالاسم أو التخصص مباشرة</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">📱</span><span>صفّ حسب المنصة: انستقرام، سناب، يوتيوب، تيك توك</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">🏷️</span><span>فلتر التصنيف، المنطقة، والتخصص</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">💰</span><span>فلتر نطاق الأسعار <span style="color:var(--gold);font-size:11px">(Pro)</span></span></div>
+    </div>`
+  }
+];
+
+const TOUR_STEPS_EN = [
+  {
+    icon: '🌟',
+    title: 'What is Moather Pro?',
+    sub: 'The verified influencer directory for Gulf markets',
+    content: `<p>Moather Pro is the first verified influencer directory for Saudi Arabia & the Gulf, featuring <strong>500+ influencers</strong> with real data:</p>
+      <div style="display:flex;flex-wrap:wrap;margin-top:12px">
+        <span class="tour-tag">📊 Real prices</span>
+        <span class="tour-tag">📈 Engagement rates</span>
+        <span class="tour-tag">👥 Audience data</span>
+        <span class="tour-tag">🔗 Profile links</span>
+      </div>`
+  },
+  {
+    icon: '📊',
+    title: 'Influencer Tiers',
+    sub: 'How we classify influencers by follower count',
+    content: `<div style="display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔥 Alpha</span><span style="color:var(--muted2);font-size:12px">5M+ followers</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">⭐ Mega</span><span style="color:var(--muted2);font-size:12px">1M – 5M followers</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">💠 Macro</span><span style="color:var(--muted2);font-size:12px">100K – 1M followers</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔹 Micro</span><span style="color:var(--muted2);font-size:12px">10K – 100K followers</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tour-tag">🔸 Nano</span><span style="color:var(--muted2);font-size:12px">Under 10K followers</span></div>
+    </div>`
+  },
+  {
+    icon: '💡',
+    title: 'Engagement Rate',
+    sub: 'The true measure of influencer impact',
+    content: `<p style="margin-bottom:12px">Engagement = (Likes + Comments) ÷ Followers × 100</p>
+      <div style="background:var(--s2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between"><span>🟢 Excellent</span><span style="color:var(--green);font-weight:700">Above 6%</span></div>
+        <div style="display:flex;justify-content:space-between"><span>🟡 Good</span><span style="color:var(--gold);font-weight:700">3% — 6%</span></div>
+        <div style="display:flex;justify-content:space-between"><span>🔴 Low</span><span style="color:var(--red);font-weight:700">Below 3%</span></div>
+      </div>
+      <p style="margin-top:12px;color:var(--muted2);font-size:12px;background:var(--s2);border-radius:8px;padding:10px">💡 A 50K creator with 8% ER outperforms a 500K creator with 1% ER</p>`
+  },
+  {
+    icon: '💰',
+    title: 'Real Pricing Data',
+    sub: 'No guessing — actual market rates',
+    content: `<p>Prices are sourced from:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">📋 <span>Direct influencer rate cards</span></div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">🤝 <span>Actual executed deals</span></div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px">📊 <span>Gulf market benchmarks</span></div>
+      </div>
+      <div style="background:rgba(246,199,77,.08);border:1px solid rgba(246,199,77,.2);border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:var(--muted2)">
+        🔒 Pricing details are available for Pro subscribers only
+      </div>`
+  },
+  {
+    icon: '🔍',
+    title: 'Search & Filter',
+    sub: 'Find the right influencer fast',
+    content: `<div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">🔍</span><span>Search by name or niche</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">📱</span><span>Filter by platform: Instagram, Snap, YouTube, TikTok</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">🏷️</span><span>Filter by tier, region & category</span></div>
+      <div style="background:var(--s2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px"><span style="font-size:16px">💰</span><span>Price range filter <span style="color:var(--gold);font-size:11px">(Pro)</span></span></div>
+    </div>`
+  }
+];
+
+let _tourStep = 0;
+
+function openTour() {
+  _tourStep = 0;
+  _renderTourStep();
+  document.getElementById('tourOverlay').classList.add('visible');
+}
+
+function closeTour() {
+  document.getElementById('tourOverlay').classList.remove('visible');
+  localStorage.setItem('tour_seen', '1');
+}
+
+function tourNext() {
+  const steps = (localStorage.getItem('lang') || 'ar') === 'ar' ? TOUR_STEPS_AR : TOUR_STEPS_EN;
+  if (_tourStep < steps.length - 1) {
+    _tourStep++;
+    _renderTourStep();
+  } else {
+    closeTour();
+  }
+}
+
+function _renderTourStep() {
+  const isAr = (localStorage.getItem('lang') || 'ar') === 'ar';
+  const steps = isAr ? TOUR_STEPS_AR : TOUR_STEPS_EN;
+  const step = steps[_tourStep];
+  const isLast = _tourStep === steps.length - 1;
+
+  document.getElementById('tourIcon').textContent = step.icon;
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourSub').textContent = step.sub;
+  document.getElementById('tourContent').innerHTML = step.content;
+  document.getElementById('tourNextBtn').textContent = isLast
+    ? (isAr ? 'ابدأ الاستكشاف 🚀' : 'Start Exploring 🚀')
+    : (isAr ? 'التالي ←' : 'Next →');
+  const skipBtn = document.getElementById('tourSkipBtn');
+  skipBtn.style.display = isLast ? 'none' : '';
+  skipBtn.textContent = isAr ? 'تخطي' : 'Skip';
+
+  const dots = document.getElementById('tourDots');
+  dots.innerHTML = steps.map((_, i) =>
+    `<div class="tour-dot ${i === _tourStep ? 'active' : ''}"></div>`
+  ).join('');
+}
+
+// Auto-show tour on first visit (before login)
+(function() {
+  if (!localStorage.getItem('tour_seen')) {
+    setTimeout(openTour, 600);
+  }
+})();
+
+// ═══════════════════════════════════════════
+// CANCEL TRIAL
+// ═══════════════════════════════════════════
+async function cancelTrial() {
+  const isAr = (localStorage.getItem('lang') || 'ar') === 'ar';
+  const msg = isAr
+    ? 'هل أنت متأكد من إلغاء التجربة المجانية؟\nسيتم تحويل حسابك للخطة المجانية فوراً.'
+    : 'Are you sure you want to cancel your free trial?\nYour account will revert to the free plan immediately.';
+  if (!confirm(msg)) return;
+
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    if (!session) return;
+
+    const res = await fetch('/api/cancel-trial', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + session.access_token
+      }
+    });
+
+    if (!res.ok) {
+      const e = await res.json();
+      alert(e.error || (isAr ? 'فشل الإلغاء، حاول مجدداً' : 'Cancellation failed, please try again'));
+      return;
+    }
+
+    closeMyPlan();
+    location.reload();
+  } catch(e) {
+    alert(isAr ? 'حدث خطأ، حاول مجدداً' : 'An error occurred, please try again');
+  }
 }
 
 async function adminDeleteUser(id, email) {
