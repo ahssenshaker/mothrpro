@@ -607,6 +607,33 @@ padding:7px 10px;
 }
 }
 
+/* THREE-PLAN UPGRADE MODAL */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:560px){.plans-grid{grid-template-columns:1fr;max-height:60vh;overflow-y:auto;padding-bottom:4px}}
+.plan-card{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:16px 12px;text-align:center;display:flex;flex-direction:column;position:relative;transition:.2s}
+.plan-card.featured{border-color:var(--gold);background:rgba(246,199,77,.05)}
+.plan-card-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:#07090f;font-size:10px;font-weight:800;border-radius:20px;padding:3px 12px;white-space:nowrap}
+.plan-card-icon{font-size:26px;margin-bottom:6px}
+.plan-card-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:2px}
+.plan-card-price{font-size:20px;font-weight:800;color:var(--accent);margin-bottom:1px;line-height:1.2}
+.plan-card-period{font-size:10px;color:var(--muted2);margin-bottom:10px}
+.plan-card-feats{text-align:right;font-size:11px;color:var(--muted2);line-height:2;margin-bottom:12px;list-style:none;padding:0;flex:1}
+.plan-card-btn{width:100%;background:var(--s3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:10px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.plan-card.featured .plan-card-btn{background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none}
+.plan-card-btn:hover{opacity:.85}
+/* Credits badge in user bar */
+.user-credits-badge{background:rgba(246,199,77,.12);color:var(--gold);border:1px solid rgba(246,199,77,.3);border-radius:8px;padding:3px 10px;font-weight:700;font-size:11px;cursor:pointer}
+/* Unlock banner inside modal */
+.unlock-banner{background:rgba(7,9,15,.9);border:1px solid rgba(246,199,77,.25);border-radius:12px;padding:18px;margin-bottom:16px;text-align:center}
+.unlock-banner-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.unlock-banner-sub{font-size:12px;color:var(--muted2);margin-bottom:14px;line-height:1.6}
+.unlock-btn{background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:10px;padding:11px 22px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.unlock-btn:hover{opacity:.88}
+.unlock-btn:disabled{opacity:.5;cursor:default}
+/* Credits info row in myplan */
+.myplan-credits-bar{background:rgba(246,199,77,.07);border:1px solid rgba(246,199,77,.2);border-radius:10px;padding:12px 16px;margin:0 24px 12px;display:flex;align-items:center;gap:12px}
+.myplan-credits-num{font-size:24px;font-weight:800;color:var(--gold);direction:ltr;min-width:32px;text-align:center}
+.myplan-credits-label{font-size:12px;color:var(--muted2);line-height:1.5}
 /* TOUR GUIDE */
 .tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);z-index:9800;display:none;align-items:center;justify-content:center;padding:20px}
 .tour-overlay.visible{display:flex}
@@ -708,33 +735,56 @@ padding:7px 10px;
   <div class="upgrade-box-wrap">
   <button class="upgrade-x" onclick="closeUpgrade()" aria-label="إغلاق">✕</button>
   <div class="upgrade-box">
-    <img src="/assets/logo.png" alt="مؤثر برو" style="height:64px;width:auto;display:block;margin:0 auto 12px;">
-    <div style="display:inline-block;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px" data-i18n="upgrade.badge">🎯 عرض خاص لأول ١٥٠ مشترك</div>
-    <div class="upgrade-title" data-i18n="upgrade.title">⭐ مؤثر برو</div>
-    <div class="upgrade-sub" data-i18n="upgrade.sub">احصل على وصول كامل لجميع بيانات المؤثرين</div>
-    <div class="upgrade-features">
-      <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat1">أسعار المؤثرين لكل منصة</span></div>
-      <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat2">روابط مباشرة للحسابات</span></div>
-      <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat3">إحصاءات التفاعل والجمهور</span></div>
-      <div class="upgrade-feature"><span>✓</span><span data-i18n="upgrade.feat4">توزيع الجمهور بالعمر والجنس</span></div>
+    <img src="/assets/logo.png" alt="مؤثر برو" style="height:52px;width:auto;display:block;margin:0 auto 10px;">
+    <div class="upgrade-title" style="margin-bottom:6px">اختر خطتك</div>
+    <div class="upgrade-sub" style="margin-bottom:18px">وصول لبيانات +500 مؤثر سعودي وخليجي</div>
+    <div class="plans-grid">
+      <!-- Credits -->
+      <div class="plan-card">
+        <div class="plan-card-icon">⚡</div>
+        <div class="plan-card-name">كريدت</div>
+        <div class="plan-card-price">49 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
+        <div class="plan-card-period">10 مؤثرين</div>
+        <ul class="plan-card-feats">
+          <li>فتح ملفات 10 مؤثرين</li>
+          <li>أسعار وروابط وإحصاءات</li>
+          <li>صلاحية دائمة للمفتوحين</li>
+        </ul>
+        <button class="plan-card-btn" onclick="handleLsClick(event,'credits')">اشتر الآن</button>
+      </div>
+      <!-- Annual -->
+      <div class="plan-card featured">
+        <div class="plan-card-badge">⭐ الأكثر شعبية</div>
+        <div class="plan-card-icon">📅</div>
+        <div class="plan-card-name">سنوي</div>
+        <div class="plan-card-price">149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
+        <div class="plan-card-period">/ سنة</div>
+        <ul class="plan-card-feats">
+          <li>وصول كامل لجميع المؤثرين</li>
+          <li>أسعار وروابط وإحصاءات</li>
+          <li>يتجدد سنوياً</li>
+        </ul>
+        <button class="plan-card-btn" onclick="handleLsClick(event,'annual')">اشتر الآن</button>
+      </div>
+      <!-- Lifetime -->
+      <div class="plan-card">
+        <div class="plan-card-icon">♾️</div>
+        <div class="plan-card-name">مدى الحياة</div>
+        <div class="plan-card-price">349 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
+        <div class="plan-card-period">دفعة واحدة</div>
+        <ul class="plan-card-feats">
+          <li>وصول كامل للأبد</li>
+          <li>أسعار وروابط وإحصاءات</li>
+          <li>بدون تجديد أبداً</li>
+        </ul>
+        <button class="plan-card-btn" onclick="handleLsClick(event,'lifetime')">اشتر الآن</button>
+      </div>
     </div>
-    <div style="font-size:12px;color:var(--muted2);text-decoration:line-through;margin-bottom:2px" data-i18n-html="upgrade.old_price">299 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
-    <div class="upgrade-price" data-i18n-html="upgrade.price">149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
-    <div class="upgrade-price-sub" data-i18n="upgrade.price_sub">✅ دفعة واحدة فقط — بدون اشتراك سنوي</div>
-    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:8px 12px;margin-bottom:10px;text-align:right;font-size:11px;color:var(--muted2);line-height:1.6" data-i18n-html="upgrade.first150">
-      ⚡ أنت ضمن أول ١٥٠ مشترك — ادفع مرة واحدة واستمتع بالوصول الكامل.<br>
-      بعد اكتمال الـ ١٥٠ سيتحوّل السعر إلى اشتراك سنوي.
-    </div>
-    <a href="#" id="lsCheckoutBtn"
-       style="display:block;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:12px;transition:.2s"
-       onclick="handleLsClick(event)">
-      <span data-i18n-html="upgrade.pay_btn">💳 ادفع الآن — 149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></span>
-    </a>
-    <div style="font-size:11px;color:var(--muted2);margin-bottom:8px;line-height:1.6" data-i18n-html="upgrade.payment_note">
+    <div style="font-size:11px;color:var(--muted2);margin-bottom:8px;line-height:1.8">
       بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓<br>
       يدعم Visa / Mastercard / PayPal
     </div>
-    <button class="upgrade-close" onclick="closeUpgrade()" data-i18n="upgrade.close">إغلاق</button>
+    <button class="upgrade-close" onclick="closeUpgrade()">إغلاق</button>
   </div>
   <!-- LS CHECKOUT IFRAME VIEW -->
   <div id="lsIframeView" style="display:none;flex-direction:column;width:100%;height:100%;min-height:600px;position:relative">
@@ -838,9 +888,9 @@ padding:7px 10px;
       <option value="verified" data-i18n-opt="src.confirmed">✔ محدث/مضاف مؤكد</option>
     </select>
     <div class="price-range-wrap" title="فلتر نطاق السعر (ر.س)">
-      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_from" autocomplete="off" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
+      <input type="number" id="priceMin" placeholder="من" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_from" autocomplete="off" onfocus="if(userPlan==='free'||userPlan==='credits'){this.blur();showPriceFilterGate();}">
       <span>–</span>
-      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_to" autocomplete="off" onfocus="if(userPlan==='free'){this.blur();showPriceFilterGate();}">
+      <input type="number" id="priceMax" placeholder="إلى" min="0" oninput="applyFilters()" data-i18n-ph="filter.price_to" autocomplete="off" onfocus="if(userPlan==='free'||userPlan==='credits'){this.blur();showPriceFilterGate();}">
       <span style="font-size:10px">ر.س</span>
     </div>
     <select id="sortBy" onchange="applyFilters()">
@@ -1433,9 +1483,13 @@ function initLang() {
 }
 
 // ═══════════════════════════════════════════
-// LEMON SQUEEZY CHECKOUT URL
+// LEMON SQUEEZY CHECKOUT URLS
 // ═══════════════════════════════════════════
-window.LS_CHECKOUT_URL = 'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046';
+window.LS_PLANS = {
+  credits:  'https://moatherpro.lemonsqueezy.com/checkout/buy/5c6a8277-c31d-4f29-b40f-44e22fdaf99e',
+  annual:   'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046',
+  lifetime: 'https://moatherpro.lemonsqueezy.com/checkout/buy/e674bbca-e1ec-4758-badc-06de80f70bce',
+};
 
 // ═══════════════════════════════════════════
 // SUPABASE CONFIG
@@ -1445,9 +1499,12 @@ const SUPA_KEY = 'sb_publishable_CcZXntzMg13wEWURu_373g_uoqF3Wzk';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 let currentUser = null;
-let userPlan = 'free'; // 'free' or 'pro'
+let userPlan = 'free'; // 'free' | 'credits' | 'pro' | 'admin'
 let _subscriberData = null;
 let authMode = 'login';
+let userCreditsRemaining = 0;
+let userUnlockedIds = new Set();
+let _lsSelectedPlan = 'annual';
 
 // ═══════════════════════════════════════════
 // AUTH UI
@@ -1600,11 +1657,13 @@ async function loadUserPlan() {
   try {
     const { data } = await supa
       .from('subscribers')
-      .select('plan, expires_at, activated_at')
+      .select('plan, expires_at, activated_at, credits_remaining, unlocked_ids')
       .eq('id', currentUser.id)
       .single();
 
     _subscriberData = data || null;
+    userCreditsRemaining = data?.credits_remaining || 0;
+    userUnlockedIds = new Set((data?.unlocked_ids || []).map(String));
 
     if (data && data.plan === 'admin') {
       userPlan = 'admin';
@@ -1613,8 +1672,10 @@ async function loadUserPlan() {
     } else if (data && data.plan === 'pro') {
       const expired = data.expires_at && new Date(data.expires_at) < new Date();
       userPlan = expired ? 'free' : 'pro';
-      // trial = has expires_at set (not a permanent pro subscriber)
       userTrialExpiresAt = (!expired && data.expires_at) ? new Date(data.expires_at) : null;
+    } else if (data && data.plan === 'credits') {
+      userPlan = 'credits';
+      userTrialExpiresAt = null;
     } else {
       userPlan = 'free';
       userTrialExpiresAt = null;
@@ -1622,6 +1683,8 @@ async function loadUserPlan() {
   } catch(e) {
     userPlan = 'free';
     userTrialExpiresAt = null;
+    userCreditsRemaining = 0;
+    userUnlockedIds = new Set();
   }
 }
 
@@ -1748,6 +1811,11 @@ function updatePlanBadge(isAdmin) {
       if (upgradeBtn) upgradeBtn.style.display = 'none';
       if (trialBanner) trialBanner.classList.remove('visible');
     }
+  } else if (userPlan === 'credits') {
+    badge.textContent = `⚡ ${userCreditsRemaining} كريدت`;
+    badge.className = 'user-bar-plan';
+    if (upgradeBtn) upgradeBtn.style.display = '';
+    if (trialBanner) trialBanner.classList.remove('visible');
   } else {
     badge.textContent = t('bar.plan.free');
     badge.className = 'user-bar-plan free';
@@ -1760,6 +1828,8 @@ async function handleLogout() {
   currentUser = null; // nulled first so the SIGNED_OUT listener skips
   await supa.auth.signOut();
   userPlan = 'free';
+  userCreditsRemaining = 0;
+  userUnlockedIds = new Set();
   DATA = [];
   filtered = [];
   _apiJwt = null;
@@ -1790,6 +1860,7 @@ function openMyPlan() {
   const isTrial = plan === 'pro' && !!sub?.expires_at;
   const isPro = plan === 'pro' && !sub?.expires_at;
   const isAdm = plan === 'admin';
+  const isCredits = plan === 'credits';
 
   // Avatar & email
   document.getElementById('mpAvatar').textContent = (currentUser.email || '?')[0].toUpperCase();
@@ -1798,14 +1869,28 @@ function openMyPlan() {
   // Badge
   const badge = document.getElementById('mpBadge');
   const badgeMap = {
-    admin: ['mp-admin', isAr ? '👑 أدمن' : '👑 Admin'],
-    pro:   ['mp-pro',   isAr ? '✨ Pro نشط' : '✨ Pro Active'],
-    trial: ['mp-trial', isAr ? '⏳ تجربة مجانية' : '⏳ Free Trial'],
-    free:  ['mp-free',  isAr ? '⬜ مجاني' : '⬜ Free'],
+    admin:   ['mp-admin', isAr ? '👑 أدمن' : '👑 Admin'],
+    pro:     ['mp-pro',   isAr ? '✨ Pro نشط' : '✨ Pro Active'],
+    trial:   ['mp-trial', isAr ? '⏳ تجربة مجانية' : '⏳ Free Trial'],
+    credits: ['mp-trial', isAr ? `⚡ كريدت` : '⚡ Credits'],
+    free:    ['mp-free',  isAr ? '⬜ مجاني' : '⬜ Free'],
   };
-  const [cls, label] = badgeMap[isAdm ? 'admin' : isPro ? 'pro' : isTrial ? 'trial' : 'free'];
+  const key = isAdm ? 'admin' : isPro ? 'pro' : isTrial ? 'trial' : isCredits ? 'credits' : 'free';
+  const [cls, label] = badgeMap[key];
   badge.className = 'myplan-badge ' + cls;
-  badge.textContent = label;
+  badge.textContent = isCredits ? `⚡ ${userCreditsRemaining} ${isAr ? 'كريدت متبقي' : 'credits'}` : label;
+
+  // Credits bar
+  const creditsBar = document.getElementById('mpCreditsBar');
+  if (creditsBar) {
+    if (isCredits) {
+      const numEl = document.getElementById('mpCreditsNum');
+      if (numEl) numEl.textContent = userCreditsRemaining;
+      creditsBar.style.display = 'flex';
+    } else {
+      creditsBar.style.display = 'none';
+    }
+  }
 
   // Trial bar
   if (isTrial && sub.expires_at) {
@@ -1821,10 +1906,15 @@ function openMyPlan() {
 
   // Info rows
   const fmt = iso => iso ? new Date(iso).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
+  const displayLabel = isCredits ? `⚡ ${isAr ? 'كريدت' : 'Credits'}` : label;
   const rows = [];
   rows.push([isAr ? 'البريد الإلكتروني' : 'Email', currentUser.email]);
-  rows.push([isAr ? 'الخطة الحالية' : 'Current Plan', label]);
-  if (sub?.activated_at && (isPro || isAdm || isTrial)) rows.push([isAr ? 'تاريخ التفعيل' : 'Activated', fmt(sub.activated_at)]);
+  rows.push([isAr ? 'الخطة الحالية' : 'Current Plan', displayLabel]);
+  if (isCredits) {
+    rows.push([isAr ? 'الكريدتات المتبقية' : 'Credits Remaining', userCreditsRemaining]);
+    rows.push([isAr ? 'المؤثرين المفتوحين' : 'Unlocked Influencers', userUnlockedIds.size]);
+  }
+  if (sub?.activated_at && (isPro || isAdm || isTrial || isCredits)) rows.push([isAr ? 'تاريخ التفعيل' : 'Activated', fmt(sub.activated_at)]);
   if (sub?.expires_at) rows.push([isAr ? 'تاريخ الانتهاء' : 'Expires', fmt(sub.expires_at)]);
   if (!sub?.expires_at && (isPro || isAdm)) rows.push([isAr ? 'تاريخ الانتهاء' : 'Expires', isAr ? 'دائم' : 'Permanent']);
   const since = currentUser.created_at || currentUser.last_sign_in_at;
@@ -1835,8 +1925,11 @@ function openMyPlan() {
 
   // Upgrade CTA
   const ctaSec = document.getElementById('mpCta');
-  if (plan === 'free' || isTrial) {
-    document.getElementById('mpCtaLabel').textContent = isAr ? 'ترقية للبرو — 149 ريال' : 'Upgrade to Pro — 149 SAR';
+  if (plan === 'free' || isTrial || isCredits) {
+    const ctaLabel = isCredits
+      ? (isAr ? 'ترقية للسنوي أو مدى الحياة' : 'Upgrade to Annual or Lifetime')
+      : (isAr ? 'ترقية — من 49 ريال' : 'Upgrade — from 49 SAR');
+    document.getElementById('mpCtaLabel').textContent = ctaLabel;
     ctaSec.style.display = 'block';
   } else {
     ctaSec.style.display = 'none';
@@ -1844,7 +1937,7 @@ function openMyPlan() {
 
   document.getElementById('mpLogoutLabel').textContent = isAr ? 'تسجيل الخروج' : 'Sign Out';
 
-  // Show cancel-trial button only for active trial users
+  // Show cancel-trial button only for active trial users (not credits)
   const cancelBtn = document.getElementById('mpCancelTrialBtn');
   if (cancelBtn) {
     cancelBtn.style.display = isTrial ? '' : 'none';
@@ -1858,9 +1951,9 @@ function closeMyPlan() {
   document.getElementById('myPlanOverlay').classList.remove('open');
 }
 
-function buildLsUrl(embed) {
+function buildLsUrl(plan, embed) {
   const email = currentUser?.email || '';
-  const base = window.LS_CHECKOUT_URL || '';
+  const base = (window.LS_PLANS || {})[plan] || window.LS_PLANS?.annual || '';
   if (!base) return '#';
   const emailParams = email
     ? ('&checkout[email]=' + encodeURIComponent(email) + '&checkout[custom][account_email]=' + encodeURIComponent(email))
@@ -1875,22 +1968,23 @@ function buildLsUrl(embed) {
 }
 var _lsIsMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-function handleLsClick(e) {
+function handleLsClick(e, plan) {
   e.preventDefault();
-  gtag('event','subscription_complete',{event_category:'subscription',event_label:'purchase',value:39});
+  e.stopPropagation();
+  _lsSelectedPlan = plan || 'annual';
+  const priceMap = { credits: 49, annual: 149, lifetime: 349 };
+  gtag('event','begin_checkout',{event_category:'subscription',event_label:_lsSelectedPlan,value:priceMap[_lsSelectedPlan]||149});
   if (_lsIsMobile) {
-    window.location.href = buildLsUrl(false);
+    window.location.href = buildLsUrl(_lsSelectedPlan, false);
   } else {
-    var url = buildLsUrl(true);
+    var url = buildLsUrl(_lsSelectedPlan, true);
     var iframe = document.getElementById('lsIframe');
     var loader = document.getElementById('lsIframeLoader');
-    // Reset loader state before loading new URL
     iframe.style.opacity = '0';
     loader.style.display = 'flex';
     iframe.onload = null;
     iframe.src = url;
     iframe.onload = function() {
-      // Give LemonSqueezy extra time to render its UI after HTML loads
       setTimeout(function() {
         loader.style.display = 'none';
         iframe.style.opacity = '1';
@@ -1915,12 +2009,18 @@ function startProPolling() {
   var statusEl = document.getElementById('lsActivationStatus');
   var startBtn = document.getElementById('lsStartBtn');
   var attempts = 0, maxAttempts = 30;
+  var prevPlan = _subscriberData?.plan || 'free';
+  var prevCredits = _subscriberData?.credits_remaining || 0;
   statusEl.textContent = '⏳ جارٍ تفعيل حسابك...';
   var interval = setInterval(async function() {
     attempts++;
     try {
-      var { data } = await supa.from('subscribers').select('plan').eq('email', currentUser.email).single();
-      if (data && data.plan === 'pro') {
+      var { data } = await supa.from('subscribers').select('plan,credits_remaining').eq('email', currentUser.email).single();
+      var activated = data && (
+        (data.plan === 'pro') ||
+        (data.plan === 'credits' && (prevPlan !== 'credits' || data.credits_remaining > prevCredits))
+      );
+      if (activated) {
         clearInterval(interval);
         statusEl.innerHTML = '✅ تم تفعيل حسابك بنجاح!';
         statusEl.style.color = 'var(--green)';
@@ -2892,6 +2992,55 @@ window.cardHTML = function(d) {
 const _origOpenModal = openModal;
 window.openModal = function(id) {
   _origOpenModal(id);
+  // Credits users: locked influencers get blur + unlock banner; unlocked ones get full access
+  if (userPlan === 'credits') {
+    setTimeout(() => {
+      const infId = String(id);
+      if (userUnlockedIds.has(infId)) return; // already unlocked — full access
+      // Blur sensitive data
+      document.querySelectorAll('.mph-url, .visit-btn').forEach(el => {
+        el.style.visibility = 'hidden';
+        el.style.pointerEvents = 'none';
+      });
+      document.querySelectorAll('.price-val').forEach(el => {
+        el.style.filter = 'blur(8px)';
+        el.style.userSelect = 'none';
+        el.style.pointerEvents = 'none';
+      });
+      document.querySelectorAll('.prices-grid').forEach(el => {
+        el.style.position = 'relative';
+      });
+      document.querySelectorAll('.gbar-modal, .gbar-modal ~ div').forEach(el => {
+        el.style.filter = 'blur(6px)';
+        el.style.pointerEvents = 'none';
+        el.style.userSelect = 'none';
+      });
+      document.querySelectorAll('.age-pill').forEach(el => {
+        el.style.filter = 'blur(6px)';
+        el.style.userSelect = 'none';
+      });
+      document.querySelectorAll('.ps').forEach(el => {
+        el.style.filter = 'blur(6px)';
+        el.style.userSelect = 'none';
+        el.style.pointerEvents = 'none';
+      });
+      // Add unlock banner
+      const modal = document.querySelector('.modal-inner');
+      if (modal && !modal.querySelector('.unlock-banner')) {
+        const banner = document.createElement('div');
+        banner.className = 'unlock-banner';
+        const credLeft = userCreditsRemaining;
+        banner.innerHTML = `<div class="unlock-banner-title">⚡ فتح هذا المؤثر</div>
+          <div class="unlock-banner-sub">لديك <strong style="color:var(--gold)">${credLeft}</strong> كريدت متبقي — كل كريدت يفتح ملف مؤثر واحد بشكل دائم</div>
+          <button class="unlock-btn" id="unlockBannerBtn" onclick="unlockInfluencer(${infId})" ${credLeft <= 0 ? 'disabled' : ''}>
+            ${credLeft > 0 ? '🔓 فتح هذا المؤثر (كريدت واحد)' : '❌ لا يوجد كريدت — اشترِ المزيد'}
+          </button>
+          ${credLeft <= 0 ? `<div style="margin-top:10px"><button onclick="closeModal();setTimeout(openUpgrade,100)" style="background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:8px;padding:7px 16px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">⚡ اشتر كريدت</button></div>` : ''}`;
+        modal.insertBefore(banner, modal.firstChild);
+      }
+    }, 50);
+    return;
+  }
   if (userPlan === 'free') {
     // Hide sensitive data in modal
     setTimeout(() => {
@@ -2936,6 +3085,32 @@ window.openModal = function(id) {
     }, 50);
   }
 };
+
+async function unlockInfluencer(influencerId) {
+  const btn = document.getElementById('unlockBannerBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ جارٍ الفتح...'; }
+  try {
+    const session = await supa.auth.getSession();
+    const token = session?.data?.session?.access_token;
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch('/api/unlock-influencer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ influencer_id: influencerId }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'فشل الفتح');
+    // Update local state
+    userUnlockedIds.add(String(influencerId));
+    userCreditsRemaining = json.credits_remaining;
+    updatePlanBadge();
+    // Reload modal content with full access
+    closeModal();
+    setTimeout(() => openModal(influencerId), 100);
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = '⚠️ ' + (e.message || 'خطأ'); }
+  }
+}
 
 
 // ─── DARK / LIGHT THEME ───────────────────────────────────────
@@ -2988,6 +3163,14 @@ initLang();
         <div style="font-weight:700;color:var(--gold);margin-bottom:2px" id="mpTrialTitle">ينتهي اشتراكك التجريبي</div>
         <div id="mpTrialExpiry" style="font-size:11px"></div>
       </div>
+    </div>
+    <div class="myplan-credits-bar" id="mpCreditsBar" style="display:none">
+      <span style="font-size:22px">⚡</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--gold)"><span id="mpCreditsNum">0</span> كريدت متبقي</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:2px">كل كريدت يفتح ملف مؤثر واحد بشكل دائم</div>
+      </div>
+      <button onclick="closeMyPlan();openUpgrade()" style="background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:8px;padding:6px 14px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">+ كريدت</button>
     </div>
     <div class="myplan-rows" id="mpRows"></div>
     <div class="myplan-cta" id="mpCta" style="display:none">
