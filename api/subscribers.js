@@ -101,6 +101,47 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true })
     }
 
+    // ─── GRANT CREDITS (10 credits, plan='credits') ──────────────────────
+    if (action === 'grant-credits') {
+      const emailNorm = (email || '').toLowerCase().trim()
+      if (!emailNorm && !id) return res.status(400).json({ error: 'id or email required' })
+      let findQuery = supabase.from('subscribers').select('id, email, plan, credits_remaining')
+      if (id) findQuery = findQuery.eq('id', id)
+      else    findQuery = findQuery.eq('email', emailNorm)
+      const { data: sub, error: findErr } = await findQuery.single()
+      if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
+
+      const higherPlans = ['pro', 'admin']
+      const updates = {
+        credits_remaining: (sub.credits_remaining || 0) + 10,
+        activated_at: new Date().toISOString(),
+      }
+      if (!higherPlans.includes(sub.plan)) updates.plan = 'credits'
+      const { error: updateErr } = await supabase.from('subscribers').update(updates).eq('id', sub.id)
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
+      return res.status(200).json({ ok: true })
+    }
+
+    // ─── ACTIVATE ANNUAL (برو — 1 year) ──────────────────────────────────
+    if (action === 'activate-annual') {
+      const emailNorm = (email || '').toLowerCase().trim()
+      if (!emailNorm && !id) return res.status(400).json({ error: 'id or email required' })
+      let findQuery = supabase.from('subscribers').select('id, email')
+      if (id) findQuery = findQuery.eq('id', id)
+      else    findQuery = findQuery.eq('email', emailNorm)
+      const { data: sub, error: findErr } = await findQuery.single()
+      if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
+
+      const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      const { error: updateErr } = await supabase
+        .from('subscribers')
+        .update({ plan: 'pro', expires_at: expiresAt, activated_at: new Date().toISOString() })
+        .eq('id', sub.id)
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
+      await sendPlanEmail(sub.email, 'activate')
+      return res.status(200).json({ ok: true })
+    }
+
     if (action === 'activate' || action === 'set-admin') {
       let findQuery = supabase.from('subscribers').select('id, email')
       if (id) {
@@ -113,7 +154,7 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
-      // Clear expires_at so a former trial user gets a permanent subscription
+      // activate = Pro Plus (lifetime, no expiry); set-admin = admin role
       const updates = action === 'activate'
         ? { plan: 'pro', activated_at: new Date().toISOString(), expires_at: null }
         : { plan: 'admin', expires_at: null }

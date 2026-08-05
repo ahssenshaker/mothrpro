@@ -753,11 +753,11 @@ padding:7px 10px;
         </ul>
         <button class="plan-card-btn" onclick="handleLsClick(event,'credits')">اشتر الآن</button>
       </div>
-      <!-- Annual -->
+      <!-- Pro (Annual) -->
       <div class="plan-card featured">
         <div class="plan-card-badge">⭐ الأكثر شعبية</div>
         <div class="plan-card-icon">📅</div>
-        <div class="plan-card-name">سنوي</div>
+        <div class="plan-card-name">برو</div>
         <div class="plan-card-price">149 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
         <div class="plan-card-period">/ سنة</div>
         <ul class="plan-card-feats">
@@ -767,10 +767,10 @@ padding:7px 10px;
         </ul>
         <button class="plan-card-btn" onclick="handleLsClick(event,'annual')">اشتر الآن</button>
       </div>
-      <!-- Lifetime -->
+      <!-- Pro Plus (Lifetime) -->
       <div class="plan-card">
         <div class="plan-card-icon">♾️</div>
-        <div class="plan-card-name">مدى الحياة</div>
+        <div class="plan-card-name">برو بلس</div>
         <div class="plan-card-price">349 <svg class="sar" aria-label="ريال سعودي"><use href="#sar"/></svg></div>
         <div class="plan-card-period">دفعة واحدة</div>
         <ul class="plan-card-feats">
@@ -1796,7 +1796,10 @@ function updatePlanBadge(isAdmin) {
     if (upgradeBtn) upgradeBtn.style.display = 'none';
     if (trialBanner) trialBanner.classList.remove('visible');
   } else if (userPlan === 'credits') {
-    badge.textContent = `⚡ ${userCreditsRemaining} كريدت`;
+    const used = userUnlockedIds.size;
+    const total = userCreditsRemaining + used;
+    badge.textContent = `⚡ متبقي ${userCreditsRemaining}/${total}`;
+    badge.title = `مستخدم: ${used} | متبقي: ${userCreditsRemaining} | الإجمالي: ${total}`;
     badge.className = 'user-bar-plan';
     if (upgradeBtn) upgradeBtn.style.display = '';
     if (trialBanner) trialBanner.classList.remove('visible');
@@ -1900,7 +1903,7 @@ function openMyPlan() {
   const ctaSec = document.getElementById('mpCta');
   if (plan === 'free' || isTrial || isCredits) {
     const ctaLabel = isCredits
-      ? (isAr ? 'ترقية للسنوي أو مدى الحياة' : 'Upgrade to Annual or Lifetime')
+      ? (isAr ? 'ترقية لبرو أو برو بلس' : 'Upgrade to Pro or Pro Plus')
       : (isAr ? 'ترقية — من 49 ريال' : 'Upgrade — from 49 SAR');
     document.getElementById('mpCtaLabel').textContent = ctaLabel;
     ctaSec.style.display = 'block';
@@ -3176,10 +3179,11 @@ initLang();
 
     <div class="admin-add-form">
       <h3>➕ تفعيل مشترك جديد</h3>
-      <div class="admin-form-row">
-        <input type="email" id="addSubEmail" placeholder="البريد الإلكتروني" dir="ltr">
-        <button class="btn-add-sub" onclick="adminActivateSub()">تفعيل برو</button>
-        <button class="btn-add-sub" style="background:linear-gradient(135deg,#f59e0b,#f6c74d);color:#07090f" onclick="adminGrantTrial()">🎁 تجربة مجانية</button>
+      <div class="admin-form-row" style="flex-wrap:wrap">
+        <input type="email" id="addSubEmail" placeholder="البريد الإلكتروني" dir="ltr" style="min-width:180px">
+        <button class="btn-add-sub" style="background:linear-gradient(135deg,#f6c74d,#f59e0b);color:#07090f" onclick="adminGrantCredits()">⚡ كريدت</button>
+        <button class="btn-add-sub" onclick="adminActivatePro()">✨ برو</button>
+        <button class="btn-add-sub" style="background:linear-gradient(135deg,#7c3aed,#a855f7)" onclick="adminActivateProPlus()">♾️ برو بلس</button>
       </div>
       <div class="admin-msg" id="addSubMsg"></div>
     </div>
@@ -3556,7 +3560,7 @@ async function adminDeleteUser(id, email) {
   }
 }
 
-async function adminActivateSub() {
+async function _adminPost(action, extra, successMsg) {
   const email = document.getElementById('addSubEmail').value.trim();
   const msg = document.getElementById('addSubMsg');
   if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
@@ -3566,37 +3570,20 @@ async function adminActivateSub() {
     const res = await fetch('/api/subscribers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-      body: JSON.stringify({ action: 'activate', email })
+      body: JSON.stringify({ action, email, ...extra })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل التفعيل'); }
-    msg.textContent = '✅ تم تفعيل ' + email; msg.className = 'admin-msg ok';
+    msg.textContent = '✅ ' + successMsg + ' ' + email; msg.className = 'admin-msg ok';
     document.getElementById('addSubEmail').value = '';
-    if (currentUser && currentUser.email === email) { userPlan = 'pro'; updatePlanBadge(); }
     setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
     await loadAdminSubs();
   } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
 }
 
-async function adminGrantTrial() {
-  const email = document.getElementById('addSubEmail').value.trim();
-  const msg = document.getElementById('addSubMsg');
-  if (!email) { msg.textContent = 'أدخل البريد الإلكتروني'; msg.className = 'admin-msg err'; return; }
-  if (!confirm('منح تجربة مجانية 24 ساعة لـ ' + email + '؟ (بدون إرسال إيميل)')) return;
-  msg.textContent = 'جاري منح التجربة...'; msg.className = 'admin-msg';
-  try {
-    const { data: { session } } = await supa.auth.getSession();
-    const res = await fetch('/api/subscribers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-      body: JSON.stringify({ action: 'grant-trial', email })
-    });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'فشل منح التجربة'); }
-    msg.textContent = '✅ تم منح التجربة لـ ' + email; msg.className = 'admin-msg ok';
-    document.getElementById('addSubEmail').value = '';
-    setTimeout(() => { msg.textContent = ''; msg.className = 'admin-msg'; }, 3000);
-    await loadAdminSubs();
-  } catch(e) { msg.textContent = 'خطأ: ' + e.message; msg.className = 'admin-msg err'; }
-}
+function adminGrantCredits()  { _adminPost('grant-credits',  {}, 'تم تفعيل كريدت لـ'); }
+function adminActivatePro()   { _adminPost('activate-annual', {}, 'تم تفعيل برو لـ'); }
+function adminActivateProPlus(){ _adminPost('activate',       {}, 'تم تفعيل برو بلس لـ'); }
+function adminActivateSub()   { adminActivateProPlus(); } // backward compat
 
 async function adminActivateById(id, email) {
   if (!confirm('تفعيل برو لـ ' + email + '؟')) return;
