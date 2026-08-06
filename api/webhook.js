@@ -7,9 +7,12 @@ const supabase = createClient(
 )
 
 // ─── Plan variant IDs ─────────────────────────────────────────────────────────
-const VARIANT_CREDITS  = 1985417  // 49 SAR  — 10 credits
-const VARIANT_ANNUAL   = 1919783  // 149 SAR — annual subscription
-const VARIANT_LIFETIME = 1985421  // 349 SAR — lifetime
+const VARIANT_CREDITS       = 1985417  // live — 49 SAR  — 10 credits
+const VARIANT_ANNUAL        = 1919783  // live — 149 SAR — annual subscription
+const VARIANT_LIFETIME      = 1985421  // live — 349 SAR — lifetime
+const VARIANT_CREDITS_TEST  = 1987571  // test — credits
+const VARIANT_ANNUAL_TEST   = 1987572  // test — annual
+const VARIANT_LIFETIME_TEST = 1987573  // test — lifetime
 
 async function getRawBody(req) {
   const chunks = []
@@ -111,7 +114,7 @@ export default async function handler(req, res) {
   const now = new Date().toISOString()
 
   // ─── CREDITS (49 SAR) ─────────────────────────────────────────────────────
-  if (variantId === VARIANT_CREDITS) {
+  if (variantId === VARIANT_CREDITS || variantId === VARIANT_CREDITS_TEST) {
     const currentCredits = sub?.credits_remaining || 0
     const updates = {
       credits_remaining: currentCredits + 10,
@@ -141,7 +144,7 @@ export default async function handler(req, res) {
   }
 
   // ─── ANNUAL SUBSCRIPTION (149 SAR) ───────────────────────────────────────
-  if (variantId === VARIANT_ANNUAL) {
+  if (variantId === VARIANT_ANNUAL || variantId === VARIANT_ANNUAL_TEST) {
     const expiresAt = attrs.renews_at || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
     if (sub) {
       await supabase
@@ -163,7 +166,7 @@ export default async function handler(req, res) {
   }
 
   // ─── LIFETIME (349 SAR) ───────────────────────────────────────────────────
-  if (variantId === VARIANT_LIFETIME) {
+  if (variantId === VARIANT_LIFETIME || variantId === VARIANT_LIFETIME_TEST) {
     if (sub) {
       await supabase
         .from('subscribers')

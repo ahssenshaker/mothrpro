@@ -1490,6 +1490,13 @@ window.LS_PLANS = {
   annual:   'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046',
   lifetime: 'https://moatherpro.lemonsqueezy.com/checkout/buy/e674bbca-e1ec-4758-badc-06de80f70bce',
 };
+// Test-mode checkout URLs — used when ?lstest=1 is in the URL
+window.LS_PLANS_TEST = {
+  credits:  'https://moatherpro.lemonsqueezy.com/checkout/buy/74f45c77-eb40-4957-9071-0ee3b689aa0d',
+  annual:   'https://moatherpro.lemonsqueezy.com/checkout/buy/3ee484a6-ffbd-4e3b-a068-f17abb3ed778',
+  lifetime: 'https://moatherpro.lemonsqueezy.com/checkout/buy/09278b5a-d701-4b32-9e2f-9fdfaa5d6d20',
+};
+const _lsTestMode = new URLSearchParams(window.location.search).has('lstest');
 
 // ═══════════════════════════════════════════
 // SUPABASE CONFIG
@@ -1935,7 +1942,8 @@ function closeMyPlan() {
 
 function buildLsUrl(plan, embed) {
   const email = currentUser?.email || '';
-  const base = (window.LS_PLANS || {})[plan] || window.LS_PLANS?.annual || '';
+  const plans = _lsTestMode ? window.LS_PLANS_TEST : window.LS_PLANS;
+  const base = (plans || {})[plan] || plans?.annual || '';
   if (!base) return '#';
   const emailParams = email
     ? ('&checkout[email]=' + encodeURIComponent(email) + '&checkout[custom][account_email]=' + encodeURIComponent(email))
