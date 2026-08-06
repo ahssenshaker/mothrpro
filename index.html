@@ -1497,8 +1497,9 @@ window.LS_PLANS_TEST = {
   lifetime: 'https://moatherpro.lemonsqueezy.com/checkout/buy/09278b5a-d701-4b32-9e2f-9fdfaa5d6d20',
 };
 // Persist test mode across OAuth redirect (Google login clears the query param)
-if (new URLSearchParams(window.location.search).has('lstest')) sessionStorage.setItem('ls_test_mode', '1');
-const _lsTestMode = sessionStorage.getItem('ls_test_mode') === '1';
+// ?lstest=1 turns test mode on (persists in localStorage); ?lstest=0 turns it off
+;(function(){const p=new URLSearchParams(window.location.search);if(p.get('lstest')==='1')localStorage.setItem('ls_test_mode','1');else if(p.get('lstest')==='0')localStorage.removeItem('ls_test_mode');})();
+const _lsTestMode = localStorage.getItem('ls_test_mode') === '1';
 
 // ═══════════════════════════════════════════
 // SUPABASE CONFIG
