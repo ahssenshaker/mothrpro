@@ -1695,8 +1695,9 @@ async function showDashboard() {
   // Clear any stale "0 نتيجة" that initLang() may have written before data loaded
   const ri = document.getElementById('resultInfo'); if (ri) ri.textContent = '';
 
-  // Show tour on first login
-  if (!localStorage.getItem('tour_seen')) {
+  // Show tour on first login — per-user key so new accounts always see it
+  const _tourKey = currentUser ? 'tour_seen_' + currentUser.id : 'tour_seen';
+  if (!localStorage.getItem(_tourKey)) {
     setTimeout(openTour, 800);
   }
 
@@ -3478,7 +3479,8 @@ function openTour() {
 
 function closeTour() {
   document.getElementById('tourOverlay').classList.remove('visible');
-  localStorage.setItem('tour_seen', '1');
+  const _tourKey = currentUser ? 'tour_seen_' + currentUser.id : 'tour_seen';
+  localStorage.setItem(_tourKey, '1');
 }
 
 function tourNext() {
@@ -3706,10 +3708,11 @@ async function adminAddAdmin() {
         showDashboard();
       }
     } else {
-      // Other types — just log in
+      // Other types (OAuth, magic link) — register if new, then log in
       const { data: { session } } = await supa.auth.getSession();
       if (session) {
         currentUser = session.user;
+        await registerUserIfNew(currentUser);
         await loadUserPlan();
         showDashboard();
       }
