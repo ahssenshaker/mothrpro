@@ -76,23 +76,6 @@
 .user-bar-myplan:hover{color:var(--accent);border-color:var(--accent)}
 .user-bar-plan{cursor:pointer}
 .user-bar-plan:hover{opacity:.8}
-.trial-banner{background:linear-gradient(90deg,rgba(246,199,77,.15),rgba(99,179,237,.12));border-bottom:1px solid rgba(246,199,77,.3);padding:7px 24px;display:none;align-items:center;justify-content:center;gap:10px;font-size:12px;color:var(--text);text-align:center}
-.trial-banner.visible{display:flex}
-.trial-days{font-weight:700;color:var(--gold)}
-.trial-upgrade-link{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline}
-.trial-welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:9500;display:none;align-items:center;justify-content:center;padding:20px}
-.trial-welcome-overlay.visible{display:flex}
-.trial-welcome-box{background:var(--s1);border:1px solid rgba(246,199,77,.35);border-radius:22px;padding:36px 32px;max-width:400px;width:100%;text-align:center;animation:popIn .3s ease}
-@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-.trial-welcome-icon{font-size:52px;margin-bottom:12px}
-.trial-welcome-title{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
-.trial-welcome-sub{color:var(--muted2);font-size:14px;line-height:1.7;margin-bottom:20px}
-.trial-welcome-features{background:var(--s2);border-radius:12px;padding:14px 18px;text-align:right;margin-bottom:22px;font-size:13px;line-height:2.2;color:var(--text)}
-.trial-welcome-features span{color:var(--accent);font-weight:700}
-.trial-welcome-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--gold));color:var(--bg);border:none;border-radius:12px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
-.trial-welcome-btn:hover{opacity:.9}
-.trial-welcome-skip{display:block;margin-top:12px;color:var(--muted2);font-size:12px;cursor:pointer}
-.trial-welcome-skip:hover{color:var(--text)}
 
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(400px) rotate(720deg);opacity:0}}
 @keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -385,8 +368,6 @@ select:focus{border-color:var(--accent)}
 .mp-trial{background:rgba(246,199,77,.12);color:var(--gold);border:1px solid rgba(246,199,77,.3)}
 .mp-pro{background:rgba(99,179,237,.12);color:var(--accent);border:1px solid rgba(99,179,237,.25)}
 .mp-admin{background:rgba(183,148,244,.12);color:#b794f4;border:1px solid rgba(183,148,244,.25)}
-.myplan-trial-bar{background:rgba(246,199,77,.07);border:1px solid rgba(246,199,77,.2);border-radius:10px;padding:10px 16px;margin:16px 24px 0;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted2)}
-.myplan-trial-hrs{font-size:20px;font-weight:800;color:var(--gold);direction:ltr}
 .myplan-rows{padding:16px 24px}
 .myplan-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);gap:8px}
 .myplan-row:last-child{border-bottom:none}
@@ -656,9 +637,6 @@ padding:7px 10px;
 .tour-btn-next:hover{opacity:.88}
 .tour-btn-skip{background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:11px;padding:13px 18px;font-family:inherit;font-size:13px;cursor:pointer;transition:.2s}
 .tour-btn-skip:hover{color:var(--text);border-color:var(--muted)}
-/* Cancel trial button in myplan footer */
-.mp-cancel-trial-btn{background:transparent;border:1px solid rgba(252,129,129,.3);color:var(--red);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:12px;cursor:pointer;transition:.2s;white-space:nowrap}
-.mp-cancel-trial-btn:hover{background:rgba(252,129,129,.08);border-color:var(--red)}
 
 </style>
 <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
@@ -1791,20 +1769,16 @@ async function _bgRefreshData(cacheKey) {
 function updatePlanBadge(isAdmin) {
   const badge = document.getElementById('userPlanBadge');
   const upgradeBtn = document.getElementById('upgradeBtn');
-  const trialBanner = document.getElementById('trialBanner');
-  const trialDaysEl = document.getElementById('trialDaysLeft');
   if (!badge) return;
   isAdmin = isAdmin !== undefined ? isAdmin : (userPlan === 'admin');
   if (isAdmin) {
     badge.textContent = t('bar.plan.admin');
     badge.className = 'user-bar-plan';
     if (upgradeBtn) upgradeBtn.style.display = 'none';
-    if (trialBanner) trialBanner.classList.remove('visible');
   } else if (userPlan === 'pro') {
     badge.textContent = t('bar.plan.pro');
     badge.className = 'user-bar-plan';
     if (upgradeBtn) upgradeBtn.style.display = 'none';
-    if (trialBanner) trialBanner.classList.remove('visible');
   } else if (userPlan === 'credits') {
     const used = userUnlockedIds.size;
     const total = userCreditsRemaining + used;
@@ -1812,12 +1786,10 @@ function updatePlanBadge(isAdmin) {
     badge.title = `مستخدم: ${used} | متبقي: ${userCreditsRemaining} | الإجمالي: ${total}`;
     badge.className = 'user-bar-plan';
     if (upgradeBtn) upgradeBtn.style.display = '';
-    if (trialBanner) trialBanner.classList.remove('visible');
   } else {
     badge.textContent = t('bar.plan.free');
     badge.className = 'user-bar-plan free';
     if (upgradeBtn) upgradeBtn.style.display = '';
-    if (trialBanner) trialBanner.classList.remove('visible');
   }
 }
 
@@ -1931,10 +1903,6 @@ function openMyPlan() {
   }
 
   document.getElementById('mpLogoutLabel').textContent = isAr ? 'تسجيل الخروج' : 'Sign Out';
-
-  // Cancel-trial button hidden from users — admin manages trials via admin panel
-  const cancelBtn = document.getElementById('mpCancelTrialBtn');
-  if (cancelBtn) cancelBtn.style.display = 'none';
 
   document.getElementById('myPlanOverlay').classList.add('open');
 }
@@ -3144,7 +3112,6 @@ initLang();
     </div>
     <div class="myplan-footer">
       <button class="user-bar-logout" onclick="handleLogout()"><span id="mpLogoutLabel">خروج</span></button>
-      <button class="mp-cancel-trial-btn" id="mpCancelTrialBtn" style="display:none" onclick="cancelTrial()">إلغاء التجربة</button>
     </div>
   </div>
 </div>
@@ -3350,15 +3317,6 @@ function adminSearchSubs(q) {
   renderAdminTable(allSubsData.filter(s => (s.email || '').toLowerCase().includes(q.toLowerCase())));
 }
 
-function showTrialWelcome() {
-  const overlay = document.getElementById('trialWelcomeOverlay');
-  if (overlay) overlay.classList.add('visible');
-}
-
-function closeTrialWelcome() {
-  const overlay = document.getElementById('trialWelcomeOverlay');
-  if (overlay) overlay.classList.remove('visible');
-}
 
 // ═══════════════════════════════════════════
 // TOUR GUIDE
@@ -3540,40 +3498,6 @@ function _renderTourStep() {
 
 // Tour is shown after login — see showDashboard()
 
-// ═══════════════════════════════════════════
-// CANCEL TRIAL
-// ═══════════════════════════════════════════
-async function cancelTrial() {
-  const isAr = (localStorage.getItem('lang') || 'ar') === 'ar';
-  const msg = isAr
-    ? 'هل أنت متأكد من إلغاء التجربة المجانية؟\nسيتم تحويل حسابك للخطة المجانية فوراً.'
-    : 'Are you sure you want to cancel your free trial?\nYour account will revert to the free plan immediately.';
-  if (!confirm(msg)) return;
-
-  try {
-    const { data: { session } } = await supa.auth.getSession();
-    if (!session) return;
-
-    const res = await fetch('/api/cancel-trial', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + session.access_token
-      }
-    });
-
-    if (!res.ok) {
-      const e = await res.json();
-      alert(e.error || (isAr ? 'فشل الإلغاء، حاول مجدداً' : 'Cancellation failed, please try again'));
-      return;
-    }
-
-    closeMyPlan();
-    location.reload();
-  } catch(e) {
-    alert(isAr ? 'حدث خطأ، حاول مجدداً' : 'An error occurred, please try again');
-  }
-}
 
 async function adminDeleteUser(id, email) {
   if (!confirm(`هل أنت متأكد من حذف حساب ${email} بالكامل؟\nلا يمكن التراجع عن هذا الإجراء.`)) return;
