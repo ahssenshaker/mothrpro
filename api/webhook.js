@@ -45,6 +45,7 @@ export default async function handler(req, res) {
   }
 
   const eventName   = payload?.meta?.event_name || ''
+  const isTestMode  = payload?.meta?.test_mode === true
   const attrs       = payload?.data?.attributes || {}
   const customData  = payload?.meta?.custom_data || {}
   const paymentEmail  = (attrs.user_email || '').toLowerCase().trim()
@@ -57,7 +58,13 @@ export default async function handler(req, res) {
     0
   )
 
-  console.log('Lemon Squeezy webhook:', { eventName, accountEmail, variantId })
+  const logPrefix = isTestMode ? '[TEST]' : '[LIVE]'
+  console.log(`${logPrefix} Lemon Squeezy webhook:`, { eventName, accountEmail, variantId })
+
+  // Test mode: process normally so you can verify the full flow, but log clearly
+  if (isTestMode) {
+    console.log('[TEST] ⚠️ Test mode event — DB will be updated with test data')
+  }
 
   if (!accountEmail) {
     return res.status(400).json({ error: 'No email in payload' })
