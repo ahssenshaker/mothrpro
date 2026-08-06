@@ -3235,9 +3235,22 @@ async function loadAdminSubs() {
 
 function renderAdminStats() {
   const now = new Date();
-  const trial = allSubsData.filter(s => s.plan === 'pro' && s.expires_at && new Date(s.expires_at) > now).length;
-  const pro = allSubsData.filter(s => s.plan === 'pro' && !s.expires_at).length;
-  const free = allSubsData.filter(s => s.plan === 'free' || s.plan === 'pending' || (s.plan === 'pro' && s.expires_at && new Date(s.expires_at) <= now)).length;
+  const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
+  const trial = allSubsData.filter(s => {
+    if (s.plan !== 'pro' || !s.expires_at) return false;
+    const ms = new Date(s.expires_at) - now;
+    return ms > 0 && ms <= TWO_DAYS;
+  }).length;
+  const pro = allSubsData.filter(s => {
+    if (s.plan !== 'pro') return false;
+    if (!s.expires_at) return true; // lifetime
+    const ms = new Date(s.expires_at) - now;
+    return ms > TWO_DAYS; // annual
+  }).length;
+  const free = allSubsData.filter(s =>
+    s.plan === 'free' || s.plan === 'pending' ||
+    (s.plan === 'pro' && s.expires_at && new Date(s.expires_at) <= now)
+  ).length;
   document.getElementById('statTotal').textContent = allSubsData.length;
   document.getElementById('statPro').textContent = pro;
   document.getElementById('statTrial').textContent = trial;
