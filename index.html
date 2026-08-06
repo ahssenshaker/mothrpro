@@ -1906,7 +1906,7 @@ function openMyPlan() {
   if (isAnnualPro) {
     // Annual Pro → offer one-click upgrade to lifetime برو بلس
     document.getElementById('mpCtaLabel').textContent = isAr ? 'الترقية لبرو بلس (مدى الحياة)' : 'Upgrade to Pro Plus (Lifetime)';
-    ctaBtn.onclick = () => { closeMyPlan(); window.open(buildLsUrl('lifetime'), '_blank'); };
+    ctaBtn.onclick = () => { closeMyPlan(); directCheckout('lifetime'); };
     ctaSec.style.display = 'block';
   } else if (plan === 'free' || isTrial || isCredits) {
     const ctaLabel = isCredits
@@ -2025,6 +2025,31 @@ function closeUpgrade() {
   loader.style.display = 'flex';
   document.getElementById('lsIframeView').style.display = 'none';
   document.querySelector('.upgrade-box').style.display = '';
+}
+
+// Open checkout directly inside the upgrade popup (skips plan-selection step)
+function directCheckout(plan) {
+  openUpgrade();
+  _lsSelectedPlan = plan;
+  if (_lsIsMobile) {
+    window.location.href = buildLsUrl(plan, false);
+    return;
+  }
+  var url = buildLsUrl(plan, true);
+  var iframe = document.getElementById('lsIframe');
+  var loader = document.getElementById('lsIframeLoader');
+  iframe.style.opacity = '0';
+  loader.style.display = 'flex';
+  iframe.onload = null;
+  iframe.src = url;
+  iframe.onload = function() {
+    setTimeout(function() {
+      loader.style.display = 'none';
+      iframe.style.opacity = '1';
+    }, 1200);
+  };
+  document.querySelector('.upgrade-box').style.display = 'none';
+  document.getElementById('lsIframeView').style.display = 'flex';
 }
 
 // ═══════════════════════════════════════════
