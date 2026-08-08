@@ -35,11 +35,9 @@ jobs:
       - name: Set Android SDK path
         run: echo "sdk.dir=$ANDROID_SDK_ROOT" > mobile/android/local.properties
 
-      - name: Disable New Architecture for compatibility
+      - name: Verify Old Architecture is set (newArchEnabled=false in app.json controls this)
         working-directory: mobile/android
-        run: |
-          sed -i 's/newArchEnabled=true/newArchEnabled=false/g' gradle.properties
-          grep newArchEnabled gradle.properties
+        run: grep newArchEnabled gradle.properties
 
       - name: Make gradlew executable
         working-directory: mobile/android
