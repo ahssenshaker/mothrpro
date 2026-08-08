@@ -77,6 +77,12 @@ jobs:
             adb logcat -d > full_logcat.txt
             adb logcat -b crash -d > crash_buffer.txt || true
             grep -iE "FATAL|AndroidRuntime|SIGSEGV|SIGABRT|moatherpro|hermes|tombstone|Unsatisfied|ClassNotFound|dlopen" full_logcat.txt > filtered_logcat.txt || echo "no matches" > filtered_logcat.txt
+            echo "===== FILTERED LOGCAT ====="
+            cat filtered_logcat.txt
+            echo "===== CRASH BUFFER ====="
+            cat crash_buffer.txt
+            echo "===== LAST 200 LINES OF FULL LOGCAT ====="
+            tail -200 full_logcat.txt
 
       - name: Upload crash logs
         if: always()
