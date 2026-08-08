@@ -56,3 +56,36 @@ jobs:
           path: mobile/android/app/build/outputs/apk/release/*.apk
           retention-days: 30
           if-no-files-found: error
+
+      - name: Enable KVM for emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install APK on emulator and capture crash log
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb logcat -c
+            adb install -r mobile/android/app/build/outputs/apk/release/app-release.apk
+            adb shell monkey -p com.moatherpro.app -c android.intent.category.LAUNCHER 1
+            sleep 20
+            adb logcat -d > full_logcat.txt
+            adb logcat -b crash -d > crash_buffer.txt || true
+            grep -iE "FATAL|AndroidRuntime|SIGSEGV|SIGABRT|moatherpro|hermes|tombstone|Unsatisfied|ClassNotFound|dlopen" full_logcat.txt > filtered_logcat.txt || echo "no matches" > filtered_logcat.txt
+
+      - name: Upload crash logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crash-logs
+          path: |
+            full_logcat.txt
+            crash_buffer.txt
+            filtered_logcat.txt
+          retention-days: 30
+          if-no-files-found: warn
