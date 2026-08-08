@@ -6,6 +6,7 @@
     { "source": "/refund",    "destination": "/refund.html"    },
     { "source": "/landing",   "destination": "/landing.html"   },
     { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/sw.js",     "destination": "/sw.js"          },
     { "source": "/:path*",    "destination": "/index.html"     }
   ],
   "headers": [
