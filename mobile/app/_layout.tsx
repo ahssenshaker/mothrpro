@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react'
-import { Alert } from 'react-native'
 import { Stack, useRouter, useSegments } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -10,21 +9,6 @@ import { Colors } from '@/constants/theme'
 import * as SplashScreen from 'expo-splash-screen'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
-
-// Show fatal JS errors in an Alert so we can diagnose crashes
-const g = global as any
-if (g.ErrorUtils) {
-  const prev = g.ErrorUtils.getGlobalHandler()
-  g.ErrorUtils.setGlobalHandler((error: Error, isFatal: boolean) => {
-    if (isFatal) {
-      Alert.alert(
-        'خطأ — أرسل هذه الرسالة',
-        `${error.message}\n\n${error.stack?.slice(0, 400) ?? ''}`,
-      )
-    }
-    prev?.(error, isFatal)
-  })
-}
 
 function NavigationGuard() {
   const { session, loading } = useAuth()
