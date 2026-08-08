@@ -16,11 +16,12 @@ import { useAuth } from '@/context/AuthContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function LoginScreen() {
-  const { signIn } = useAuth()
+  const { signIn, signInWithGoogle } = useAuth()
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function handleLogin() {
@@ -43,6 +44,18 @@ export default function LoginScreen() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setGoogleLoading(true)
+    setError('')
+    try {
+      await signInWithGoogle()
+    } catch (e: any) {
+      setError(e?.message || 'تعذّر تسجيل الدخول عبر جوجل')
+    } finally {
+      setGoogleLoading(false)
     }
   }
 
@@ -105,6 +118,25 @@ export default function LoginScreen() {
                 <Text style={s.btnText}>تسجيل الدخول</Text>
               )}
             </TouchableOpacity>
+
+            <View style={s.dividerRow}>
+              <View style={s.dividerLine} />
+              <Text style={s.dividerText}>أو</Text>
+              <View style={s.dividerLine} />
+            </View>
+
+            <TouchableOpacity
+              style={[s.googleBtn, googleLoading && s.btnDisabled]}
+              onPress={handleGoogleLogin}
+              disabled={googleLoading}
+              activeOpacity={0.8}
+            >
+              {googleLoading ? (
+                <ActivityIndicator color={Colors.text} />
+              ) : (
+                <Text style={s.googleBtnText}>المتابعة عبر جوجل</Text>
+              )}
+            </TouchableOpacity>
           </View>
 
           <View style={s.footer}>
@@ -156,6 +188,19 @@ const s = StyleSheet.create({
   },
   btnDisabled: { opacity: 0.6 },
   btnText:     { color: Colors.bg, fontWeight: '800', fontSize: FontSize.md },
+  dividerRow:  { flexDirection: 'row', alignItems: 'center', marginTop: Spacing.md, gap: 8 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: Colors.border },
+  dividerText: { color: Colors.textMuted, fontSize: FontSize.sm },
+  googleBtn: {
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.md,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  googleBtnText: { color: Colors.text, fontWeight: '700', fontSize: FontSize.md },
   footer:      { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.lg },
   footerText:  { color: Colors.textMuted },
   footerLink:  { color: Colors.accent, fontWeight: '600' },

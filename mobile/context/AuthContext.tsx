@@ -5,9 +5,13 @@ import React, {
   useReducer,
   useCallback,
 } from 'react'
+import * as WebBrowser from 'expo-web-browser'
+import * as Linking from 'expo-linking'
 import { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { activateUser } from '@/lib/api'
+
+WebBrowser.maybeCompleteAuthSession()
 
 interface Subscriber {
   id: string
@@ -61,6 +65,7 @@ function reducer(state: AuthState, action: Action): AuthState {
 interface AuthContextValue extends AuthState {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   refreshSubscriber: () => Promise<void>
 }
@@ -135,13 +140,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
+  async function signInWithGoogle() {
+    const redirectTo = Linking.createURL('/')
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo, skipBrowserRedirect: true },
+    })
+    if (error) throw error
+
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
+    if (result.type !== 'success' || !result.url) return
+
+    const params = new URLSearchParams(
+      result.url.includes('#') ? result.url.split('#')[1] : result.url.split('?')[1],
+    )
+    const access_token = params.get('access_token')
+    const refresh_token = params.get('refresh_token')
+    if (!access_token || !refresh_token) {
+      throw new Error(params.get('error_description') || 'تعذّر تسجيل الدخول عبر جوجل')
+    }
+    const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token })
+    if (sessionError) throw sessionError
+  }
+
   async function signOut() {
     await supabase.auth.signOut()
   }
 
   return (
     <AuthContext.Provider
-      value={{ ...state, signIn, signUp, signOut, refreshSubscriber }}
+      value={{ ...state, signIn, signUp, signInWithGoogle, signOut, refreshSubscriber }}
     >
       {children}
     </AuthContext.Provider>

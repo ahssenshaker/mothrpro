@@ -32,12 +32,17 @@ export interface Influencer {
 
 const API_BASE = 'https://moatherpro.com'
 
+// Matches MOBILE_APP_KEY in api/influencers.js and api/count.js. Lets the
+// native app through the bot/origin gate — fetch() on iOS/Android can't set
+// an Origin header (it's a forbidden request header), so those checks would
+// otherwise always fail for this app.
+const MOBILE_APP_KEY = 'Lu2vva_pvSQLpvzeqjYymO7ecCWImi_k'
+
 function makeHeaders(accessToken: string): Record<string, string> {
   return {
     Authorization: `Bearer ${accessToken}`,
-    Origin: API_BASE,
+    'X-App-Key': MOBILE_APP_KEY,
     'Content-Type': 'application/json',
-    'User-Agent': 'MoatherProApp/1.0',
   }
 }
 
@@ -71,7 +76,7 @@ export async function fetchInfluencers(
 
 export async function fetchCount() {
   const res = await fetch(`${API_BASE}/api/count`, {
-    headers: { Origin: API_BASE, 'User-Agent': 'MoatherProApp/1.0' },
+    headers: { 'X-App-Key': MOBILE_APP_KEY },
   })
   if (!res.ok) return { count: 0 }
   return res.json() as Promise<{ count: number }>

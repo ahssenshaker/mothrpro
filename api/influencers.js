@@ -156,6 +156,15 @@ function isAllowedOrigin(req) {
   return ALLOWED_ORIGINS.some(o => origin.startsWith(o))
 }
 
+// Shared secret embedded in the mobile app build — lets the native client
+// through without an Origin header, which fetch() on iOS/Android silently
+// drops (Origin is a forbidden request header, unlike in a browser).
+const MOBILE_APP_KEY = 'Lu2vva_pvSQLpvzeqjYymO7ecCWImi_k'
+
+function isTrustedMobileApp(req) {
+  return req.headers['x-app-key'] === MOBILE_APP_KEY
+}
+
 export default async function handler(req, res) {
   // Security headers on every response
   res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -170,8 +179,8 @@ export default async function handler(req, res) {
   )
 
   // Block automated scrapers and requests not originating from the site.
-  // The warmup cron call is exempted — it uses x-warmup-secret instead.
-  if (!isWarmup) {
+  // The warmup cron call and the mobile app (verified via shared key) are exempted.
+  if (!isWarmup && !isTrustedMobileApp(req)) {
     if (isBotRequest(req)) {
       return res.status(403).json({ error: 'Forbidden' })
     }
