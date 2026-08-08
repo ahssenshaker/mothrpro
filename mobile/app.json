@@ -47,7 +47,7 @@
     "plugins": [
       "expo-router"
     ],
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "experiments": {
       "typedRoutes": true,
       "reactCanary": false

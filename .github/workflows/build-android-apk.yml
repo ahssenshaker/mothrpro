@@ -35,7 +35,7 @@ jobs:
       - name: Set Android SDK path
         run: echo "sdk.dir=$ANDROID_SDK_ROOT" > mobile/android/local.properties
 
-      - name: Verify Old Architecture is set (newArchEnabled=false in app.json controls this)
+      - name: Verify New Architecture is set (newArchEnabled=true in app.json controls this)
         working-directory: mobile/android
         run: grep newArchEnabled gradle.properties
 
