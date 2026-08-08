@@ -70,13 +70,18 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: |
+            adb shell setprop log.tag.ReactNative VERBOSE
+            adb shell setprop log.tag.ReactNativeJS VERBOSE
+            adb shell setprop log.tag.SurfaceMountingManager VERBOSE
+            adb shell setprop log.tag.FabricUIManager VERBOSE
+            adb shell setprop log.tag.ViewManager VERBOSE
             adb logcat -c
             adb install -r mobile/android/app/build/outputs/apk/release/app-release.apk
             adb shell monkey -p com.moatherpro.app -c android.intent.category.LAUNCHER 1
             sleep 20
             adb logcat -d > full_logcat.txt
             adb logcat -b crash -d > crash_buffer.txt || true
-            grep -iE "FATAL|AndroidRuntime|SIGSEGV|SIGABRT|moatherpro|hermes|tombstone|Unsatisfied|ClassNotFound|dlopen" full_logcat.txt > filtered_logcat.txt || echo "no matches" > filtered_logcat.txt
+            grep -iE "FATAL|AndroidRuntime|SIGSEGV|SIGABRT|moatherpro|hermes|tombstone|Unsatisfied|ClassNotFound|dlopen|createView|ReactNativeJS|ViewManager|SurfaceMountingManager|FabricUIManager" full_logcat.txt > filtered_logcat.txt || echo "no matches" > filtered_logcat.txt
             echo "===== FILTERED LOGCAT ====="
             cat filtered_logcat.txt
             echo "===== CRASH BUFFER ====="
