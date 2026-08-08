@@ -1,7 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "🔍 البحث عن Android SDK..."
+echo "=== بناء APK مؤثر برو ==="
+
+# تثبيت الحزم (مطلوب لـ autolinking يشوف expo-linking)
+echo "📦 تثبيت node_modules..."
+npm install --silent
+
+# البحث عن Android SDK
 ANDROID_SDK="$HOME/Library/Android/sdk"
 if [ ! -d "$ANDROID_SDK" ]; then
   echo "❌ ما لقينا Android SDK في: $ANDROID_SDK"
@@ -12,18 +18,20 @@ fi
 echo "✅ Android SDK: $ANDROID_SDK"
 echo "sdk.dir=$ANDROID_SDK" > android/local.properties
 
-echo "📦 بناء الـ APK..."
+echo "🔨 بناء release APK..."
 cd android
 chmod +x gradlew
-./gradlew assembleRelease --no-daemon 2>&1
+./gradlew assembleRelease --no-daemon
 
-APK="app/build/outputs/apk/release/app-release-unsigned.apk"
-APK2="app/build/outputs/apk/release/app-release.apk"
-
-if [ -f "$APK" ]; then
-  echo "✅ APK جاهز: android/$APK"
-elif [ -f "$APK2" ]; then
-  echo "✅ APK جاهز: android/$APK2"
-else
-  echo "❌ ما اكتمل البيلد، راجع الأخطاء فوق"
-fi
+for APK in \
+  "app/build/outputs/apk/release/app-release.apk" \
+  "app/build/outputs/apk/release/app-release-unsigned.apk"; do
+  if [ -f "$APK" ]; then
+    echo ""
+    echo "✅ APK جاهز!"
+    FULL_PATH="$(cd "$(dirname "$APK")" && pwd)/$(basename "$APK")"
+    echo "📍 المسار: $FULL_PATH"
+    open "$(dirname "$FULL_PATH")" 2>/dev/null || true
+    break
+  fi
+done
