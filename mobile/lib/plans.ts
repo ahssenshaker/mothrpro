@@ -48,11 +48,15 @@ const LS_CHECKOUT_URLS: Record<Plan['id'], string> = {
   lifetime: 'https://moatherpro.lemonsqueezy.com/checkout/buy/e674bbca-e1ec-4758-badc-06de80f70bce',
 }
 
-export function buildCheckoutUrl(planId: Plan['id'], email?: string): string {
+export function buildCheckoutUrl(planId: Plan['id'], email: string | undefined, redirectUrl: string): string {
   const base = LS_CHECKOUT_URLS[planId]
   const params = new URLSearchParams({
     'checkout[locale]': 'en',
     'checkout[billing_address_country]': 'SA',
+    // Lemon Squeezy navigates here once checkout completes - a moatherpro://
+    // deep link, so WebBrowser.openAuthSessionAsync can detect it and close
+    // the in-app browser automatically, the same way Google sign-in does.
+    redirect_url: redirectUrl,
   })
   if (email) {
     params.set('checkout[email]', email)

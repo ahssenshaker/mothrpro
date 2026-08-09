@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
+import * as Linking from 'expo-linking'
 import { useAuth } from '@/context/AuthContext'
 import { PLANS, Plan, buildCheckoutUrl } from '@/lib/plans'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
@@ -17,12 +18,15 @@ export default function UpgradeModal({ visible, onClose }: Props) {
   async function handleBuy(planId: Plan['id']) {
     setBuyingPlan(planId)
     try {
-      const url = buildCheckoutUrl(planId, session?.user?.email)
-      // In-app browser (Custom Tab / SFSafariViewController), not a full
-      // hand-off to an external browser app - matches the Google sign-in flow.
-      await WebBrowser.openBrowserAsync(url)
-      // Poll briefly after the browser closes in case the webhook already
-      // activated the account by the time the user returns.
+      const redirectUrl = Linking.createURL('payment-success')
+      const url = buildCheckoutUrl(planId, session?.user?.email, redirectUrl)
+      // openAuthSessionAsync (not openBrowserAsync) closes the in-app browser
+      // automatically once Lemon Squeezy navigates to redirect_url - the same
+      // moatherpro:// deep-link mechanism as Google sign-in, instead of
+      // leaving the user to close the tab manually.
+      await WebBrowser.openAuthSessionAsync(url, redirectUrl)
+      // The webhook that activates the plan runs server-side and may take a
+      // few seconds after the redirect fires, so keep polling briefly.
       const start = Date.now()
       const interval = setInterval(async () => {
         await refreshSubscriber()
