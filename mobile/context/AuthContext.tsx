@@ -141,7 +141,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signInWithGoogle() {
-    const redirectTo = Linking.createURL('/')
+    // A concrete path (not '/') avoids the ambiguous moatherpro:/// that
+    // Linking.createURL('/') produces, so it matches a plain
+    // "moatherpro://auth-callback" entry in Supabase's redirect allowlist.
+    const redirectTo = Linking.createURL('auth-callback')
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo, skipBrowserRedirect: true },
@@ -149,7 +152,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
 
     const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
-    if (result.type !== 'success' || !result.url) return
+    if (result.type !== 'success' || !result.url) {
+      throw new Error(`تسجيل الدخول لم يكتمل (${result.type})`)
+    }
 
     const params = new URLSearchParams(
       result.url.includes('#') ? result.url.split('#')[1] : result.url.split('?')[1],
@@ -157,7 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const access_token = params.get('access_token')
     const refresh_token = params.get('refresh_token')
     if (!access_token || !refresh_token) {
-      throw new Error(params.get('error_description') || 'تعذّر تسجيل الدخول عبر جوجل')
+      throw new Error(params.get('error_description') || `تعذّر تسجيل الدخول عبر جوجل: ${result.url}`.slice(0, 200))
     }
     const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token })
     if (sessionError) throw sessionError
