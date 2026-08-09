@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -80,7 +81,7 @@ export default function RegisterScreen() {
       >
         <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
           <View style={s.logoBox}>
-            <Text style={s.logoStar}>⭐</Text>
+            <Image source={require('@/assets/logo.png')} style={s.logoImage} resizeMode="contain" />
             <Text style={s.logoText}>مؤثر برو</Text>
           </View>
 
@@ -152,7 +153,7 @@ const s = StyleSheet.create({
   screen:       { flex: 1, backgroundColor: Colors.bg },
   scroll:       { flexGrow: 1, padding: Spacing.lg },
   logoBox:      { alignItems: 'center', marginTop: 48, marginBottom: 32 },
-  logoStar:     { fontSize: 48, marginBottom: 6 },
+  logoImage:    { width: 64, height: 64, marginBottom: 6 },
   logoText:     { color: Colors.gold, fontSize: FontSize.xxl, fontWeight: '800' },
   card: {
     backgroundColor: Colors.s1,

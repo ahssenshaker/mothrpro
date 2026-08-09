@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -107,7 +108,7 @@ export default function LoginScreen() {
         >
           {/* Logo */}
           <View style={s.logoBox}>
-            <Text style={s.logoStar}>⭐</Text>
+            <Image source={require('@/assets/logo.png')} style={s.logoImage} resizeMode="contain" />
             <Text style={s.logoText}>مؤثر برو</Text>
             <Text style={s.logoSub}>دليل المؤثرين المحترف</Text>
           </View>
@@ -233,7 +234,7 @@ const s = StyleSheet.create({
   flex:        { flex: 1 },
   scroll:      { flexGrow: 1, padding: Spacing.lg },
   logoBox:     { alignItems: 'center', marginTop: 60, marginBottom: 40 },
-  logoStar:    { fontSize: 52, marginBottom: 8 },
+  logoImage:   { width: 72, height: 72, marginBottom: 8 },
   logoText:    { color: Colors.gold, fontSize: FontSize.xxl, fontWeight: '800' },
   logoSub:     { color: Colors.textMuted, fontSize: FontSize.sm, marginTop: 4 },
   card: {
