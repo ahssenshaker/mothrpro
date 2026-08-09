@@ -96,6 +96,19 @@ export async function activateUser(accessToken: string) {
   return res.json() as Promise<{ activated: boolean; plan: string }>
 }
 
+// Spends one credit permanently unlocking a single influencer (the 'credits'
+// plan tier - api/unlock-influencer.js lives on the server, not in this repo).
+export async function unlockInfluencer(accessToken: string, influencerId: number) {
+  const res = await fetch(`${API_BASE}/api/unlock-influencer`, {
+    method: 'POST',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ influencer_id: influencerId }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الفتح')
+  return json as { credits_remaining: number; plan?: string }
+}
+
 export async function fetchInfluencers(
   accessToken: string,
   page = 1,

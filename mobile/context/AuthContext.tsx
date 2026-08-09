@@ -16,12 +16,14 @@ WebBrowser.maybeCompleteAuthSession()
 interface Subscriber {
   id: string
   email: string
-  plan: 'free' | 'pro' | 'pending' | 'admin'
+  plan: 'free' | 'pro' | 'pending' | 'admin' | 'credits'
   activated_at?: string
   expires_at?: string
+  credits_remaining?: number
+  unlocked_ids?: string[]
 }
 
-export type EffectivePlan = 'free' | 'trial' | 'pro' | 'admin'
+export type EffectivePlan = 'free' | 'trial' | 'pro' | 'admin' | 'credits'
 
 interface AuthState {
   session: Session | null
@@ -44,6 +46,7 @@ function computePlan(subscriber: Subscriber | null): EffectivePlan {
     }
     return 'pro'
   }
+  if (subscriber.plan === 'credits') return 'credits'
   return 'free'
 }
 

@@ -27,6 +27,7 @@ export default function DirectoryScreen() {
   const { session, effectivePlan } = useAuth()
   const router = useRouter()
   const isFree = effectivePlan === 'free'
+  const showUpgradeBtn = effectivePlan === 'free' || effectivePlan === 'credits'
 
   const [influencers, setInfluencers] = useState<Influencer[]>([])
   const [page, setPage] = useState(1)
@@ -169,7 +170,7 @@ export default function DirectoryScreen() {
           <TouchableOpacity onPress={() => setShowTour(true)} style={s.helpBtn}>
             <Text style={s.helpBtnText}>❓</Text>
           </TouchableOpacity>
-          {isFree ? (
+          {showUpgradeBtn ? (
             <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
               <Text style={s.upgradeBtnText}>⭐ ترقية للبرو</Text>
             </TouchableOpacity>

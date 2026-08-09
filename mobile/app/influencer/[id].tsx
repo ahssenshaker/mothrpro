@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   View,
   Text,
@@ -12,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
-import { getTier, formatFollowers, formatPrice, resolveImageUrl, Influencer } from '@/lib/api'
+import { getTier, formatFollowers, formatPrice, resolveImageUrl, unlockInfluencer, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
@@ -21,8 +22,11 @@ const COVER_H = 200
 
 export default function InfluencerDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
-  const { effectivePlan } = useAuth()
+  const { session, subscriber, effectivePlan, refreshSubscriber } = useAuth()
   const router = useRouter()
+  const [justUnlockedIds, setJustUnlockedIds] = useState<string[]>([])
+  const [unlocking, setUnlocking] = useState(false)
+  const [unlockError, setUnlockError] = useState('')
 
   const inf: Influencer | null = getCachedInfluencer(id ?? '')
 
@@ -42,9 +46,93 @@ export default function InfluencerDetail() {
   const tier = getTier(inf.totalFollowers)
   const tierColor = TierColors[tier] || Colors.textMuted
   const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
-  const platforms = Object.entries(inf.platforms || {})
   const avatarUrl = resolveImageUrl(inf.avatar)
   const coverUrl = resolveImageUrl(inf.cover)
+
+  const isUnlocked =
+    justUnlockedIds.includes(String(inf.id)) ||
+    !!subscriber?.unlocked_ids?.includes(String(inf.id))
+
+  async function handleUnlock() {
+    if (!session || unlocking) return
+    setUnlocking(true)
+    setUnlockError('')
+    try {
+      await unlockInfluencer(session.access_token, inf!.id)
+      setJustUnlockedIds(prev => [...prev, String(inf!.id)])
+      await refreshSubscriber()
+    } catch (e: any) {
+      setUnlockError(e?.message || 'فشل الفتح')
+    } finally {
+      setUnlocking(false)
+    }
+  }
+
+  if (effectivePlan === 'credits' && !isUnlocked) {
+    const creditsLeft = subscriber?.credits_remaining || 0
+    return (
+      <SafeAreaView style={s.screen} edges={['top']}>
+        <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: 40 }}>
+          <View style={s.coverBox}>
+            {coverUrl ? (
+              <Image source={{ uri: coverUrl }} style={s.cover} resizeMode="cover" />
+            ) : (
+              <View style={[s.cover, { backgroundColor: Colors.s3 }]} />
+            )}
+            <View style={s.coverOverlay} />
+            <TouchableOpacity style={s.closeBtn} onPress={() => router.back()}>
+              <Ionicons name="close" size={22} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={s.heroSection}>
+            {avatarUrl ? (
+              <Image source={{ uri: avatarUrl }} style={s.avatar} />
+            ) : (
+              <View style={[s.avatar, s.avatarFallback]}>
+                <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
+              </View>
+            )}
+            <View style={s.heroInfo}>
+              <Text style={s.nameText}>{inf.name}</Text>
+              {inf.specialization ? <Text style={s.specText}>{inf.specialization}</Text> : null}
+              <View style={s.badgeRow}>
+                <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
+                  <Text style={[s.badgeText, { color: tierColor }]}>{tier}</Text>
+                </View>
+                {inf.rank ? (
+                  <View style={[s.badge, { backgroundColor: Colors.s2, borderColor: Colors.border }]}>
+                    <Text style={[s.badgeText, { color: Colors.textMuted }]}>#{inf.rank}</Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+          </View>
+
+          <View style={s.body}>
+            <View style={s.unlockBanner}>
+              <Text style={s.unlockTitle}>⚡ فتح هذا المؤثر</Text>
+              <Text style={s.unlockSub}>
+                لديك <Text style={{ color: Colors.gold, fontWeight: '800' }}>{creditsLeft}</Text> كريدت متبقي — كل كريدت يفتح ملف مؤثر واحد بشكل دائم
+              </Text>
+              {unlockError ? <Text style={s.error}>{unlockError}</Text> : null}
+              <TouchableOpacity
+                style={[s.unlockBtn, (unlocking || creditsLeft <= 0) && s.unlockBtnDisabled]}
+                onPress={handleUnlock}
+                disabled={unlocking || creditsLeft <= 0}
+              >
+                <Text style={s.unlockBtnText}>
+                  {unlocking ? '⏳ جارٍ الفتح...' : creditsLeft > 0 ? '🔓 فتح هذا المؤثر (كريدت واحد)' : '❌ لا يوجد كريدت — اشترِ المزيد'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
+
+  const platforms = Object.entries(inf.platforms || {})
   // 0 = balanced, 1 = mostly-male audience, 2 = mostly-female audience.
   const femalePct = inf.followersGender === 2 ? 70 : inf.followersGender === 1 ? 30 : 50
 
@@ -425,6 +513,27 @@ const s = StyleSheet.create({
   },
   lockedIcon:     { fontSize: 32 },
   lockedText:     { color: Colors.textMuted, fontSize: FontSize.sm, textAlign: 'center' },
+  unlockBanner: {
+    backgroundColor: Colors.gold + '15',
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Colors.gold + '55',
+    padding: Spacing.lg,
+    alignItems: 'center',
+  },
+  unlockTitle: { color: Colors.gold, fontSize: FontSize.lg, fontWeight: '800', marginBottom: 8 },
+  unlockSub:   { color: Colors.text, fontSize: FontSize.sm, textAlign: 'center', lineHeight: 22, marginBottom: Spacing.md },
+  unlockBtn: {
+    backgroundColor: Colors.gold,
+    borderRadius: Radius.md,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    width: '100%',
+    alignItems: 'center',
+  },
+  unlockBtnDisabled: { opacity: 0.5 },
+  unlockBtnText: { color: Colors.bg, fontWeight: '800', fontSize: FontSize.sm },
+  error:       { color: Colors.red, fontSize: FontSize.xs, textAlign: 'center', marginBottom: Spacing.sm },
   genderRow:      { gap: 12 },
   genderItem:     { gap: 4 },
   genderPct:      { fontSize: FontSize.md, fontWeight: '700', textAlign: 'right' },
