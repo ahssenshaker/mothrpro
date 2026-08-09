@@ -84,6 +84,7 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="admin" options={{ presentation: 'modal' }} />
           </Stack>
         </AuthProvider>
       </SafeAreaProvider>

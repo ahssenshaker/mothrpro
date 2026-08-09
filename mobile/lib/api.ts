@@ -131,6 +131,66 @@ export async function fetchInfluencers(
   }>
 }
 
+// Admin-only writes. api/influencers.js enforces the admin check
+// server-side from the JWT - these calls fail with 403 for anyone else.
+export async function createInfluencer(accessToken: string, data: Partial<Influencer>) {
+  const res = await fetch(`${API_BASE}/api/influencers`, {
+    method: 'POST',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الإضافة')
+  return json as Influencer
+}
+
+export async function bulkCreateInfluencers(accessToken: string, records: Partial<Influencer>[]) {
+  const res = await fetch(`${API_BASE}/api/influencers`, {
+    method: 'POST',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify(records),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الاستيراد')
+  return json as Influencer[]
+}
+
+export async function updateInfluencer(accessToken: string, id: number, data: Partial<Influencer>) {
+  const res = await fetch(`${API_BASE}/api/influencers`, {
+    method: 'PUT',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ id, ...data }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل التعديل')
+  return json as Influencer
+}
+
+export async function deleteInfluencer(accessToken: string, id: number) {
+  const res = await fetch(`${API_BASE}/api/influencers`, {
+    method: 'DELETE',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ id }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الحذف')
+  return json
+}
+
+// Fetches every influencer record by paging through the API - the admin
+// panel needs the full unfiltered set, not one page.
+export async function fetchAllInfluencers(accessToken: string): Promise<Influencer[]> {
+  const all: Influencer[] = []
+  let page = 1
+  while (true) {
+    const res = await fetchInfluencers(accessToken, page, 500)
+    all.push(...res.data)
+    if (!res.hasMore) break
+    page++
+  }
+  return all
+}
+
 export async function fetchCount() {
   const res = await fetch(`${API_BASE}/api/count`, {
     headers: { 'X-App-Key': MOBILE_APP_KEY },

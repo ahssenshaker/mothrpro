@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as WebBrowser from 'expo-web-browser'
+import { useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import UpgradeModal from '@/components/UpgradeModal'
@@ -47,6 +48,7 @@ function trialHours(expiresAt?: string) {
 
 export default function ProfileScreen() {
   const { session, subscriber, effectivePlan, signOut } = useAuth()
+  const router = useRouter()
   const [signingOut, setSigningOut] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
 
@@ -145,6 +147,13 @@ export default function ProfileScreen() {
               </View>
             ))}
           </View>
+        )}
+
+        {/* Admin */}
+        {effectivePlan === 'admin' && (
+          <TouchableOpacity style={s.adminBtn} onPress={() => router.push('/admin')}>
+            <Text style={s.adminBtnText}>🛠 لوحة تحكم الأدمن</Text>
+          </TouchableOpacity>
         )}
 
         {/* Legal */}
@@ -253,6 +262,16 @@ const s = StyleSheet.create({
   rowValue:      { fontWeight: '600', fontSize: FontSize.sm },
   featureRow:    { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: Colors.border },
   featureText:   { color: Colors.text, fontSize: FontSize.sm, textAlign: 'right' },
+  adminBtn: {
+    backgroundColor: Colors.s1,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Colors.purple,
+    padding: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  adminBtnText:  { color: Colors.purple, fontWeight: '800', fontSize: FontSize.md },
   legalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
