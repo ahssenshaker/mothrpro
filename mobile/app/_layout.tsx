@@ -5,6 +5,7 @@ import * as Linking from 'expo-linking'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
+import { LanguageProvider } from '@/context/LanguageContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { supabase } from '@/lib/supabase'
 import { Colors } from '@/constants/theme'
@@ -64,28 +65,31 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
       <SafeAreaProvider>
-        <AuthProvider>
-          <StatusBar style="light" />
-          <NavigationGuard />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: Colors.bg },
-              animation: 'slide_from_right',
-            }}
-          >
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(main)" />
-            <Stack.Screen
-              name="influencer/[id]"
-              options={{
-                presentation: 'modal',
-                animation: 'slide_from_bottom',
+        <LanguageProvider>
+          <AuthProvider>
+            <StatusBar style="light" />
+            <NavigationGuard />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: Colors.bg },
+                animation: 'slide_from_right',
               }}
-            />
-            <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
-          </Stack>
-        </AuthProvider>
+            >
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(main)" />
+              <Stack.Screen
+                name="influencer/[id]"
+                options={{
+                  presentation: 'modal',
+                  animation: 'slide_from_bottom',
+                }}
+              />
+              <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="admin" options={{ presentation: 'modal' }} />
+            </Stack>
+          </AuthProvider>
+        </LanguageProvider>
       </SafeAreaProvider>
       </ErrorBoundary>
     </GestureHandlerRootView>

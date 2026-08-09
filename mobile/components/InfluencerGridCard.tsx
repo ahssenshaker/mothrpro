@@ -1,5 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { getTier, formatFollowers, getPrimaryPlatform, resolveImageUrl, Influencer } from '@/lib/api'
+import { useLanguage } from '@/context/LanguageContext'
+import { translateTier } from '@/lib/i18n'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
 
@@ -9,12 +11,15 @@ interface Props {
 }
 
 export default function InfluencerGridCard({ influencer: inf, onPress }: Props) {
+  const { tf, t, lang } = useLanguage()
   const tier = getTier(inf.totalFollowers)
+  const tierLabel = translateTier(tier, lang)
   const tierColor = TierColors[tier] || Colors.textMuted
   const primary = getPrimaryPlatform(inf)
   const platformLabel = primary?.[0] || ''
   const platformColor = PlatformColors[platformLabel] || Colors.accent
   const avatarUrl = resolveImageUrl(inf.avatar)
+  const name = tf(inf, 'name')
 
   function handlePress() {
     cacheInfluencer(inf)
@@ -27,20 +32,20 @@ export default function InfluencerGridCard({ influencer: inf, onPress }: Props) 
         <Image source={{ uri: avatarUrl }} style={s.avatar} />
       ) : (
         <View style={s.avatarFallback}>
-          <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
+          <Text style={s.avatarInitial}>{name?.[0] || '?'}</Text>
         </View>
       )}
 
       <View style={s.nameRow}>
         {inf.source === 'verified' && <Text style={s.verified}>✓ </Text>}
-        <Text style={s.name} numberOfLines={1}>{inf.name}</Text>
+        <Text style={s.name} numberOfLines={1}>{name}</Text>
       </View>
 
       <View style={[s.tierBadge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
-        <Text style={[s.tierText, { color: tierColor }]}>{tier}</Text>
+        <Text style={[s.tierText, { color: tierColor }]}>{tierLabel}</Text>
       </View>
 
-      <Text style={s.followers}>{inf.totalFormatted || formatFollowers(inf.totalFollowers)} متابع</Text>
+      <Text style={s.followers}>{inf.totalFormatted || formatFollowers(inf.totalFollowers)} {t('followers')}</Text>
 
       {platformLabel ? (
         <View style={[s.platformDot, { backgroundColor: platformColor }]} />

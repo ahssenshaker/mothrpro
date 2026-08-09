@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { fetchInfluencers, getTier, getPrimaryPlatform, Influencer } from '@/lib/api'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import InfluencerCard from '@/components/InfluencerCard'
@@ -27,6 +28,7 @@ const VIEW_MODE_KEY = 'directory_view_mode'
 
 export default function DirectoryScreen() {
   const { session, effectivePlan } = useAuth()
+  const { lang, toggleLang, t, tf } = useLanguage()
   const router = useRouter()
   const isFree = effectivePlan === 'free'
   const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
@@ -88,7 +90,7 @@ export default function DirectoryScreen() {
       setHasMore(res.hasMore)
       setPage(p + 1)
     } catch (e: any) {
-      setError(`تعذّر تحميل البيانات\n${e?.message || ''}`)
+      setError(`${t('couldNotLoadData')}\n${e?.message || ''}`)
     }
   }, [session, page])
 
@@ -172,7 +174,7 @@ export default function DirectoryScreen() {
       <SafeAreaView style={s.screen}>
         <View style={s.center}>
           <ActivityIndicator color={Colors.gold} size="large" />
-          <Text style={s.loadingText}>جاري تحميل المؤثرين...</Text>
+          <Text style={s.loadingText}>{t('loadingInfluencers')}</Text>
         </View>
       </SafeAreaView>
     )
@@ -188,7 +190,7 @@ export default function DirectoryScreen() {
             style={s.retryBtn}
             onPress={() => { setError(''); setLoading(true); load(true).finally(() => setLoading(false)) }}
           >
-            <Text style={s.retryText}>إعادة المحاولة</Text>
+            <Text style={s.retryText}>{t('retry')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -200,18 +202,21 @@ export default function DirectoryScreen() {
       {/* Header */}
       <View style={s.header}>
         <View style={s.headerLeft}>
+          <TouchableOpacity onPress={toggleLang} style={s.helpBtn}>
+            <Text style={s.helpBtnText}>{lang === 'ar' ? 'EN' : 'AR'}</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => setShowTour(true)} style={s.helpBtn}>
             <Text style={s.helpBtnText}>❓</Text>
           </TouchableOpacity>
           {showUpgradeBtn ? (
             <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
-              <Text style={s.upgradeBtnText}>⭐ ترقية للبرو</Text>
+              <Text style={s.upgradeBtnText}>⭐ {t('upgrade')}</Text>
             </TouchableOpacity>
           ) : null}
         </View>
         <View>
-          <Text style={s.headerTitle}>⭐ مؤثر برو</Text>
-          <Text style={s.headerCount}>{influencers.length} مؤثر</Text>
+          <Text style={s.headerTitle}>⭐ {t('appName')}</Text>
+          <Text style={s.headerCount}>{influencers.length} {t('influencersCount')}</Text>
         </View>
       </View>
 
@@ -221,10 +226,10 @@ export default function DirectoryScreen() {
           style={s.searchInput}
           value={search}
           onChangeText={setSearch}
-          placeholder="ابحث عن مؤثر..."
+          placeholder={t('search')}
           placeholderTextColor={Colors.textMuted}
           returnKeyType="search"
-          textAlign="right"
+          textAlign={lang === 'ar' ? 'right' : 'left'}
         />
         <TouchableOpacity
           style={[s.filterBtn, activeFilters > 0 && s.filterBtnActive]}
@@ -255,7 +260,7 @@ export default function DirectoryScreen() {
 
       {/* Results count */}
       {search || activeFilters > 0 ? (
-        <Text style={s.resultsCount}>{filtered.length} نتيجة</Text>
+        <Text style={s.resultsCount}>{filtered.length} {t('resultsCount')}</Text>
       ) : null}
 
       {/* List */}
@@ -299,7 +304,7 @@ export default function DirectoryScreen() {
         ListEmptyComponent={
           <View style={s.empty}>
             <Text style={{ fontSize: 48, textAlign: 'center' }}>🔍</Text>
-            <Text style={s.emptyText}>لا توجد نتائج</Text>
+            <Text style={s.emptyText}>{t('noResults')}</Text>
           </View>
         }
       />

@@ -14,10 +14,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function RegisterScreen() {
   const { signUp } = useAuth()
+  const { t, lang, toggleLang } = useLanguage()
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,15 +30,15 @@ export default function RegisterScreen() {
 
   async function handleRegister() {
     if (!email.trim() || !password) {
-      setError('يرجى ملء جميع الحقول')
+      setError(t('fillAllFields'))
       return
     }
     if (password.length < 6) {
-      setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل')
+      setError(t('passwordMinLength'))
       return
     }
     if (password !== confirm) {
-      setError('كلمتا المرور غير متطابقتين')
+      setError(t('passwordsMismatch'))
       return
     }
     setLoading(true)
@@ -47,9 +49,9 @@ export default function RegisterScreen() {
     } catch (e: any) {
       const msg = e?.message || ''
       if (msg.includes('already registered')) {
-        setError('هذا البريد الإلكتروني مسجل بالفعل')
+        setError(t('emailAlreadyRegistered'))
       } else {
-        setError('حدث خطأ في إنشاء الحساب')
+        setError(t('registerErrorGeneric'))
       }
     } finally {
       setLoading(false)
@@ -61,12 +63,10 @@ export default function RegisterScreen() {
       <SafeAreaView style={s.screen}>
         <View style={s.successBox}>
           <Text style={{ fontSize: 64, textAlign: 'center' }}>✅</Text>
-          <Text style={s.successTitle}>تم إنشاء حسابك!</Text>
-          <Text style={s.successSub}>
-            تحقق من بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول.
-          </Text>
+          <Text style={s.successTitle}>{t('accountCreated')}</Text>
+          <Text style={s.successSub}>{t('accountCreatedSub')}</Text>
           <TouchableOpacity style={s.btn} onPress={() => router.replace('/(auth)/login')}>
-            <Text style={s.btnText}>تسجيل الدخول</Text>
+            <Text style={s.btnText}>{t('loginBtn')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -80,17 +80,21 @@ export default function RegisterScreen() {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
+          <TouchableOpacity style={s.langToggle} onPress={toggleLang}>
+            <Text style={s.langToggleText}>{lang === 'ar' ? 'EN' : 'ع'}</Text>
+          </TouchableOpacity>
+
           <View style={s.logoBox}>
             <Image source={require('@/assets/logo.png')} style={s.logoImage} resizeMode="contain" />
-            <Text style={s.logoText}>مؤثر برو</Text>
+            <Text style={s.logoText}>{t('appName')}</Text>
           </View>
 
           <View style={s.card}>
-            <Text style={s.cardTitle}>إنشاء حساب جديد</Text>
+            <Text style={s.cardTitle}>{t('createAccountTitle')}</Text>
 
-            <Text style={s.label}>البريد الإلكتروني</Text>
+            <Text style={s.label}>{t('email')}</Text>
             <TextInput
-              style={s.input}
+              style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={email}
               onChangeText={setEmail}
               placeholder="example@email.com"
@@ -100,23 +104,23 @@ export default function RegisterScreen() {
               textContentType="emailAddress"
             />
 
-            <Text style={s.label}>كلمة المرور</Text>
+            <Text style={s.label}>{t('password')}</Text>
             <TextInput
               style={s.input}
               value={password}
               onChangeText={setPassword}
-              placeholder="6 أحرف على الأقل"
+              placeholder={t('minSixChars')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
               textAlign="right"
             />
 
-            <Text style={s.label}>تأكيد كلمة المرور</Text>
+            <Text style={s.label}>{t('confirmPassword')}</Text>
             <TextInput
               style={s.input}
               value={confirm}
               onChangeText={setConfirm}
-              placeholder="أعد إدخال كلمة المرور"
+              placeholder={t('reenterPassword')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
               textAlign="right"
@@ -132,15 +136,15 @@ export default function RegisterScreen() {
               {loading ? (
                 <ActivityIndicator color={Colors.bg} />
               ) : (
-                <Text style={s.btnText}>إنشاء الحساب</Text>
+                <Text style={s.btnText}>{t('signupBtn')}</Text>
               )}
             </TouchableOpacity>
           </View>
 
           <View style={s.footer}>
-            <Text style={s.footerText}>لديك حساب بالفعل؟ </Text>
+            <Text style={s.footerText}>{t('hasAccount')} </Text>
             <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
-              <Text style={s.footerLink}>تسجيل الدخول</Text>
+              <Text style={s.footerLink}>{t('loginBtn')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -152,7 +156,18 @@ export default function RegisterScreen() {
 const s = StyleSheet.create({
   screen:       { flex: 1, backgroundColor: Colors.bg },
   scroll:       { flexGrow: 1, padding: Spacing.lg },
-  logoBox:      { alignItems: 'center', marginTop: 48, marginBottom: 32 },
+  langToggle: {
+    alignSelf: 'flex-end',
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    marginTop: 8,
+  },
+  langToggleText: { color: Colors.text, fontSize: FontSize.sm, fontWeight: '700' },
+  logoBox:      { alignItems: 'center', marginTop: 16, marginBottom: 32 },
   logoImage:    { width: 64, height: 64, marginBottom: 6 },
   logoText:     { color: Colors.gold, fontSize: FontSize.xxl, fontWeight: '800' },
   card: {

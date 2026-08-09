@@ -3,6 +3,7 @@ import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet } from 'rea
 import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { PLANS, Plan, buildCheckoutUrl } from '@/lib/plans'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
@@ -13,6 +14,7 @@ interface Props {
 
 export default function UpgradeModal({ visible, onClose }: Props) {
   const { session, refreshSubscriber } = useAuth()
+  const { t, lang } = useLanguage()
   const [buyingPlan, setBuyingPlan] = useState<Plan['id'] | null>(null)
 
   async function handleBuy(planId: Plan['id']) {
@@ -45,10 +47,10 @@ export default function UpgradeModal({ visible, onClose }: Props) {
             <TouchableOpacity onPress={onClose}>
               <Text style={s.closeText}>✕</Text>
             </TouchableOpacity>
-            <Text style={s.title}>⭐ مؤثر برو</Text>
+            <Text style={s.title}>⭐ {t('appName')}</Text>
             <View style={{ width: 24 }} />
           </View>
-          <Text style={s.subtitle}>وصول لبيانات +500 مؤثر سعودي وخليجي</Text>
+          <Text style={s.subtitle}>{t('plansSubtitle')}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {PLANS.map(plan => (
@@ -58,15 +60,15 @@ export default function UpgradeModal({ visible, onClose }: Props) {
               >
                 {plan.badge ? (
                   <View style={s.badge}>
-                    <Text style={s.badgeText}>{plan.badge}</Text>
+                    <Text style={s.badgeText}>{lang === 'en' ? plan.badgeEn : plan.badge}</Text>
                   </View>
                 ) : null}
                 <Text style={s.icon}>{plan.icon}</Text>
-                <Text style={s.planName}>{plan.name}</Text>
-                <Text style={s.price}>{plan.price} ر.س</Text>
-                <Text style={s.period}>{plan.period}</Text>
+                <Text style={s.planName}>{lang === 'en' ? plan.nameEn : plan.name}</Text>
+                <Text style={s.price}>{plan.price} {t('sar')}</Text>
+                <Text style={s.period}>{lang === 'en' ? plan.periodEn : plan.period}</Text>
                 <View style={s.feats}>
-                  {plan.features.map(f => (
+                  {(lang === 'en' ? plan.featuresEn : plan.features).map(f => (
                     <Text key={f} style={s.featText}>• {f}</Text>
                   ))}
                 </View>
@@ -76,14 +78,12 @@ export default function UpgradeModal({ visible, onClose }: Props) {
                   disabled={buyingPlan !== null}
                 >
                   <Text style={[s.buyBtnText, plan.featured && s.buyBtnTextFeatured]}>
-                    {buyingPlan === plan.id ? 'جاري الفتح...' : 'اشتر الآن'}
+                    {buyingPlan === plan.id ? t('opening') : t('buyNow')}
                   </Text>
                 </TouchableOpacity>
               </View>
             ))}
-            <Text style={s.footNote}>
-              بعد الدفع سيُفعَّل حسابك تلقائياً خلال دقيقة ✓{'\n'}يدعم Visa / Mastercard / PayPal
-            </Text>
+            <Text style={s.footNote}>{t('plansFootNote')}</Text>
           </ScrollView>
         </View>
       </View>
