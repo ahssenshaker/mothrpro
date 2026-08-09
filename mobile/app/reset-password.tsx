@@ -13,10 +13,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/context/LanguageContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function ResetPasswordScreen() {
   const router = useRouter()
+  const { t, lang } = useLanguage()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,11 +27,11 @@ export default function ResetPasswordScreen() {
 
   async function handleSave() {
     if (password.length < 6) {
-      setMsg('كلمة المرور يجب أن تكون 6 أحرف على الأقل')
+      setMsg(t('passwordMinLength'))
       return
     }
     if (password !== confirm) {
-      setMsg('كلمتا المرور غير متطابقتين')
+      setMsg(t('passwordsMismatch'))
       return
     }
     setLoading(true)
@@ -37,11 +39,11 @@ export default function ResetPasswordScreen() {
     try {
       const { error } = await supabase.auth.updateUser({ password })
       if (error) throw error
-      setMsg('✅ تم تغيير كلمة المرور بنجاح')
+      setMsg(t('passwordChanged'))
       setDone(true)
       setTimeout(() => router.replace('/(main)'), 1500)
     } catch (e: any) {
-      setMsg(`خطأ: ${e?.message || 'حدث خطأ'}`)
+      setMsg(`${t('errorPrefix')} ${e?.message || t('error')}`)
     } finally {
       setLoading(false)
     }
@@ -53,26 +55,24 @@ export default function ResetPasswordScreen() {
         <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
           <View style={s.card}>
             <Text style={s.icon}>🔐</Text>
-            <Text style={s.title}>تعيين كلمة مرور جديدة</Text>
-            <Text style={s.sub}>أدخل كلمة المرور الجديدة لحسابك</Text>
+            <Text style={s.title}>{t('setNewPassword')}</Text>
+            <Text style={s.sub}>{t('enterNewPassword')}</Text>
 
             <TextInput
-              style={s.input}
+              style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={password}
               onChangeText={setPassword}
-              placeholder="كلمة المرور الجديدة"
+              placeholder={t('newPasswordPh')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
-              textAlign="right"
             />
             <TextInput
-              style={s.input}
+              style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={confirm}
               onChangeText={setConfirm}
-              placeholder="تأكيد كلمة المرور"
+              placeholder={t('confirmPasswordPh')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
-              textAlign="right"
             />
 
             {msg ? (
@@ -83,7 +83,7 @@ export default function ResetPasswordScreen() {
               {loading ? (
                 <ActivityIndicator color={Colors.bg} />
               ) : (
-                <Text style={s.btnText}>حفظ كلمة المرور الجديدة</Text>
+                <Text style={s.btnText}>{t('savePasswordBtn')}</Text>
               )}
             </TouchableOpacity>
           </View>

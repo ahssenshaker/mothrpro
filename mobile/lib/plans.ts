@@ -6,11 +6,15 @@ export interface Plan {
   id: 'credits' | 'annual' | 'lifetime'
   icon: string
   name: string
+  nameEn: string
   price: number
   period: string
+  periodEn: string
   features: string[]
+  featuresEn: string[]
   featured?: boolean
   badge?: string
+  badgeEn?: string
 }
 
 export const PLANS: Plan[] = [
@@ -18,27 +22,37 @@ export const PLANS: Plan[] = [
     id: 'credits',
     icon: '⚡',
     name: 'كريدت',
+    nameEn: 'Credits',
     price: 49,
     period: '10 مؤثرين',
+    periodEn: '10 influencers',
     features: ['فتح ملفات 10 مؤثرين', 'أسعار وروابط وإحصاءات', 'صلاحية دائمة للمفتوحين'],
+    featuresEn: ['Unlock 10 influencer profiles', 'Pricing, links & stats', 'Permanent access to unlocked profiles'],
   },
   {
     id: 'annual',
     icon: '📅',
     name: 'برو',
+    nameEn: 'Pro',
     price: 149,
     period: '/ سنة',
+    periodEn: '/ year',
     features: ['وصول كامل لجميع المؤثرين', 'أسعار وروابط وإحصاءات', 'يتجدد سنوياً'],
+    featuresEn: ['Full access to all influencers', 'Pricing, links & stats', 'Renews yearly'],
     featured: true,
     badge: '⭐ الأكثر شعبية',
+    badgeEn: '⭐ Most Popular',
   },
   {
     id: 'lifetime',
     icon: '♾️',
     name: 'برو بلس',
+    nameEn: 'Pro Plus',
     price: 349,
     period: 'دفعة واحدة',
+    periodEn: 'one-time payment',
     features: ['وصول كامل للأبد', 'أسعار وروابط وإحصاءات', 'بدون تجديد أبداً'],
+    featuresEn: ['Lifetime full access', 'Pricing, links & stats', 'Never renews'],
   },
 ]
 

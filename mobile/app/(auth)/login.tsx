@@ -16,12 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { AntDesign } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { supabase } from '@/lib/supabase'
 import * as Linking from 'expo-linking'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function LoginScreen() {
   const { signIn, signInWithGoogle } = useAuth()
+  const { t, lang, toggleLang } = useLanguage()
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -36,7 +38,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!email.trim() || !password) {
-      setError('يرجى إدخال البريد وكلمة المرور')
+      setError(t('fillEmailPassword'))
       return
     }
     setLoading(true)
@@ -46,11 +48,11 @@ export default function LoginScreen() {
     } catch (e: any) {
       const msg = e?.message || ''
       if (msg.includes('Invalid login')) {
-        setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
+        setError(t('invalidCredentials'))
       } else if (msg.includes('Email not confirmed')) {
-        setError('يرجى تأكيد بريدك الإلكتروني أولاً')
+        setError(t('confirmEmailFirst'))
       } else {
-        setError('حدث خطأ في تسجيل الدخول')
+        setError(t('loginErrorGeneric'))
       }
     } finally {
       setLoading(false)
@@ -63,7 +65,7 @@ export default function LoginScreen() {
     try {
       await signInWithGoogle()
     } catch (e: any) {
-      setError(e?.message || 'تعذّر تسجيل الدخول عبر جوجل')
+      setError(e?.message || t('googleLoginFailed'))
     } finally {
       setGoogleLoading(false)
     }
@@ -77,7 +79,7 @@ export default function LoginScreen() {
 
   async function handleSendReset() {
     if (!resetEmail.trim()) {
-      setResetMsg('يرجى إدخال البريد الإلكتروني')
+      setResetMsg(t('enterEmail'))
       return
     }
     setResetLoading(true)
@@ -87,10 +89,10 @@ export default function LoginScreen() {
         redirectTo: Linking.createURL('auth-callback'),
       })
       if (error) throw error
-      setResetMsg('✅ تم الإرسال — تحقق من بريدك الإلكتروني')
+      setResetMsg(t('resetSent'))
       setTimeout(() => setResetVisible(false), 2500)
     } catch {
-      setResetMsg('حاول مرة أخرى')
+      setResetMsg(t('resetTryAgain'))
     } finally {
       setResetLoading(false)
     }
@@ -106,20 +108,25 @@ export default function LoginScreen() {
           contentContainerStyle={s.scroll}
           keyboardShouldPersistTaps="handled"
         >
+          {/* Language toggle */}
+          <TouchableOpacity style={s.langToggle} onPress={toggleLang}>
+            <Text style={s.langToggleText}>{lang === 'ar' ? 'EN' : 'ع'}</Text>
+          </TouchableOpacity>
+
           {/* Logo */}
           <View style={s.logoBox}>
             <Image source={require('@/assets/logo.png')} style={s.logoImage} resizeMode="contain" />
-            <Text style={s.logoText}>مؤثر برو</Text>
-            <Text style={s.logoSub}>دليل المؤثرين المحترف</Text>
+            <Text style={s.logoText}>{t('appName')}</Text>
+            <Text style={s.logoSub}>{t('appTagline')}</Text>
           </View>
 
           {/* Card */}
           <View style={s.card}>
-            <Text style={s.cardTitle}>تسجيل الدخول</Text>
+            <Text style={s.cardTitle}>{t('loginBtn')}</Text>
 
-            <Text style={s.label}>البريد الإلكتروني</Text>
+            <Text style={s.label}>{t('email')}</Text>
             <TextInput
-              style={s.input}
+              style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={email}
               onChangeText={setEmail}
               placeholder="example@email.com"
@@ -129,7 +136,7 @@ export default function LoginScreen() {
               textContentType="emailAddress"
             />
 
-            <Text style={s.label}>كلمة المرور</Text>
+            <Text style={s.label}>{t('password')}</Text>
             <TextInput
               style={s.input}
               value={password}
@@ -152,17 +159,17 @@ export default function LoginScreen() {
               {loading ? (
                 <ActivityIndicator color={Colors.bg} />
               ) : (
-                <Text style={s.btnText}>تسجيل الدخول</Text>
+                <Text style={s.btnText}>{t('loginBtn')}</Text>
               )}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={openReset} style={s.forgotBox}>
-              <Text style={s.forgotText}>نسيت كلمة المرور؟</Text>
+              <Text style={s.forgotText}>{t('forgotPassword')}</Text>
             </TouchableOpacity>
 
             <View style={s.dividerRow}>
               <View style={s.dividerLine} />
-              <Text style={s.dividerText}>أو</Text>
+              <Text style={s.dividerText}>{t('or')}</Text>
               <View style={s.dividerLine} />
             </View>
 
@@ -177,16 +184,16 @@ export default function LoginScreen() {
               ) : (
                 <>
                   <AntDesign name="google" size={18} color="#EA4335" style={s.googleIcon} />
-                  <Text style={s.googleBtnText}>المتابعة عبر جوجل</Text>
+                  <Text style={s.googleBtnText}>{t('continueWithGoogle')}</Text>
                 </>
               )}
             </TouchableOpacity>
           </View>
 
           <View style={s.footer}>
-            <Text style={s.footerText}>ليس لديك حساب؟ </Text>
+            <Text style={s.footerText}>{t('noAccount')} </Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={s.footerLink}>إنشاء حساب</Text>
+              <Text style={s.footerLink}>{t('signupBtn')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -195,9 +202,9 @@ export default function LoginScreen() {
       <Modal visible={resetVisible} transparent animationType="fade" onRequestClose={() => setResetVisible(false)}>
         <View style={s.modalBackdrop}>
           <View style={s.modalCard}>
-            <Text style={s.modalTitle}>استعادة كلمة المرور</Text>
+            <Text style={s.modalTitle}>{t('resetPasswordTitle')}</Text>
             <TextInput
-              style={s.input}
+              style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={resetEmail}
               onChangeText={setResetEmail}
               placeholder="example@email.com"
@@ -216,11 +223,11 @@ export default function LoginScreen() {
               {resetLoading ? (
                 <ActivityIndicator color={Colors.bg} />
               ) : (
-                <Text style={s.btnText}>إرسال رابط الاستعادة</Text>
+                <Text style={s.btnText}>{t('sendResetLink')}</Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setResetVisible(false)} style={s.modalCloseBox}>
-              <Text style={s.forgotText}>إغلاق</Text>
+              <Text style={s.forgotText}>{t('close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -233,7 +240,18 @@ const s = StyleSheet.create({
   screen:      { flex: 1, backgroundColor: Colors.bg },
   flex:        { flex: 1 },
   scroll:      { flexGrow: 1, padding: Spacing.lg },
-  logoBox:     { alignItems: 'center', marginTop: 60, marginBottom: 40 },
+  langToggle: {
+    alignSelf: 'flex-end',
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    marginTop: 8,
+  },
+  langToggleText: { color: Colors.text, fontSize: FontSize.sm, fontWeight: '700' },
+  logoBox:     { alignItems: 'center', marginTop: 24, marginBottom: 40 },
   logoImage:   { width: 72, height: 72, marginBottom: 8 },
   logoText:    { color: Colors.gold, fontSize: FontSize.xxl, fontWeight: '800' },
   logoSub:     { color: Colors.textMuted, fontSize: FontSize.sm, marginTop: 4 },

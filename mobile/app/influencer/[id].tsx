@@ -13,8 +13,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { getTier, formatFollowers, formatPrice, resolveImageUrl, unlockInfluencer, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
+import { translateTier } from '@/lib/i18n'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
 const { width } = Dimensions.get('window')
@@ -23,6 +25,7 @@ const COVER_H = 200
 export default function InfluencerDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const { session, subscriber, effectivePlan, refreshSubscriber } = useAuth()
+  const { t, tf, tfList, lang } = useLanguage()
   const router = useRouter()
   const [justUnlockedIds, setJustUnlockedIds] = useState<string[]>([])
   const [unlocking, setUnlocking] = useState(false)
@@ -37,7 +40,7 @@ export default function InfluencerDetail() {
           <Ionicons name="close" size={24} color={Colors.text} />
         </TouchableOpacity>
         <View style={s.center}>
-          <Text style={{ color: Colors.textMuted }}>لم يتم العثور على المؤثر</Text>
+          <Text style={{ color: Colors.textMuted }}>{t('notFound')}</Text>
         </View>
       </SafeAreaView>
     )
@@ -48,6 +51,12 @@ export default function InfluencerDetail() {
   const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
   const avatarUrl = resolveImageUrl(inf.avatar)
   const coverUrl = resolveImageUrl(inf.cover)
+  const name = tf(inf, 'name')
+  const specialization = tf(inf, 'specialization')
+  const intro = tf(inf, 'intro')
+  const categories = tfList(inf, 'categories')
+  const tags = tfList(inf, 'tags')
+  const regions = tfList(inf, 'regions')
 
   const isUnlocked =
     justUnlockedIds.includes(String(inf.id)) ||
@@ -62,7 +71,7 @@ export default function InfluencerDetail() {
       setJustUnlockedIds(prev => [...prev, String(inf!.id)])
       await refreshSubscriber()
     } catch (e: any) {
-      setUnlockError(e?.message || 'فشل الفتح')
+      setUnlockError(e?.message || t('unlockFailed'))
     } finally {
       setUnlocking(false)
     }
@@ -90,15 +99,15 @@ export default function InfluencerDetail() {
               <Image source={{ uri: avatarUrl }} style={s.avatar} />
             ) : (
               <View style={[s.avatar, s.avatarFallback]}>
-                <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
+                <Text style={s.avatarInitial}>{name?.[0] || '?'}</Text>
               </View>
             )}
             <View style={s.heroInfo}>
-              <Text style={s.nameText}>{inf.name}</Text>
-              {inf.specialization ? <Text style={s.specText}>{inf.specialization}</Text> : null}
+              <Text style={s.nameText}>{name}</Text>
+              {specialization ? <Text style={s.specText}>{specialization}</Text> : null}
               <View style={s.badgeRow}>
                 <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
-                  <Text style={[s.badgeText, { color: tierColor }]}>{tier}</Text>
+                  <Text style={[s.badgeText, { color: tierColor }]}>{translateTier(tier, lang)}</Text>
                 </View>
                 {inf.rank ? (
                   <View style={[s.badge, { backgroundColor: Colors.s2, borderColor: Colors.border }]}>
@@ -111,9 +120,9 @@ export default function InfluencerDetail() {
 
           <View style={s.body}>
             <View style={s.unlockBanner}>
-              <Text style={s.unlockTitle}>⚡ فتح هذا المؤثر</Text>
+              <Text style={s.unlockTitle}>⚡ {t('unlockThis')}</Text>
               <Text style={s.unlockSub}>
-                لديك <Text style={{ color: Colors.gold, fontWeight: '800' }}>{creditsLeft}</Text> كريدت متبقي — كل كريدت يفتح ملف مؤثر واحد بشكل دائم
+                {t('youHave')} <Text style={{ color: Colors.gold, fontWeight: '800' }}>{creditsLeft}</Text> {t('creditsRemaining')}
               </Text>
               {unlockError ? <Text style={s.error}>{unlockError}</Text> : null}
               <TouchableOpacity
@@ -122,7 +131,7 @@ export default function InfluencerDetail() {
                 disabled={unlocking || creditsLeft <= 0}
               >
                 <Text style={s.unlockBtnText}>
-                  {unlocking ? '⏳ جارٍ الفتح...' : creditsLeft > 0 ? '🔓 فتح هذا المؤثر (كريدت واحد)' : '❌ لا يوجد كريدت — اشترِ المزيد'}
+                  {unlocking ? `⏳ ${t('unlocking')}` : creditsLeft > 0 ? `🔓 ${t('unlockOneCredit')}` : `❌ ${t('noCreditsLeft')}`}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -161,21 +170,21 @@ export default function InfluencerDetail() {
             <Image source={{ uri: avatarUrl }} style={s.avatar} />
           ) : (
             <View style={[s.avatar, s.avatarFallback]}>
-              <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
+              <Text style={s.avatarInitial}>{name?.[0] || '?'}</Text>
             </View>
           )}
 
           <View style={s.heroInfo}>
             <View style={s.nameRow}>
               {inf.source === 'verified' && <Text style={{ color: Colors.accent, marginLeft: 4 }}>✓</Text>}
-              <Text style={s.nameText}>{inf.name}</Text>
+              <Text style={s.nameText}>{name}</Text>
             </View>
-            {inf.specialization ? (
-              <Text style={s.specText}>{inf.specialization}</Text>
+            {specialization ? (
+              <Text style={s.specText}>{specialization}</Text>
             ) : null}
             <View style={s.badgeRow}>
               <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
-                <Text style={[s.badgeText, { color: tierColor }]}>{tier}</Text>
+                <Text style={[s.badgeText, { color: tierColor }]}>{translateTier(tier, lang)}</Text>
               </View>
               {inf.rank ? (
                 <View style={[s.badge, { backgroundColor: Colors.s2, borderColor: Colors.border }]}>
@@ -194,35 +203,35 @@ export default function InfluencerDetail() {
         <View style={s.body}>
           {/* Main stats */}
           <View style={s.statsRow}>
-            <StatBox label="إجمالي المتابعين" value={inf.totalFormatted || formatFollowers(inf.totalFollowers)} />
-            <StatBox label="المنصات" value={String(platforms.length)} />
+            <StatBox label={t('totalFollowers')} value={inf.totalFormatted || formatFollowers(inf.totalFollowers)} />
+            <StatBox label={t('platforms')} value={String(platforms.length)} />
             <StatBox
-              label="الجنس"
-              value={inf.gender === 'female' ? 'أنثى' : inf.gender === 'male' ? 'ذكر' : '—'}
+              label={t('gender')}
+              value={inf.gender === 'female' ? t('femaleOption') : inf.gender === 'male' ? t('maleOption') : '—'}
             />
           </View>
 
           {/* Audience gender distribution */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>توزيع الجمهور</Text>
+            <Text style={s.sectionTitle}>{t('audienceGender')}</Text>
             <View style={s.genderRow}>
-              <GenderBar label="إناث" pct={femalePct} color={Colors.purple} />
-              <GenderBar label="ذكور" pct={100 - femalePct} color={Colors.accent} />
+              <GenderBar label={t('female')} pct={femalePct} color={Colors.purple} />
+              <GenderBar label={t('male')} pct={100 - femalePct} color={Colors.accent} />
             </View>
           </View>
 
           {/* Bio */}
-          {inf.intro ? (
+          {intro ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>نبذة</Text>
-              <Text style={s.bioText}>{inf.intro}</Text>
+              <Text style={s.sectionTitle}>{t('bio')}</Text>
+              <Text style={s.bioText}>{intro}</Text>
             </View>
           ) : null}
 
           {/* Follower age ranges */}
           {inf.followersAges?.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>أعمار المتابعين</Text>
+              <Text style={s.sectionTitle}>{t('followerAges')}</Text>
               <View style={s.tagWrap}>
                 {inf.followersAges.map(a => (
                   <View key={a} style={s.tag}>
@@ -235,25 +244,25 @@ export default function InfluencerDetail() {
 
           {/* Platforms */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>المنصات</Text>
+            <Text style={s.sectionTitle}>{t('platforms')}</Text>
             {platforms.map(([name, p]) => (
-              <PlatformCard key={name} name={name} data={p} isPro={isPro} />
+              <PlatformCard key={name} name={name} data={p} isPro={isPro} t={t} />
             ))}
           </View>
 
           {!isPro ? (
             <View style={s.lockedBox}>
               <Text style={s.lockedIcon}>🔒</Text>
-              <Text style={s.lockedText}>الأسعار والإحصاءات التفصيلية وروابط الملفات متاحة لمشتركي برو فقط</Text>
+              <Text style={s.lockedText}>{t('proLockedText')}</Text>
             </View>
           ) : null}
 
           {/* Categories */}
-          {inf.categories?.length ? (
+          {categories.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>التخصصات</Text>
+              <Text style={s.sectionTitle}>{t('categories')}</Text>
               <View style={s.tagWrap}>
-                {inf.categories.map(c => (
+                {categories.map(c => (
                   <View key={c} style={s.tag}>
                     <Text style={s.tagText}>{c}</Text>
                   </View>
@@ -263,13 +272,13 @@ export default function InfluencerDetail() {
           ) : null}
 
           {/* Tags */}
-          {inf.tags?.length ? (
+          {tags.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>الوسوم</Text>
+              <Text style={s.sectionTitle}>{t('tags')}</Text>
               <View style={s.tagWrap}>
-                {inf.tags.map(t => (
-                  <View key={t} style={[s.tag, { backgroundColor: Colors.s3 }]}>
-                    <Text style={s.tagText}>#{t}</Text>
+                {tags.map(tg => (
+                  <View key={tg} style={[s.tag, { backgroundColor: Colors.s3 }]}>
+                    <Text style={s.tagText}>#{tg}</Text>
                   </View>
                 ))}
               </View>
@@ -277,11 +286,11 @@ export default function InfluencerDetail() {
           ) : null}
 
           {/* Regions */}
-          {inf.regions?.length ? (
+          {regions.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>المناطق</Text>
+              <Text style={s.sectionTitle}>{t('regions')}</Text>
               <View style={s.tagWrap}>
-                {inf.regions.map(r => (
+                {regions.map(r => (
                   <View key={r} style={[s.tag, { backgroundColor: Colors.accent + '22' }]}>
                     <Text style={[s.tagText, { color: Colors.accent }]}>📍 {r}</Text>
                   </View>
@@ -295,13 +304,13 @@ export default function InfluencerDetail() {
   )
 }
 
-function PlatformCard({ name, data: p, isPro }: { name: string; data: Influencer['platforms'][string]; isPro: boolean }) {
+function PlatformCard({ name, data: p, isPro, t }: { name: string; data: Influencer['platforms'][string]; isPro: boolean; t: (key: import('@/lib/i18n').TKey) => string }) {
   const color = PlatformColors[name] || Colors.accent
   const stats: { label: string; value: string }[] = []
-  if (p.avgLikes != null) stats.push({ label: 'متوسط الإعجابات', value: formatFollowers(p.avgLikes) })
-  if (p.avgComments != null) stats.push({ label: 'متوسط التعليقات', value: String(p.avgComments) })
-  if (p.engagementRate != null) stats.push({ label: 'التفاعل', value: `${p.engagementRate}%` })
-  if (p.postsPerWeek != null) stats.push({ label: 'بوست/أسبوع', value: String(p.postsPerWeek) })
+  if (p.avgLikes != null) stats.push({ label: t('avgLikes'), value: formatFollowers(p.avgLikes) })
+  if (p.avgComments != null) stats.push({ label: t('avgComments'), value: String(p.avgComments) })
+  if (p.engagementRate != null) stats.push({ label: t('engagementShort'), value: `${p.engagementRate}%` })
+  if (p.postsPerWeek != null) stats.push({ label: t('postsWeek'), value: String(p.postsPerWeek) })
   const prices = p.prices ? Object.entries(p.prices) : []
 
   return (
@@ -316,7 +325,7 @@ function PlatformCard({ name, data: p, isPro }: { name: string; data: Influencer
 
       {isPro && p.url ? (
         <TouchableOpacity style={s.profileLinkBtn} onPress={() => Linking.openURL(p.url!)}>
-          <Text style={s.profileLinkText}>عرض الملف الشخصي ←</Text>
+          <Text style={s.profileLinkText}>{t('viewProfile')} ←</Text>
         </TouchableOpacity>
       ) : null}
 

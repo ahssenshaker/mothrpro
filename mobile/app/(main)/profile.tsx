@@ -11,16 +11,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import * as WebBrowser from 'expo-web-browser'
 import { useRouter } from 'expo-router'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import UpgradeModal from '@/components/UpgradeModal'
-
-const PLAN_LABEL: Record<string, string> = {
-  free: 'مجاني',
-  trial: 'تجريبي',
-  pro: 'برو',
-  admin: 'مدير',
-  credits: 'كريدت',
-}
 
 const PLAN_COLOR: Record<string, string> = {
   free: Colors.textMuted,
@@ -30,9 +23,9 @@ const PLAN_COLOR: Record<string, string> = {
   credits: Colors.gold,
 }
 
-function fmt(dateStr?: string) {
+function fmt(dateStr: string | undefined, lang: 'ar' | 'en') {
   if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString('ar-SA', {
+  return new Date(dateStr).toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -48,21 +41,30 @@ function trialHours(expiresAt?: string) {
 
 export default function ProfileScreen() {
   const { session, subscriber, effectivePlan, signOut } = useAuth()
+  const { t, lang } = useLanguage()
   const router = useRouter()
   const [signingOut, setSigningOut] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
 
+  const PLAN_LABEL: Record<string, string> = {
+    free: t('free'),
+    trial: t('trial'),
+    pro: t('pro'),
+    admin: t('admin'),
+    credits: t('credits'),
+  }
+
   const email = session?.user?.email || ''
-  const planLabel = PLAN_LABEL[effectivePlan] || 'مجاني'
+  const planLabel = PLAN_LABEL[effectivePlan] || t('free')
   const planColor = PLAN_COLOR[effectivePlan] || Colors.textMuted
   const hours = trialHours(subscriber?.expires_at)
   const initials = email.slice(0, 2).toUpperCase()
 
   async function handleSignOut() {
-    Alert.alert('تسجيل الخروج', 'هل أنت متأكد من تسجيل الخروج؟', [
-      { text: 'إلغاء', style: 'cancel' },
+    Alert.alert(t('logout'), t('signOutConfirmMsg'), [
+      { text: t('cancel'), style: 'cancel' },
       {
-        text: 'خروج',
+        text: t('signOutAction'),
         style: 'destructive',
         onPress: async () => {
           setSigningOut(true)
@@ -90,27 +92,27 @@ export default function ProfileScreen() {
         {/* Trial banner */}
         {effectivePlan === 'trial' && hours !== null && (
           <View style={s.trialBanner}>
-            <Text style={s.trialText}>⏳ ينتهي اشتراكك التجريبي خلال {hours} ساعة</Text>
+            <Text style={s.trialText}>⏳ {t('trialEndsPrefix')} {hours} {t('hoursUnit')}</Text>
           </View>
         )}
 
         {/* Subscription card */}
         <View style={s.card}>
-          <Text style={s.cardTitle}>تفاصيل الاشتراك</Text>
-          <Row label="الاشتراك" value={planLabel} valueColor={planColor} />
+          <Text style={s.cardTitle}>{t('subscriptionDetails')}</Text>
+          <Row label={t('plan')} value={planLabel} valueColor={planColor} />
           {subscriber?.activated_at && (
-            <Row label="عضو منذ" value={fmt(subscriber.activated_at)} />
+            <Row label={t('memberSinceShort')} value={fmt(subscriber.activated_at, lang)} />
           )}
           {effectivePlan === 'trial' && subscriber?.expires_at && (
-            <Row label="ينتهي في" value={fmt(subscriber.expires_at)} valueColor={Colors.red} />
+            <Row label={t('expiresOn')} value={fmt(subscriber.expires_at, lang)} valueColor={Colors.red} />
           )}
           {effectivePlan === 'pro' && !subscriber?.expires_at && (
-            <Row label="نوع الاشتراك" value="دائم" valueColor={Colors.green} />
+            <Row label={t('subscriptionType')} value={t('lifetime')} valueColor={Colors.green} />
           )}
           {effectivePlan === 'credits' && (
             <>
-              <Row label="الكريدتات المتبقية" value={String(subscriber?.credits_remaining || 0)} valueColor={Colors.gold} />
-              <Row label="المؤثرين المفتوحين" value={String(subscriber?.unlocked_ids?.length || 0)} />
+              <Row label={t('creditsRemainingLabel')} value={String(subscriber?.credits_remaining || 0)} valueColor={Colors.gold} />
+              <Row label={t('unlockedInfluencers')} value={String(subscriber?.unlocked_ids?.length || 0)} />
             </>
           )}
         </View>
@@ -118,14 +120,12 @@ export default function ProfileScreen() {
         {/* Upgrade section */}
         {(effectivePlan === 'free' || effectivePlan === 'trial' || effectivePlan === 'credits') && (
           <View style={s.upgradeCard}>
-            <Text style={s.upgradeTitle}>🚀 ترقية للبرو</Text>
+            <Text style={s.upgradeTitle}>{t('upgradeToPro')}</Text>
             <Text style={s.upgradeDesc}>
-              {effectivePlan === 'credits'
-                ? 'احتجت تفتح أكثر؟ اشترِ كريدت إضافي أو رقّي لوصول كامل دائم'
-                : 'احصل على بيانات كاملة لجميع المؤثرين: الأسعار، معدل التفاعل، تحليل الجمهور'}
+              {effectivePlan === 'credits' ? t('creditsUpgradeDesc') : t('upgradeDesc')}
             </Text>
             <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
-              <Text style={s.upgradeBtnText}>عرض الخطط</Text>
+              <Text style={s.upgradeBtnText}>{t('viewPlans')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -133,14 +133,8 @@ export default function ProfileScreen() {
         {/* Pro features */}
         {(effectivePlan === 'pro' || effectivePlan === 'admin') && (
           <View style={s.card}>
-            <Text style={s.cardTitle}>مميزات البرو ✅</Text>
-            {[
-              'بيانات كاملة لجميع المؤثرين',
-              'أسعار المؤثرين الفعلية',
-              'معدل التفاعل والإحصاءات',
-              'تحليل الجمهور (السن والجنس)',
-              'روابط الملفات الشخصية',
-            ].map(f => (
+            <Text style={s.cardTitle}>{t('proFeaturesTitle')}</Text>
+            {[t('proFeature1'), t('proFeature2'), t('proFeature3'), t('proFeature4'), t('proFeature5')].map(f => (
               <View key={f} style={s.featureRow}>
                 <Text style={s.featureText}>{f}</Text>
                 <Text style={{ color: Colors.green }}>✓</Text>
@@ -152,7 +146,7 @@ export default function ProfileScreen() {
         {/* Admin */}
         {effectivePlan === 'admin' && (
           <TouchableOpacity style={s.adminBtn} onPress={() => router.push('/admin')}>
-            <Text style={s.adminBtnText}>🛠 لوحة تحكم الأدمن</Text>
+            <Text style={s.adminBtnText}>{t('adminPanelBtn')}</Text>
           </TouchableOpacity>
         )}
 
@@ -163,14 +157,14 @@ export default function ProfileScreen() {
             onPress={() => WebBrowser.openBrowserAsync('https://www.moatherpro.com/privacy')}
           >
             <Text style={s.legalArrow}>‹</Text>
-            <Text style={s.legalText}>سياسة الخصوصية</Text>
+            <Text style={s.legalText}>{t('privacyPolicy')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={s.legalRow}
             onPress={() => WebBrowser.openBrowserAsync('https://www.moatherpro.com/refund')}
           >
             <Text style={s.legalArrow}>‹</Text>
-            <Text style={s.legalText}>سياسة الاسترداد</Text>
+            <Text style={s.legalText}>{t('refundPolicy')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -180,10 +174,10 @@ export default function ProfileScreen() {
           onPress={handleSignOut}
           disabled={signingOut}
         >
-          <Text style={s.logoutText}>{signingOut ? 'جاري الخروج...' : 'تسجيل الخروج'}</Text>
+          <Text style={s.logoutText}>{signingOut ? t('signingOut') : t('logout')}</Text>
         </TouchableOpacity>
 
-        <Text style={s.versionText}>مؤثر برو • الإصدار 1.0{'\n'}© 2026 جميع الحقوق محفوظة</Text>
+        <Text style={s.versionText}>{t('appName')} • v1.0{'\n'}© 2026</Text>
       </ScrollView>
 
       <UpgradeModal visible={showUpgrade} onClose={() => setShowUpgrade(false)} />

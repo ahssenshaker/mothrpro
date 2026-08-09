@@ -1,6 +1,8 @@
 import { useState, ReactNode } from 'react'
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native'
 import { Colors, Spacing, FontSize, Radius, TierColors } from '@/constants/theme'
+import { useLanguage } from '@/context/LanguageContext'
+import { tt, translateTier } from '@/lib/i18n'
 
 // Mirrors TOUR_STEPS_AR in index.html (uploaded 2026-08-09) — same 5 steps,
 // content re-expressed as RN views instead of raw HTML.
@@ -160,89 +162,90 @@ function SourceRow({ icon, label }: { icon: string; label: string }) {
   )
 }
 
-const STEPS: Step[] = [
-  {
-    icon: '🌟',
-    title: 'ما هو مؤثر برو؟',
-    sub: 'دليل المؤثرين الموثّق في السوق الخليجي',
-    content: (
-      <View>
-        <Text style={s.paragraph}>
-          مؤثر برو هو أول دليل موثّق للمؤثرين في المملكة والخليج، يضم <Text style={{ fontWeight: '800' }}>+500 مؤثر</Text> مع بياناتهم الفعلية:
-        </Text>
-        <View style={s.tagWrap}>
-          <Tag label="📊 أسعار فعلية" />
-          <Tag label="📈 نسب تفاعل" />
-          <Tag label="👥 بيانات جمهور" />
-          <Tag label="🔗 روابط حسابات" />
+function buildSteps(lang: 'ar' | 'en'): Step[] {
+  const t = (key: Parameters<typeof tt>[0]) => tt(key, lang)
+  return [
+    {
+      icon: '🌟',
+      title: t('step1Title'),
+      sub: t('step1Sub'),
+      content: (
+        <View>
+          <Text style={s.paragraph}>{t('step1Intro')}</Text>
+          <View style={s.tagWrap}>
+            <Tag label={t('tag1')} />
+            <Tag label={t('tag2')} />
+            <Tag label={t('tag3')} />
+            <Tag label={t('tag4')} />
+          </View>
         </View>
-      </View>
-    ),
-  },
-  {
-    icon: '📊',
-    title: 'التصنيفات (Tiers)',
-    sub: 'كيف نصنّف المؤثرين حسب حجم المتابعين؟',
-    content: (
-      <View style={{ gap: 9 }}>
-        <TierRow label="🔥 ألفا" color={TierColors['ألفا']} desc="أكثر من 5 مليون متابع" />
-        <TierRow label="⭐ ميجا" color={TierColors['ميجا']} desc="من 1M إلى 5M متابع" />
-        <TierRow label="💠 ماكرو" color={TierColors['ماكرو']} desc="من 100K إلى 1M متابع" />
-        <TierRow label="🔹 ميكرو" color={TierColors['ميكرو']} desc="من 10K إلى 100K متابع" />
-        <TierRow label="🔸 نانو" color={TierColors['نانو']} desc="أقل من 10K متابع" />
-      </View>
-    ),
-  },
-  {
-    icon: '💡',
-    title: 'نسبة التفاعل',
-    sub: 'مؤشر قوة المؤثر الحقيقية — أهم من عدد المتابعين',
-    content: (
-      <View>
-        <Text style={s.paragraph}>نسبة التفاعل = (إعجابات + تعليقات) ÷ متابعين × 100</Text>
-        <View style={s.engBox}>
-          <EngRow label="🟢 ممتاز" value="أكثر من 6%" color={Colors.green} />
-          <EngRow label="🟡 جيد" value="3% — 6%" color={Colors.gold} />
-          <EngRow label="🔴 منخفض" value="أقل من 3%" color={Colors.red} />
+      ),
+    },
+    {
+      icon: '📊',
+      title: t('step2Title'),
+      sub: t('step2Sub'),
+      content: (
+        <View style={{ gap: 9 }}>
+          <TierRow label={`🔥 ${translateTier('ألفا', lang)}`} color={TierColors['ألفا']} desc={t('tierAlphaDesc')} />
+          <TierRow label={`⭐ ${translateTier('ميجا', lang)}`} color={TierColors['ميجا']} desc={t('tierMegaDesc')} />
+          <TierRow label={`💠 ${translateTier('ماكرو', lang)}`} color={TierColors['ماكرو']} desc={t('tierMacroDesc')} />
+          <TierRow label={`🔹 ${translateTier('ميكرو', lang)}`} color={TierColors['ميكرو']} desc={t('tierMicroDesc')} />
+          <TierRow label={`🔸 ${translateTier('نانو', lang)}`} color={TierColors['نانو']} desc={t('tierNanoDesc')} />
         </View>
-        <View style={s.noteBox}>
-          <Text style={s.noteText}>💡 مؤثر بـ 50K متابع وتفاعل 8% أفضل توصيةً من مؤثر بـ 500K وتفاعل 1%</Text>
+      ),
+    },
+    {
+      icon: '💡',
+      title: t('step3Title'),
+      sub: t('step3Sub'),
+      content: (
+        <View>
+          <Text style={s.paragraph}>{t('formula')}</Text>
+          <View style={s.engBox}>
+            <EngRow label={t('excellent')} value={t('excellentValue')} color={Colors.green} />
+            <EngRow label={t('good')} value={t('goodValue')} color={Colors.gold} />
+            <EngRow label={t('low')} value={t('lowValue')} color={Colors.red} />
+          </View>
+          <View style={s.noteBox}>
+            <Text style={s.noteText}>{t('engNote')}</Text>
+          </View>
         </View>
-      </View>
-    ),
-  },
-  {
-    icon: '💰',
-    title: 'الأسعار الفعلية',
-    sub: 'لا تخمين — بيانات حقيقية من السوق',
-    content: (
-      <View>
-        <Text style={s.paragraph}>الأسعار مجمّعة من:</Text>
-        <View style={{ gap: 8, marginTop: 12 }}>
-          <SourceRow icon="📋" label="عروض المؤثرين المباشرة" />
-          <SourceRow icon="🤝" label="صفقات تعاون منفّذة فعلياً" />
-          <SourceRow icon="📊" label="بيانات السوق الخليجية" />
+      ),
+    },
+    {
+      icon: '💰',
+      title: t('step4Title'),
+      sub: t('step4Sub'),
+      content: (
+        <View>
+          <Text style={s.paragraph}>{t('pricesFrom')}</Text>
+          <View style={{ gap: 8, marginTop: 12 }}>
+            <SourceRow icon="📋" label={t('source1')} />
+            <SourceRow icon="🤝" label={t('source2')} />
+            <SourceRow icon="📊" label={t('source3')} />
+          </View>
+          <View style={s.lockBox}>
+            <Text style={s.lockText}>{t('lockText')}</Text>
+          </View>
         </View>
-        <View style={s.lockBox}>
-          <Text style={s.lockText}>🔒 الأسعار والبيانات التفصيلية متاحة لمشتركي برو فقط</Text>
+      ),
+    },
+    {
+      icon: '🔍',
+      title: t('step5Title'),
+      sub: t('step5Sub'),
+      content: (
+        <View style={{ gap: 10 }}>
+          <SourceRow icon="🔍" label={t('search1')} />
+          <SourceRow icon="📱" label={t('search2')} />
+          <SourceRow icon="🏷️" label={t('search3')} />
+          <SourceRow icon="💰" label={t('search4')} />
         </View>
-      </View>
-    ),
-  },
-  {
-    icon: '🔍',
-    title: 'كيف تبحث وتصفّي؟',
-    sub: 'أدوات البحث تساعدك تلاقي المؤثر المناسب بسرعة',
-    content: (
-      <View style={{ gap: 10 }}>
-        <SourceRow icon="🔍" label="ابحث بالاسم أو التخصص مباشرة" />
-        <SourceRow icon="📱" label="صفّ حسب المنصة: انستقرام، سناب، يوتيوب، تيك توك" />
-        <SourceRow icon="🏷️" label="فلتر التصنيف، المنطقة، والتخصص" />
-        <SourceRow icon="💰" label="فلتر نطاق الأسعار (Pro)" />
-      </View>
-    ),
-  },
-]
+      ),
+    },
+  ]
+}
 
 interface Props {
   visible: boolean
@@ -250,7 +253,9 @@ interface Props {
 }
 
 export default function TourGuide({ visible, onClose }: Props) {
+  const { lang } = useLanguage()
   const [step, setStep] = useState(0)
+  const STEPS = buildSteps(lang)
   const isLast = step === STEPS.length - 1
   const current = STEPS[step]
 
@@ -293,11 +298,11 @@ export default function TourGuide({ visible, onClose }: Props) {
             <View style={s.actions}>
               {!isLast ? (
                 <TouchableOpacity style={s.skipBtn} onPress={handleClose}>
-                  <Text style={s.skipBtnText}>تخطي</Text>
+                  <Text style={s.skipBtnText}>{tt('skip', lang)}</Text>
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity style={s.nextBtn} onPress={next}>
-                <Text style={s.nextBtnText}>{isLast ? 'ابدأ الاستكشاف 🚀' : 'التالي ←'}</Text>
+                <Text style={s.nextBtnText}>{isLast ? tt('start', lang) : tt('next', lang)}</Text>
               </TouchableOpacity>
             </View>
           </View>

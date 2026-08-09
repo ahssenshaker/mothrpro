@@ -10,6 +10,8 @@ import {
 } from 'react-native'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
+import { translateTier } from '@/lib/i18n'
 
 export interface Filters {
   tier: string
@@ -42,22 +44,23 @@ const PLATFORM_LABELS: Record<string, string> = {
   'تويتر/X': 'تويتر/X',
   'فيسبوك': 'فيسبوك',
 }
-const TIER_LABELS: Record<string, string> = {
-  '': 'الكل',
-  نانو: 'نانو',
-  ميكرو: 'ميكرو',
-  ماكرو: 'ماكرو',
-  ميجا: 'ميجا',
-  ألفا: 'ألفا',
-}
-const SORTS: { value: Filters['sort']; label: string }[] = [
-  { value: 'rank', label: 'حسب الترتيب' },
-  { value: 'followers', label: 'الأكثر متابعين' },
-  { value: 'engagement', label: 'الأعلى تفاعلاً' },
-]
-
 export default function FilterSheet({ visible, filters, isPro, onApply, onClose, onUpgradeRequest }: Props) {
+  const { t, lang } = useLanguage()
   const [local, setLocal] = useState<Filters>({ ...filters })
+
+  const TIER_LABELS: Record<string, string> = {
+    '': t('all'),
+    نانو: translateTier('نانو', lang),
+    ميكرو: translateTier('ميكرو', lang),
+    ماكرو: translateTier('ماكرو', lang),
+    ميجا: translateTier('ميجا', lang),
+    ألفا: translateTier('ألفا', lang),
+  }
+  const SORTS: { value: Filters['sort']; label: string }[] = [
+    { value: 'rank', label: t('sortRankShort') },
+    { value: 'followers', label: t('sortFollowersShort') },
+    { value: 'engagement', label: t('sortEngagementShort') },
+  ]
 
   function reset() {
     setLocal({ tier: '', platform: '', gender: '', sort: 'rank', priceMin: '', priceMax: '' })
@@ -90,9 +93,9 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
         {/* Header */}
         <View style={s.header}>
           <TouchableOpacity onPress={reset}>
-            <Text style={s.resetText}>إعادة تعيين</Text>
+            <Text style={s.resetText}>{t('reset')}</Text>
           </TouchableOpacity>
-          <Text style={s.title}>التصفية والترتيب</Text>
+          <Text style={s.title}>{t('filterAndSort')}</Text>
           <TouchableOpacity onPress={onClose}>
             <Text style={s.closeText}>✕</Text>
           </TouchableOpacity>
@@ -100,7 +103,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Sort */}
-          <Text style={s.sectionTitle}>الترتيب</Text>
+          <Text style={s.sectionTitle}>{t('sort')}</Text>
           <View style={s.chipRow}>
             {SORTS.map(opt => (
               <Chip
@@ -114,7 +117,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Tier */}
-          <Text style={s.sectionTitle}>الفئة</Text>
+          <Text style={s.sectionTitle}>{t('tier')}</Text>
           <View style={s.chipRow}>
             {TIERS.map(tier => (
               <Chip
@@ -128,12 +131,12 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Platform */}
-          <Text style={s.sectionTitle}>المنصة</Text>
+          <Text style={s.sectionTitle}>{t('platform')}</Text>
           <View style={s.chipRow}>
             {PLATFORMS.map(p => (
               <Chip
                 key={p || 'all'}
-                label={PLATFORM_LABELS[p]}
+                label={p ? PLATFORM_LABELS[p] : t('all')}
                 active={local.platform === p}
                 color={p ? PlatformColors[p] : Colors.textMuted}
                 onPress={() => setLocal(f => ({ ...f, platform: p }))}
@@ -142,12 +145,12 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Gender */}
-          <Text style={s.sectionTitle}>الجنس</Text>
+          <Text style={s.sectionTitle}>{t('gender')}</Text>
           <View style={s.chipRow}>
             {[
-              { value: '', label: 'الكل' },
-              { value: 'male', label: 'ذكر' },
-              { value: 'female', label: 'أنثى' },
+              { value: '', label: t('all') },
+              { value: 'male', label: t('maleOption') },
+              { value: 'female', label: t('femaleOption') },
             ].map(opt => (
               <Chip
                 key={opt.value || 'all'}
@@ -161,7 +164,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
 
           {/* Price range — Pro only */}
           <View style={s.priceTitleRow}>
-            <Text style={s.sectionTitle}>نطاق السعر</Text>
+            <Text style={s.sectionTitle}>{t('priceRange')}</Text>
             {!isPro && <Text style={s.lockIcon}>🔒</Text>}
           </View>
           <View style={s.priceRow}>
@@ -171,10 +174,10 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
               onChangeText={v => setLocal(f => ({ ...f, priceMax: v }))}
               onFocus={handlePriceFocus}
               editable={isPro}
-              placeholder="إلى"
+              placeholder={t('priceTo')}
               placeholderTextColor={Colors.textMuted}
               keyboardType="number-pad"
-              textAlign="right"
+              textAlign={lang === 'ar' ? 'right' : 'left'}
             />
             <TextInput
               style={s.priceInput}
@@ -182,15 +185,15 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
               onChangeText={v => setLocal(f => ({ ...f, priceMin: v }))}
               onFocus={handlePriceFocus}
               editable={isPro}
-              placeholder="من"
+              placeholder={t('priceFrom')}
               placeholderTextColor={Colors.textMuted}
               keyboardType="number-pad"
-              textAlign="right"
+              textAlign={lang === 'ar' ? 'right' : 'left'}
             />
           </View>
           {!isPro && (
             <TouchableOpacity onPress={onUpgradeRequest}>
-              <Text style={s.priceGateText}>🔒 فلتر السعر متاح لخطة البرو فقط — ترقية ↑</Text>
+              <Text style={s.priceGateText}>🔒 {t('priceGateText')}</Text>
             </TouchableOpacity>
           )}
 
@@ -199,7 +202,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
 
         {/* Apply button */}
         <TouchableOpacity style={s.applyBtn} onPress={apply}>
-          <Text style={s.applyText}>تطبيق التصفية</Text>
+          <Text style={s.applyText}>{t('apply')}</Text>
         </TouchableOpacity>
       </View>
     </Modal>
