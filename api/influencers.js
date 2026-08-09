@@ -197,9 +197,21 @@ export default async function handler(req, res) {
   const isPro = plan === 'pro' || isAdmin
 
   // Require authentication for all GET requests (prevents anonymous scraping).
-  // TEMP: "debug" field included while diagnosing a mobile-app 401 - remove once resolved.
+  // TEMP: extra fields included while diagnosing a mobile-app 401 - remove once resolved.
+  // Checking whether a cross-origin redirect (e.g. apex -> www) is stripping
+  // the Authorization header before the request reaches this function, per
+  // the Fetch spec's "strip Authorization on cross-origin redirect" rule.
   if (req.method === 'GET' && !isWarmup && !userId) {
-    return res.status(401).json({ error: 'يرجى تسجيل الدخول', debug })
+    return res.status(401).json({
+      error: 'يرجى تسجيل الدخول',
+      debug,
+      _diag: {
+        host: req.headers.host,
+        origin: req.headers.origin || null,
+        hasAuthHeader: !!req.headers.authorization,
+        hasAppKey: !!req.headers['x-app-key'],
+      },
+    })
   }
 
   // Rate limit authenticated GET requests (warmup is exempt).
