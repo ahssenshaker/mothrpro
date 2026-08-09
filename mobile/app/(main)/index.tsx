@@ -12,17 +12,21 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
 import { fetchInfluencers, getTier, getPrimaryPlatform, Influencer } from '@/lib/api'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import InfluencerCard from '@/components/InfluencerCard'
 import FilterSheet, { Filters } from '@/components/FilterSheet'
+import TourGuide from '@/components/TourGuide'
+import UpgradeModal from '@/components/UpgradeModal'
 
 const LIMIT = 100
 
 export default function DirectoryScreen() {
-  const { session } = useAuth()
+  const { session, effectivePlan } = useAuth()
   const router = useRouter()
+  const isFree = effectivePlan === 'free'
 
   const [influencers, setInfluencers] = useState<Influencer[]>([])
   const [page, setPage] = useState(1)
@@ -39,6 +43,19 @@ export default function DirectoryScreen() {
     gender: '',
     sort: 'rank',
   })
+  const [showTour, setShowTour] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
+
+  useEffect(() => {
+    if (!session?.user?.id) return
+    const key = `tour_seen_${session.user.id}`
+    AsyncStorage.getItem(key).then(seen => {
+      if (!seen) {
+        setTimeout(() => setShowTour(true), 800)
+        AsyncStorage.setItem(key, '1')
+      }
+    })
+  }, [session?.user?.id])
 
   const load = useCallback(async (reset = false) => {
     if (!session) return
@@ -148,8 +165,20 @@ export default function DirectoryScreen() {
     <SafeAreaView style={s.screen}>
       {/* Header */}
       <View style={s.header}>
-        <Text style={s.headerTitle}>⭐ مؤثر برو</Text>
-        <Text style={s.headerCount}>{influencers.length} مؤثر</Text>
+        <View style={s.headerLeft}>
+          <TouchableOpacity onPress={() => setShowTour(true)} style={s.helpBtn}>
+            <Text style={s.helpBtnText}>❓</Text>
+          </TouchableOpacity>
+          {isFree ? (
+            <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
+              <Text style={s.upgradeBtnText}>⭐ ترقية للبرو</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <View>
+          <Text style={s.headerTitle}>⭐ مؤثر برو</Text>
+          <Text style={s.headerCount}>{influencers.length} مؤثر</Text>
+        </View>
       </View>
 
       {/* Search + Filter */}
@@ -188,7 +217,13 @@ export default function DirectoryScreen() {
         renderItem={({ item }) => (
           <InfluencerCard
             influencer={item}
-            onPress={() => router.push(`/influencer/${item.id}`)}
+            onPress={() => {
+              if (isFree) {
+                setShowUpgrade(true)
+              } else {
+                router.push(`/influencer/${item.id}`)
+              }
+            }}
           />
         )}
         contentContainerStyle={s.listContent}
@@ -222,6 +257,9 @@ export default function DirectoryScreen() {
         onApply={f => { setFilters(f); setShowFilter(false) }}
         onClose={() => setShowFilter(false)}
       />
+
+      <TourGuide visible={showTour} onClose={() => setShowTour(false)} />
+      <UpgradeModal visible={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </SafeAreaView>
   )
 }
@@ -244,6 +282,24 @@ const s = StyleSheet.create({
   },
   headerTitle:     { color: Colors.gold, fontSize: FontSize.lg, fontWeight: '800' },
   headerCount:     { color: Colors.textMuted, fontSize: FontSize.sm },
+  headerLeft:      { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  helpBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  helpBtnText:     { color: Colors.textMuted, fontSize: FontSize.xs },
+  upgradeBtn: {
+    backgroundColor: Colors.gold,
+    borderRadius: Radius.full,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  upgradeBtnText:  { color: Colors.bg, fontWeight: '800', fontSize: FontSize.xs },
   searchRow: {
     flexDirection: 'row',
     gap: 8,

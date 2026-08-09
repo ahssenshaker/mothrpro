@@ -6,14 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-  Linking,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useAuth } from '@/context/AuthContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
-
-const LS_CHECKOUT =
-  'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046'
+import UpgradeModal from '@/components/UpgradeModal'
 
 const PLAN_LABEL: Record<string, string> = {
   free: 'مجاني',
@@ -46,9 +43,9 @@ function trialHours(expiresAt?: string) {
 }
 
 export default function ProfileScreen() {
-  const { session, subscriber, effectivePlan, signOut, refreshSubscriber } = useAuth()
+  const { session, subscriber, effectivePlan, signOut } = useAuth()
   const [signingOut, setSigningOut] = useState(false)
-  const [polling, setPolling] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const email = session?.user?.email || ''
   const planLabel = PLAN_LABEL[effectivePlan] || 'مجاني'
@@ -68,21 +65,6 @@ export default function ProfileScreen() {
         },
       },
     ])
-  }
-
-  async function openCheckout() {
-    const url = `${LS_CHECKOUT}?checkout[custom][account_email]=${encodeURIComponent(email)}`
-    await Linking.openURL(url)
-    // Poll for upgrade after checkout
-    setPolling(true)
-    const start = Date.now()
-    const interval = setInterval(async () => {
-      await refreshSubscriber()
-      if (Date.now() - start > 180_000 || effectivePlan === 'pro') {
-        clearInterval(interval)
-        setPolling(false)
-      }
-    }, 10_000)
   }
 
   return (
@@ -129,11 +111,8 @@ export default function ProfileScreen() {
             <Text style={s.upgradeDesc}>
               احصل على بيانات كاملة لجميع المؤثرين: الأسعار، معدل التفاعل، تحليل الجمهور
             </Text>
-            <Text style={s.upgradePrice}>39 ر.س / شهر</Text>
-            <TouchableOpacity style={s.upgradeBtn} onPress={openCheckout}>
-              <Text style={s.upgradeBtnText}>
-                {polling ? 'جاري التحقق...' : 'اشترك الآن'}
-              </Text>
+            <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
+              <Text style={s.upgradeBtnText}>عرض الخطط</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -168,6 +147,8 @@ export default function ProfileScreen() {
 
         <Text style={s.versionText}>مؤثر برو • الإصدار 1.0</Text>
       </ScrollView>
+
+      <UpgradeModal visible={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </SafeAreaView>
   )
 }
