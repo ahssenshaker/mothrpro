@@ -27,6 +27,7 @@ export default function DirectoryScreen() {
   const { session, effectivePlan } = useAuth()
   const router = useRouter()
   const isFree = effectivePlan === 'free'
+  const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
   const showUpgradeBtn = effectivePlan === 'free' || effectivePlan === 'credits'
 
   const [influencers, setInfluencers] = useState<Influencer[]>([])
@@ -43,6 +44,8 @@ export default function DirectoryScreen() {
     platform: '',
     gender: '',
     sort: 'rank',
+    priceMin: '',
+    priceMax: '',
   })
   const [showTour, setShowTour] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
@@ -117,6 +120,21 @@ export default function DirectoryScreen() {
     if (filters.gender) {
       list = list.filter(inf => inf.gender === filters.gender)
     }
+    if (isPro && (filters.priceMin || filters.priceMax)) {
+      const min = Number(filters.priceMin) || 0
+      const max = Number(filters.priceMax) || 0
+      list = list.filter(inf => {
+        const allPrices = Object.values(inf.platforms || {})
+          .flatMap(p => Object.values(p.prices || {}))
+          .map(Number)
+          .filter(v => v > 0)
+        if (!allPrices.length) return false
+        if (min && max) return allPrices.some(p => p >= min && p <= max)
+        if (min) return allPrices.some(p => p >= min)
+        if (max) return allPrices.some(p => p <= max)
+        return true
+      })
+    }
 
     return [...list].sort((a, b) => {
       if (filters.sort === 'followers') return b.totalFollowers - a.totalFollowers
@@ -127,12 +145,13 @@ export default function DirectoryScreen() {
       }
       return (a.rank || 9999) - (b.rank || 9999)
     })
-  }, [influencers, search, filters])
+  }, [influencers, search, filters, isPro])
 
   const activeFilters =
     (filters.tier ? 1 : 0) +
     (filters.platform ? 1 : 0) +
-    (filters.gender ? 1 : 0)
+    (filters.gender ? 1 : 0) +
+    (isPro && (filters.priceMin || filters.priceMax) ? 1 : 0)
 
   if (loading) {
     return (
@@ -255,8 +274,10 @@ export default function DirectoryScreen() {
       <FilterSheet
         visible={showFilter}
         filters={filters}
+        isPro={isPro}
         onApply={f => { setFilters(f); setShowFilter(false) }}
         onClose={() => setShowFilter(false)}
+        onUpgradeRequest={() => { setShowFilter(false); setShowUpgrade(true) }}
       />
 
       <TourGuide visible={showTour} onClose={() => setShowTour(false)} />
