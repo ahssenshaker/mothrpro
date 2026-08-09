@@ -69,11 +69,11 @@ async function isRateLimited(key, max = 30) {
 
 // Resolve user plan from Supabase JWT, with short-lived in-memory cache.
 async function resolveUserPlan(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return { plan: 'free', userId: null }
+  if (!authHeader?.startsWith('Bearer ')) return { plan: 'free', userId: null, debug: 'no-bearer-header' }
   const token = authHeader.slice(7)
   try {
-    const { data: { user } } = await supabase.auth.getUser(token)
-    if (!user) return { plan: 'free', userId: null }
+    const { data: { user }, error: getUserError } = await supabase.auth.getUser(token)
+    if (!user) return { plan: 'free', userId: null, debug: getUserError?.message || 'getUser returned no user' }
 
     const cached = planCache.get(user.id)
     if (cached && (Date.now() - cached.ts) < PLAN_CACHE_TTL) {
@@ -97,8 +97,8 @@ async function resolveUserPlan(authHeader) {
 
     planCache.set(user.id, { plan: resolvedPlan, ts: Date.now() })
     return { plan: resolvedPlan, userId: user.id }
-  } catch {
-    return { plan: 'free', userId: null }
+  } catch (e) {
+    return { plan: 'free', userId: null, debug: e?.message || 'exception in resolveUserPlan' }
   }
 }
 
@@ -189,7 +189,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const { plan, userId } = isWarmup
+  const { plan, userId, debug } = isWarmup
     ? { plan: 'admin', userId: 'warmup' }
     : await resolveUserPlan(req.headers.authorization)
 
@@ -197,8 +197,9 @@ export default async function handler(req, res) {
   const isPro = plan === 'pro' || isAdmin
 
   // Require authentication for all GET requests (prevents anonymous scraping).
+  // TEMP: "debug" field included while diagnosing a mobile-app 401 - remove once resolved.
   if (req.method === 'GET' && !isWarmup && !userId) {
-    return res.status(401).json({ error: 'يرجى تسجيل الدخول' })
+    return res.status(401).json({ error: 'يرجى تسجيل الدخول', debug })
   }
 
   // Rate limit authenticated GET requests (warmup is exempt).
