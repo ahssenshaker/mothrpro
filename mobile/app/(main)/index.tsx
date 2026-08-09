@@ -52,8 +52,8 @@ export default function DirectoryScreen() {
       }
       setHasMore(res.hasMore)
       setPage(p + 1)
-    } catch {
-      setError('تعذّر تحميل البيانات')
+    } catch (e: any) {
+      setError(`تعذّر تحميل البيانات\n${e?.message || ''}`)
     }
   }, [session, page])
 

@@ -64,7 +64,10 @@ export async function fetchInfluencers(
     `${API_BASE}/api/influencers?page=${page}&limit=${limit}`,
     { headers: makeHeaders(accessToken) },
   )
-  if (!res.ok) throw new Error('fetch influencers failed')
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`fetch influencers failed: HTTP ${res.status} ${body}`.slice(0, 300))
+  }
   return res.json() as Promise<{
     data: Influencer[]
     total: number
