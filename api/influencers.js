@@ -69,11 +69,11 @@ async function isRateLimited(key, max = 30) {
 
 // Resolve user plan from Supabase JWT, with short-lived in-memory cache.
 async function resolveUserPlan(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return { plan: 'free', userId: null, debug: 'no-bearer-header' }
+  if (!authHeader?.startsWith('Bearer ')) return { plan: 'free', userId: null }
   const token = authHeader.slice(7)
   try {
-    const { data: { user }, error: getUserError } = await supabase.auth.getUser(token)
-    if (!user) return { plan: 'free', userId: null, debug: getUserError?.message || 'getUser returned no user' }
+    const { data: { user } } = await supabase.auth.getUser(token)
+    if (!user) return { plan: 'free', userId: null }
 
     const cached = planCache.get(user.id)
     if (cached && (Date.now() - cached.ts) < PLAN_CACHE_TTL) {
@@ -97,8 +97,8 @@ async function resolveUserPlan(authHeader) {
 
     planCache.set(user.id, { plan: resolvedPlan, ts: Date.now() })
     return { plan: resolvedPlan, userId: user.id }
-  } catch (e) {
-    return { plan: 'free', userId: null, debug: e?.message || 'exception in resolveUserPlan' }
+  } catch {
+    return { plan: 'free', userId: null }
   }
 }
 
@@ -189,7 +189,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const { plan, userId, debug } = isWarmup
+  const { plan, userId } = isWarmup
     ? { plan: 'admin', userId: 'warmup' }
     : await resolveUserPlan(req.headers.authorization)
 
@@ -197,21 +197,8 @@ export default async function handler(req, res) {
   const isPro = plan === 'pro' || isAdmin
 
   // Require authentication for all GET requests (prevents anonymous scraping).
-  // TEMP: extra fields included while diagnosing a mobile-app 401 - remove once resolved.
-  // Checking whether a cross-origin redirect (e.g. apex -> www) is stripping
-  // the Authorization header before the request reaches this function, per
-  // the Fetch spec's "strip Authorization on cross-origin redirect" rule.
   if (req.method === 'GET' && !isWarmup && !userId) {
-    return res.status(401).json({
-      error: 'يرجى تسجيل الدخول',
-      debug,
-      _diag: {
-        host: req.headers.host,
-        origin: req.headers.origin || null,
-        hasAuthHeader: !!req.headers.authorization,
-        hasAppKey: !!req.headers['x-app-key'],
-      },
-    })
+    return res.status(401).json({ error: 'يرجى تسجيل الدخول' })
   }
 
   // Rate limit authenticated GET requests (warmup is exempt).

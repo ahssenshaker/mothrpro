@@ -30,7 +30,11 @@ export interface Influencer {
   intro_en?: string
 }
 
-const API_BASE = 'https://moatherpro.com'
+// www, not the apex domain: the apex redirects to www, and fetch() strips
+// the Authorization header on cross-origin redirects (per the Fetch spec) -
+// confirmed via server-side diagnostics (req.headers.host was www even
+// though the app requested the apex domain).
+const API_BASE = 'https://www.moatherpro.com'
 
 // Matches MOBILE_APP_KEY in api/influencers.js and api/count.js. Lets the
 // native app through the bot/origin gate — fetch() on iOS/Android can't set
