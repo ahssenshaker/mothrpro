@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { getTier, formatFollowers, getPrimaryPlatform, Influencer } from '@/lib/api'
+import { getTier, formatFollowers, getPrimaryPlatform, resolveImageUrl, Influencer } from '@/lib/api'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
 
@@ -14,6 +14,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
   const primary = getPrimaryPlatform(inf)
   const platformLabel = primary?.[0] || ''
   const platformColor = PlatformColors[platformLabel] || Colors.accent
+  const avatarUrl = resolveImageUrl(inf.avatar)
 
   function handlePress() {
     cacheInfluencer(inf)
@@ -52,8 +53,8 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
 
         {/* Avatar */}
         <View style={s.avatarBox}>
-          {inf.avatar ? (
-            <Image source={{ uri: inf.avatar }} style={s.avatar} />
+          {avatarUrl ? (
+            <Image source={{ uri: avatarUrl }} style={s.avatar} />
           ) : (
             <View style={s.avatarFallback}>
               <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>

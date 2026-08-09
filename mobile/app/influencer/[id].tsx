@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
-import { getTier, formatFollowers, formatPrice, Influencer } from '@/lib/api'
+import { getTier, formatFollowers, formatPrice, resolveImageUrl, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
@@ -43,6 +43,8 @@ export default function InfluencerDetail() {
   const tierColor = TierColors[tier] || Colors.textMuted
   const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
   const platforms = Object.entries(inf.platforms || {})
+  const avatarUrl = resolveImageUrl(inf.avatar)
+  const coverUrl = resolveImageUrl(inf.cover)
   // 0 = balanced, 1 = mostly-male audience, 2 = mostly-female audience.
   const femalePct = inf.followersGender === 2 ? 70 : inf.followersGender === 1 ? 30 : 50
 
@@ -52,8 +54,8 @@ export default function InfluencerDetail() {
 
         {/* Cover */}
         <View style={s.coverBox}>
-          {inf.cover ? (
-            <Image source={{ uri: inf.cover }} style={s.cover} resizeMode="cover" />
+          {coverUrl ? (
+            <Image source={{ uri: coverUrl }} style={s.cover} resizeMode="cover" />
           ) : (
             <View style={[s.cover, { backgroundColor: Colors.s3 }]} />
           )}
@@ -67,8 +69,8 @@ export default function InfluencerDetail() {
 
         {/* Avatar + name */}
         <View style={s.heroSection}>
-          {inf.avatar ? (
-            <Image source={{ uri: inf.avatar }} style={s.avatar} />
+          {avatarUrl ? (
+            <Image source={{ uri: avatarUrl }} style={s.avatar} />
           ) : (
             <View style={[s.avatar, s.avatarFallback]}>
               <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
