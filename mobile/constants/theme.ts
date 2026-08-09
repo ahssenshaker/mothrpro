@@ -15,14 +15,24 @@ export const Colors = {
   border: '#1e2d45',
 }
 
+// Keys match the actual platform names stored in influencers.platforms
+// (see index.html's PI map) - not English slugs.
 export const PlatformColors: Record<string, string> = {
-  instagram: '#E1306C',
-  tiktok: '#69C9D0',
-  youtube: '#FF0000',
-  snapchat: '#FFC300',
-  twitter: '#1DA1F2',
-  x: '#1DA1F2',
-  facebook: '#4267B2',
+  'انستقرام': '#E1306C',
+  'تيك توك': '#69C9D0',
+  'يوتيوب': '#FF0000',
+  'سناب شات': '#FFC300',
+  'تويتر/X': '#1DA1F2',
+  'فيسبوك': '#4267B2',
+}
+
+export const PlatformIcons: Record<string, string> = {
+  'انستقرام': '📸',
+  'تويتر/X': '✖️',
+  'سناب شات': '👻',
+  'يوتيوب': '▶️',
+  'تيك توك': '🎵',
+  'فيسبوك': '👍',
 }
 
 export const TierColors: Record<string, string> = {

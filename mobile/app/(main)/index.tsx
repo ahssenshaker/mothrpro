@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
-import { fetchInfluencers, getTier, Influencer } from '@/lib/api'
+import { fetchInfluencers, getTier, getPrimaryPlatform, Influencer } from '@/lib/api'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import InfluencerCard from '@/components/InfluencerCard'
 import FilterSheet, { Filters } from '@/components/FilterSheet'
@@ -91,21 +91,22 @@ export default function DirectoryScreen() {
     }
 
     if (filters.tier) {
-      list = list.filter(inf => getTier(inf.followers) === filters.tier)
+      list = list.filter(inf => getTier(inf.totalFollowers) === filters.tier)
     }
     if (filters.platform) {
-      list = list.filter(
-        inf => inf.platform?.toLowerCase() === filters.platform.toLowerCase(),
-      )
+      list = list.filter(inf => Object.keys(inf.platforms || {}).includes(filters.platform))
     }
     if (filters.gender) {
       list = list.filter(inf => inf.gender === filters.gender)
     }
 
     return [...list].sort((a, b) => {
-      if (filters.sort === 'followers') return b.followers - a.followers
-      if (filters.sort === 'engagement')
-        return (b.engagement_rate || 0) - (a.engagement_rate || 0)
+      if (filters.sort === 'followers') return b.totalFollowers - a.totalFollowers
+      if (filters.sort === 'engagement') {
+        const ea = getPrimaryPlatform(a)?.[1]?.engagementRate || 0
+        const eb = getPrimaryPlatform(b)?.[1]?.engagementRate || 0
+        return eb - ea
+      }
       return (a.rank || 9999) - (b.rank || 9999)
     })
   }, [influencers, search, filters])
@@ -183,7 +184,7 @@ export default function DirectoryScreen() {
       {/* List */}
       <FlatList
         data={filtered}
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
           <InfluencerCard
             influencer={item}

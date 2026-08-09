@@ -1,33 +1,54 @@
+// Matches the real `influencers` table (supabase/migrations/001_influencers.sql)
+// and api/influencers.js's response shape — not a REST-flat guess.
+export interface PlatformData {
+  followers: string
+  followersNum: number
+  url: string | null
+  avgLikes: number | null
+  avgComments: number | null
+  engagementRate: number | null
+  postsPerWeek: number | null
+  prices: Record<string, string> | null
+}
+
 export interface Influencer {
-  id: string
+  id: number
   name: string
-  name_en?: string
+  nickname?: string
   specialization?: string
-  specialization_en?: string
-  platform?: string
-  followers: number
-  avg_likes?: number
-  avg_comments?: number
-  engagement_rate?: number
-  posts_per_week?: number
-  profile_url?: string
-  followers_ages?: Record<string, number>
-  followers_gender?: { male: number; female: number }
-  prices?: { story?: number; post?: number; reel?: number; video?: number }
-  avatar_url?: string
-  cover_url?: string
-  gender?: string
-  regions?: string[]
-  regions_en?: string[]
-  categories?: string[]
-  categories_en?: string[]
-  tags?: string[]
-  tags_en?: string[]
-  source?: string
-  rank?: number
-  verified?: boolean
   intro?: string
+  gender?: string
+  avatar?: string
+  cover?: string
+  platforms: Record<string, PlatformData>
+  categories?: string[]
+  tags?: string[]
+  regions?: string[]
+  followersAges?: string[]
+  // Category code, not a percentage: 0 = balanced/unknown, 1 = mostly male, 2 = mostly female.
+  followersGender?: number
+  tier?: string
+  rank?: number
+  rangeLabel?: string
+  totalFollowers: number
+  totalFormatted?: string
+  source?: string
+  sourceNote?: string
+  isManuallyAdded?: boolean
+  name_en?: string
+  specialization_en?: string
   intro_en?: string
+  categories_en?: string[]
+  tags_en?: string[]
+  regions_en?: string[]
+}
+
+// Picks the platform with the most followers, for card/summary views that
+// show one badge/stat set rather than the full per-platform breakdown.
+export function getPrimaryPlatform(inf: Influencer): [string, PlatformData] | null {
+  const entries = Object.entries(inf.platforms || {})
+  if (!entries.length) return null
+  return entries.reduce((best, cur) => (cur[1].followersNum > best[1].followersNum ? cur : best))
 }
 
 // www, not the apex domain: the apex redirects to www, and fetch() strips
@@ -89,21 +110,27 @@ export async function fetchCount() {
   return res.json() as Promise<{ count: number }>
 }
 
-export function getTier(followers: number): string {
-  if (followers < 10_000) return 'نانو'
-  if (followers < 100_000) return 'ميكرو'
-  if (followers < 1_000_000) return 'ماكرو'
-  if (followers < 5_000_000) return 'ميجا'
-  return 'ألفا'
+export function getTier(followers?: number | null): string {
+  const n = Number(followers || 0)
+  if (n >= 5_000_000) return 'ألفا'
+  if (n >= 1_000_000) return 'ميجا'
+  if (n >= 100_000) return 'ماكرو'
+  if (n >= 10_000) return 'ميكرو'
+  return 'نانو'
 }
 
-export function formatFollowers(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`
-  return n.toString()
+export function formatFollowers(n?: number | null): string {
+  const v = Number(n || 0)
+  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`
+  if (v >= 1_000) return `${Math.round(v / 1_000)}K`
+  return String(v)
 }
 
-export function formatPrice(n?: number): string {
-  if (!n) return '—'
+// Price values are free-form strings the admin typed in (e.g. "5000"), keyed
+// by an arbitrary label (e.g. "صورة", "فيديو") - not a fixed set of fields.
+export function formatPrice(value?: string | null): string {
+  if (!value) return '—'
+  const n = Number(value)
+  if (!Number.isFinite(n)) return value
   return `${n.toLocaleString('ar-SA')} ر.س`
 }

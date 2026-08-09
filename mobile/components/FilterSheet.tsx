@@ -25,15 +25,17 @@ interface Props {
 }
 
 const TIERS = ['', 'نانو', 'ميكرو', 'ماكرو', 'ميجا', 'ألفا']
-const PLATFORMS = ['', 'instagram', 'tiktok', 'youtube', 'snapchat', 'twitter', 'facebook']
+// These match the actual platform names stored in influencers.platforms
+// (see index.html's PI map), not English slugs.
+const PLATFORMS = ['', 'انستقرام', 'تيك توك', 'يوتيوب', 'سناب شات', 'تويتر/X', 'فيسبوك']
 const PLATFORM_LABELS: Record<string, string> = {
   '': 'الكل',
-  instagram: 'انستقرام',
-  tiktok: 'تيك توك',
-  youtube: 'يوتيوب',
-  snapchat: 'سناب شات',
-  twitter: 'تويتر',
-  facebook: 'فيسبوك',
+  'انستقرام': 'انستقرام',
+  'تيك توك': 'تيك توك',
+  'يوتيوب': 'يوتيوب',
+  'سناب شات': 'سناب شات',
+  'تويتر/X': 'تويتر/X',
+  'فيسبوك': 'فيسبوك',
 }
 const TIER_LABELS: Record<string, string> = {
   '': 'الكل',

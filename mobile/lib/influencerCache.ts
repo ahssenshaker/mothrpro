@@ -3,7 +3,7 @@ import { Influencer } from './api'
 const _cache = new Map<string, Influencer>()
 
 export function cacheInfluencer(inf: Influencer) {
-  _cache.set(inf.id, inf)
+  _cache.set(String(inf.id), inf)
 }
 
 export function getCachedInfluencer(id: string): Influencer | null {

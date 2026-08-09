@@ -1,17 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { getTier, formatFollowers, Influencer } from '@/lib/api'
+import { getTier, formatFollowers, getPrimaryPlatform, Influencer } from '@/lib/api'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
-
-const PLATFORM_LABEL: Record<string, string> = {
-  instagram: 'انستقرام',
-  tiktok: 'تيك توك',
-  youtube: 'يوتيوب',
-  snapchat: 'سناب',
-  twitter: 'تويتر',
-  x: 'X',
-  facebook: 'فيسبوك',
-}
 
 interface Props {
   influencer: Influencer
@@ -19,11 +9,11 @@ interface Props {
 }
 
 export default function InfluencerCard({ influencer: inf, onPress }: Props) {
-  const tier = getTier(inf.followers)
+  const tier = getTier(inf.totalFollowers)
   const tierColor = TierColors[tier] || Colors.textMuted
-  const platform = inf.platform?.toLowerCase() || ''
-  const platformColor = PlatformColors[platform] || Colors.accent
-  const platformLabel = PLATFORM_LABEL[platform] || inf.platform || ''
+  const primary = getPrimaryPlatform(inf)
+  const platformLabel = primary?.[0] || ''
+  const platformColor = PlatformColors[platformLabel] || Colors.accent
 
   function handlePress() {
     cacheInfluencer(inf)
@@ -36,7 +26,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
         {/* Text Info (RTL: text on left, avatar on right) */}
         <View style={s.info}>
           <View style={s.nameRow}>
-            {inf.verified && <Text style={s.verified}> ✓</Text>}
+            {inf.source === 'verified' && <Text style={s.verified}> ✓</Text>}
             <Text style={s.name} numberOfLines={1}>{inf.name}</Text>
           </View>
           {inf.specialization ? (
@@ -47,21 +37,23 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
             <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
               <Text style={[s.badgeText, { color: tierColor }]}>{tier}</Text>
             </View>
-            <View style={[s.badge, { backgroundColor: platformColor + '22', borderColor: platformColor }]}>
-              <Text style={[s.badgeText, { color: platformColor }]}>{platformLabel}</Text>
-            </View>
+            {platformLabel ? (
+              <View style={[s.badge, { backgroundColor: platformColor + '22', borderColor: platformColor }]}>
+                <Text style={[s.badgeText, { color: platformColor }]}>{platformLabel}</Text>
+              </View>
+            ) : null}
           </View>
 
           <Text style={s.followers}>
-            {formatFollowers(inf.followers)}{' '}
+            {inf.totalFormatted || formatFollowers(inf.totalFollowers)}{' '}
             <Text style={s.followersLabel}>متابع</Text>
           </Text>
         </View>
 
         {/* Avatar */}
         <View style={s.avatarBox}>
-          {inf.avatar_url ? (
-            <Image source={{ uri: inf.avatar_url }} style={s.avatar} />
+          {inf.avatar ? (
+            <Image source={{ uri: inf.avatar }} style={s.avatar} />
           ) : (
             <View style={s.avatarFallback}>
               <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
