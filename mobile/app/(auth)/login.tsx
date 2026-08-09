@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -9,10 +10,14 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Modal,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
+import { AntDesign } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
+import { supabase } from '@/lib/supabase'
+import * as Linking from 'expo-linking'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function LoginScreen() {
@@ -23,6 +28,11 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const [resetVisible, setResetVisible] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetMsg, setResetMsg] = useState('')
 
   async function handleLogin() {
     if (!email.trim() || !password) {
@@ -59,6 +69,33 @@ export default function LoginScreen() {
     }
   }
 
+  function openReset() {
+    setResetEmail(email)
+    setResetMsg('')
+    setResetVisible(true)
+  }
+
+  async function handleSendReset() {
+    if (!resetEmail.trim()) {
+      setResetMsg('يرجى إدخال البريد الإلكتروني')
+      return
+    }
+    setResetLoading(true)
+    setResetMsg('')
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
+        redirectTo: Linking.createURL('auth-callback'),
+      })
+      if (error) throw error
+      setResetMsg('✅ تم الإرسال — تحقق من بريدك الإلكتروني')
+      setTimeout(() => setResetVisible(false), 2500)
+    } catch {
+      setResetMsg('حاول مرة أخرى')
+    } finally {
+      setResetLoading(false)
+    }
+  }
+
   return (
     <SafeAreaView style={s.screen}>
       <KeyboardAvoidingView
@@ -71,7 +108,7 @@ export default function LoginScreen() {
         >
           {/* Logo */}
           <View style={s.logoBox}>
-            <Text style={s.logoStar}>⭐</Text>
+            <Image source={require('@/assets/logo.png')} style={s.logoImage} resizeMode="contain" />
             <Text style={s.logoText}>مؤثر برو</Text>
             <Text style={s.logoSub}>دليل المؤثرين المحترف</Text>
           </View>
@@ -119,6 +156,10 @@ export default function LoginScreen() {
               )}
             </TouchableOpacity>
 
+            <TouchableOpacity onPress={openReset} style={s.forgotBox}>
+              <Text style={s.forgotText}>نسيت كلمة المرور؟</Text>
+            </TouchableOpacity>
+
             <View style={s.dividerRow}>
               <View style={s.dividerLine} />
               <Text style={s.dividerText}>أو</Text>
@@ -134,7 +175,10 @@ export default function LoginScreen() {
               {googleLoading ? (
                 <ActivityIndicator color={Colors.text} />
               ) : (
-                <Text style={s.googleBtnText}>المتابعة عبر جوجل</Text>
+                <>
+                  <AntDesign name="google" size={18} color="#EA4335" style={s.googleIcon} />
+                  <Text style={s.googleBtnText}>المتابعة عبر جوجل</Text>
+                </>
               )}
             </TouchableOpacity>
           </View>
@@ -147,6 +191,40 @@ export default function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Modal visible={resetVisible} transparent animationType="fade" onRequestClose={() => setResetVisible(false)}>
+        <View style={s.modalBackdrop}>
+          <View style={s.modalCard}>
+            <Text style={s.modalTitle}>استعادة كلمة المرور</Text>
+            <TextInput
+              style={s.input}
+              value={resetEmail}
+              onChangeText={setResetEmail}
+              placeholder="example@email.com"
+              placeholderTextColor={Colors.textMuted}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            {resetMsg ? (
+              <Text style={[s.resetMsg, resetMsg.startsWith('✅') && s.resetMsgOk]}>{resetMsg}</Text>
+            ) : null}
+            <TouchableOpacity
+              style={[s.btn, resetLoading && s.btnDisabled]}
+              onPress={handleSendReset}
+              disabled={resetLoading}
+            >
+              {resetLoading ? (
+                <ActivityIndicator color={Colors.bg} />
+              ) : (
+                <Text style={s.btnText}>إرسال رابط الاستعادة</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setResetVisible(false)} style={s.modalCloseBox}>
+              <Text style={s.forgotText}>إغلاق</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -156,7 +234,7 @@ const s = StyleSheet.create({
   flex:        { flex: 1 },
   scroll:      { flexGrow: 1, padding: Spacing.lg },
   logoBox:     { alignItems: 'center', marginTop: 60, marginBottom: 40 },
-  logoStar:    { fontSize: 52, marginBottom: 8 },
+  logoImage:   { width: 72, height: 72, marginBottom: 8 },
   logoText:    { color: Colors.gold, fontSize: FontSize.xxl, fontWeight: '800' },
   logoSub:     { color: Colors.textMuted, fontSize: FontSize.sm, marginTop: 4 },
   card: {
@@ -195,13 +273,37 @@ const s = StyleSheet.create({
     backgroundColor: Colors.s2,
     borderRadius: Radius.md,
     padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.border,
   },
+  googleIcon:  { marginLeft: 8 },
   googleBtnText: { color: Colors.text, fontWeight: '700', fontSize: FontSize.md },
+  forgotBox:   { alignItems: 'center', marginTop: Spacing.sm },
+  forgotText:  { color: Colors.textMuted, fontSize: FontSize.xs },
   footer:      { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.lg },
   footerText:  { color: Colors.textMuted },
   footerLink:  { color: Colors.accent, fontWeight: '600' },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: Spacing.lg,
+  },
+  modalCard: {
+    width: '100%',
+    backgroundColor: Colors.s1,
+    borderRadius: 16,
+    padding: Spacing.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  modalTitle:  { color: Colors.text, fontSize: FontSize.lg, fontWeight: '700', textAlign: 'right', marginBottom: Spacing.md },
+  modalCloseBox: { alignItems: 'center', marginTop: Spacing.md },
+  resetMsg:    { color: Colors.red, textAlign: 'center', marginTop: Spacing.sm, fontSize: FontSize.sm },
+  resetMsgOk:  { color: Colors.green },
 })

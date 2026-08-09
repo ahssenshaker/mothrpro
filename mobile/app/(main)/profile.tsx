@@ -6,20 +6,19 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-  Linking,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import * as WebBrowser from 'expo-web-browser'
 import { useAuth } from '@/context/AuthContext'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
-
-const LS_CHECKOUT =
-  'https://moatherpro.lemonsqueezy.com/checkout/buy/1c3132f7-85d2-4bef-9e5d-50a0daffd046'
+import UpgradeModal from '@/components/UpgradeModal'
 
 const PLAN_LABEL: Record<string, string> = {
   free: 'مجاني',
   trial: 'تجريبي',
   pro: 'برو',
   admin: 'مدير',
+  credits: 'كريدت',
 }
 
 const PLAN_COLOR: Record<string, string> = {
@@ -27,6 +26,7 @@ const PLAN_COLOR: Record<string, string> = {
   trial: Colors.accent,
   pro: Colors.gold,
   admin: Colors.purple,
+  credits: Colors.gold,
 }
 
 function fmt(dateStr?: string) {
@@ -46,9 +46,9 @@ function trialHours(expiresAt?: string) {
 }
 
 export default function ProfileScreen() {
-  const { session, subscriber, effectivePlan, signOut, refreshSubscriber } = useAuth()
+  const { session, subscriber, effectivePlan, signOut } = useAuth()
   const [signingOut, setSigningOut] = useState(false)
-  const [polling, setPolling] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const email = session?.user?.email || ''
   const planLabel = PLAN_LABEL[effectivePlan] || 'مجاني'
@@ -68,21 +68,6 @@ export default function ProfileScreen() {
         },
       },
     ])
-  }
-
-  async function openCheckout() {
-    const url = `${LS_CHECKOUT}?checkout[custom][account_email]=${encodeURIComponent(email)}`
-    await Linking.openURL(url)
-    // Poll for upgrade after checkout
-    setPolling(true)
-    const start = Date.now()
-    const interval = setInterval(async () => {
-      await refreshSubscriber()
-      if (Date.now() - start > 180_000 || effectivePlan === 'pro') {
-        clearInterval(interval)
-        setPolling(false)
-      }
-    }, 10_000)
   }
 
   return (
@@ -120,20 +105,25 @@ export default function ProfileScreen() {
           {effectivePlan === 'pro' && !subscriber?.expires_at && (
             <Row label="نوع الاشتراك" value="دائم" valueColor={Colors.green} />
           )}
+          {effectivePlan === 'credits' && (
+            <>
+              <Row label="الكريدتات المتبقية" value={String(subscriber?.credits_remaining || 0)} valueColor={Colors.gold} />
+              <Row label="المؤثرين المفتوحين" value={String(subscriber?.unlocked_ids?.length || 0)} />
+            </>
+          )}
         </View>
 
         {/* Upgrade section */}
-        {(effectivePlan === 'free' || effectivePlan === 'trial') && (
+        {(effectivePlan === 'free' || effectivePlan === 'trial' || effectivePlan === 'credits') && (
           <View style={s.upgradeCard}>
             <Text style={s.upgradeTitle}>🚀 ترقية للبرو</Text>
             <Text style={s.upgradeDesc}>
-              احصل على بيانات كاملة لجميع المؤثرين: الأسعار، معدل التفاعل، تحليل الجمهور
+              {effectivePlan === 'credits'
+                ? 'احتجت تفتح أكثر؟ اشترِ كريدت إضافي أو رقّي لوصول كامل دائم'
+                : 'احصل على بيانات كاملة لجميع المؤثرين: الأسعار، معدل التفاعل، تحليل الجمهور'}
             </Text>
-            <Text style={s.upgradePrice}>39 ر.س / شهر</Text>
-            <TouchableOpacity style={s.upgradeBtn} onPress={openCheckout}>
-              <Text style={s.upgradeBtnText}>
-                {polling ? 'جاري التحقق...' : 'اشترك الآن'}
-              </Text>
+            <TouchableOpacity style={s.upgradeBtn} onPress={() => setShowUpgrade(true)}>
+              <Text style={s.upgradeBtnText}>عرض الخطط</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -157,6 +147,24 @@ export default function ProfileScreen() {
           </View>
         )}
 
+        {/* Legal */}
+        <View style={s.card}>
+          <TouchableOpacity
+            style={s.legalRow}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.moatherpro.com/privacy')}
+          >
+            <Text style={s.legalArrow}>‹</Text>
+            <Text style={s.legalText}>سياسة الخصوصية</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={s.legalRow}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.moatherpro.com/refund')}
+          >
+            <Text style={s.legalArrow}>‹</Text>
+            <Text style={s.legalText}>سياسة الاسترداد</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Logout */}
         <TouchableOpacity
           style={s.logoutBtn}
@@ -166,8 +174,10 @@ export default function ProfileScreen() {
           <Text style={s.logoutText}>{signingOut ? 'جاري الخروج...' : 'تسجيل الخروج'}</Text>
         </TouchableOpacity>
 
-        <Text style={s.versionText}>مؤثر برو • الإصدار 1.0</Text>
+        <Text style={s.versionText}>مؤثر برو • الإصدار 1.0{'\n'}© 2026 جميع الحقوق محفوظة</Text>
       </ScrollView>
+
+      <UpgradeModal visible={showUpgrade} onClose={() => setShowUpgrade(false)} />
     </SafeAreaView>
   )
 }
@@ -243,6 +253,16 @@ const s = StyleSheet.create({
   rowValue:      { fontWeight: '600', fontSize: FontSize.sm },
   featureRow:    { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: Colors.border },
   featureText:   { color: Colors.text, fontSize: FontSize.sm, textAlign: 'right' },
+  legalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  legalArrow:    { color: Colors.textMuted, fontSize: FontSize.md },
+  legalText:     { color: Colors.text, fontSize: FontSize.sm },
   upgradeCard: {
     backgroundColor: Colors.gold + '15',
     borderRadius: Radius.md,

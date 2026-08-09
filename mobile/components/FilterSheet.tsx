@@ -2,6 +2,7 @@ import {
   View,
   Text,
   Modal,
+  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -15,13 +16,17 @@ export interface Filters {
   platform: string
   gender: string
   sort: 'rank' | 'followers' | 'engagement'
+  priceMin: string
+  priceMax: string
 }
 
 interface Props {
   visible: boolean
   filters: Filters
+  isPro: boolean
   onApply: (f: Filters) => void
   onClose: () => void
+  onUpgradeRequest: () => void
 }
 
 const TIERS = ['', 'نانو', 'ميكرو', 'ماكرو', 'ميجا', 'ألفا']
@@ -51,15 +56,20 @@ const SORTS: { value: Filters['sort']; label: string }[] = [
   { value: 'engagement', label: 'الأعلى تفاعلاً' },
 ]
 
-export default function FilterSheet({ visible, filters, onApply, onClose }: Props) {
+export default function FilterSheet({ visible, filters, isPro, onApply, onClose, onUpgradeRequest }: Props) {
   const [local, setLocal] = useState<Filters>({ ...filters })
 
   function reset() {
-    setLocal({ tier: '', platform: '', gender: '', sort: 'rank' })
+    setLocal({ tier: '', platform: '', gender: '', sort: 'rank', priceMin: '', priceMax: '' })
   }
 
   function apply() {
     onApply(local)
+  }
+
+  function handlePriceFocus() {
+    if (isPro) return
+    onUpgradeRequest()
   }
 
   return (
@@ -149,6 +159,41 @@ export default function FilterSheet({ visible, filters, onApply, onClose }: Prop
             ))}
           </View>
 
+          {/* Price range — Pro only */}
+          <View style={s.priceTitleRow}>
+            <Text style={s.sectionTitle}>نطاق السعر</Text>
+            {!isPro && <Text style={s.lockIcon}>🔒</Text>}
+          </View>
+          <View style={s.priceRow}>
+            <TextInput
+              style={s.priceInput}
+              value={local.priceMax}
+              onChangeText={v => setLocal(f => ({ ...f, priceMax: v }))}
+              onFocus={handlePriceFocus}
+              editable={isPro}
+              placeholder="إلى"
+              placeholderTextColor={Colors.textMuted}
+              keyboardType="number-pad"
+              textAlign="right"
+            />
+            <TextInput
+              style={s.priceInput}
+              value={local.priceMin}
+              onChangeText={v => setLocal(f => ({ ...f, priceMin: v }))}
+              onFocus={handlePriceFocus}
+              editable={isPro}
+              placeholder="من"
+              placeholderTextColor={Colors.textMuted}
+              keyboardType="number-pad"
+              textAlign="right"
+            />
+          </View>
+          {!isPro && (
+            <TouchableOpacity onPress={onUpgradeRequest}>
+              <Text style={s.priceGateText}>🔒 فلتر السعر متاح لخطة البرو فقط — ترقية ↑</Text>
+            </TouchableOpacity>
+          )}
+
           <View style={{ height: 24 }} />
         </ScrollView>
 
@@ -229,6 +274,21 @@ const s = StyleSheet.create({
     backgroundColor: Colors.s2,
   },
   chipText:    { color: Colors.text, fontSize: FontSize.sm },
+  priceTitleRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 6 },
+  lockIcon:    { fontSize: FontSize.xs },
+  priceRow:    { flexDirection: 'row-reverse', gap: 8, marginBottom: 4 },
+  priceInput: {
+    flex: 1,
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    color: Colors.text,
+    fontSize: FontSize.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  priceGateText: { color: Colors.accent, fontSize: FontSize.xs, textAlign: 'right', marginTop: 6 },
   applyBtn: {
     backgroundColor: Colors.gold,
     borderRadius: Radius.md,

@@ -63,6 +63,22 @@ const API_BASE = 'https://www.moatherpro.com'
 // otherwise always fail for this app.
 const MOBILE_APP_KEY = 'Lu2vva_pvSQLpvzeqjYymO7ecCWImi_k'
 
+// scripts/fetch-influencer-images.mjs writes avatar/cover as paths relative
+// to the site root (e.g. "assets/influencers/123-avatar.jpg"), which only
+// resolves on the web app because the browser has a page URL to resolve
+// against. React Native's <Image> has no such context, so relative paths
+// must be turned into absolute URLs here. The cartoon placeholder defaults
+// are .svg files, which <Image> can't render at all - treat those as "no
+// image" so the initial-letter fallback avatar shows instead.
+const CARTOON_PLACEHOLDER_RE = /^assets\/(avatar|cover)-(male|female|neutral)\.svg$/
+
+export function resolveImageUrl(path?: string | null): string | undefined {
+  if (!path) return undefined
+  if (CARTOON_PLACEHOLDER_RE.test(path)) return undefined
+  if (/^https?:\/\//i.test(path) || path.startsWith('data:')) return path
+  return `${API_BASE}/${path.replace(/^\/+/, '')}`
+}
+
 function makeHeaders(accessToken: string): Record<string, string> {
   return {
     Authorization: `Bearer ${accessToken}`,
@@ -78,6 +94,19 @@ export async function activateUser(accessToken: string) {
   })
   if (!res.ok) throw new Error('activate failed')
   return res.json() as Promise<{ activated: boolean; plan: string }>
+}
+
+// Spends one credit permanently unlocking a single influencer (the 'credits'
+// plan tier - api/unlock-influencer.js lives on the server, not in this repo).
+export async function unlockInfluencer(accessToken: string, influencerId: number) {
+  const res = await fetch(`${API_BASE}/api/unlock-influencer`, {
+    method: 'POST',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ influencer_id: influencerId }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الفتح')
+  return json as { credits_remaining: number; plan?: string }
 }
 
 export async function fetchInfluencers(
