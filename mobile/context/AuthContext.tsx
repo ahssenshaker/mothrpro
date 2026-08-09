@@ -136,7 +136,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function signUp(email: string, password: string) {
-    const { error } = await supabase.auth.signUp({ email, password })
+    // Without emailRedirectTo, the confirmation link falls back to the
+    // Supabase project's Site URL (the website) instead of deep-linking
+    // back into the app.
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: Linking.createURL('auth-callback') },
+    })
     if (error) throw error
   }
 
