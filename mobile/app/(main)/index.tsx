@@ -17,11 +17,13 @@ import { useAuth } from '@/context/AuthContext'
 import { fetchInfluencers, getTier, getPrimaryPlatform, Influencer } from '@/lib/api'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import InfluencerCard from '@/components/InfluencerCard'
+import InfluencerGridCard from '@/components/InfluencerGridCard'
 import FilterSheet, { Filters } from '@/components/FilterSheet'
 import TourGuide from '@/components/TourGuide'
 import UpgradeModal from '@/components/UpgradeModal'
 
 const LIMIT = 100
+const VIEW_MODE_KEY = 'directory_view_mode'
 
 export default function DirectoryScreen() {
   const { session, effectivePlan } = useAuth()
@@ -49,6 +51,7 @@ export default function DirectoryScreen() {
   })
   const [showTour, setShowTour] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
 
   useEffect(() => {
     if (!session?.user?.id) return
@@ -60,6 +63,17 @@ export default function DirectoryScreen() {
       }
     })
   }, [session?.user?.id])
+
+  useEffect(() => {
+    AsyncStorage.getItem(VIEW_MODE_KEY).then(saved => {
+      if (saved === 'grid' || saved === 'list') setViewMode(saved)
+    })
+  }, [])
+
+  function changeViewMode(mode: 'list' | 'grid') {
+    setViewMode(mode)
+    AsyncStorage.setItem(VIEW_MODE_KEY, mode)
+  }
 
   const load = useCallback(async (reset = false) => {
     if (!session) return
@@ -223,6 +237,20 @@ export default function DirectoryScreen() {
             </View>
           )}
         </TouchableOpacity>
+        <View style={s.viewToggle}>
+          <TouchableOpacity
+            style={[s.viewToggleBtn, viewMode === 'list' && s.viewToggleBtnActive]}
+            onPress={() => changeViewMode('list')}
+          >
+            <Ionicons name="list" size={16} color={viewMode === 'list' ? Colors.accent : Colors.textMuted} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[s.viewToggleBtn, viewMode === 'grid' && s.viewToggleBtnActive]}
+            onPress={() => changeViewMode('grid')}
+          >
+            <Ionicons name="grid" size={16} color={viewMode === 'grid' ? Colors.accent : Colors.textMuted} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Results count */}
@@ -232,20 +260,25 @@ export default function DirectoryScreen() {
 
       {/* List */}
       <FlatList
+        key={viewMode}
         data={filtered}
+        numColumns={viewMode === 'grid' ? 2 : 1}
+        columnWrapperStyle={viewMode === 'grid' ? s.gridRow : undefined}
         keyExtractor={item => String(item.id)}
-        renderItem={({ item }) => (
-          <InfluencerCard
-            influencer={item}
-            onPress={() => {
-              if (isFree) {
-                setShowUpgrade(true)
-              } else {
-                router.push(`/influencer/${item.id}`)
-              }
-            }}
-          />
-        )}
+        renderItem={({ item }) => {
+          const onPress = () => {
+            if (isFree) {
+              setShowUpgrade(true)
+            } else {
+              router.push(`/influencer/${item.id}`)
+            }
+          }
+          return viewMode === 'grid' ? (
+            <InfluencerGridCard influencer={item} onPress={onPress} />
+          ) : (
+            <InfluencerCard influencer={item} onPress={onPress} />
+          )
+        }}
         contentContainerStyle={s.listContent}
         refreshControl={
           <RefreshControl
@@ -363,8 +396,20 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   filterBadgeText:  { color: '#fff', fontSize: 9, fontWeight: '700' },
+  viewToggle: {
+    flexDirection: 'row',
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    padding: 3,
+    gap: 2,
+  },
+  viewToggleBtn: { width: 32, height: 38, alignItems: 'center', justifyContent: 'center', borderRadius: 8 },
+  viewToggleBtnActive: { backgroundColor: Colors.s3 },
   resultsCount:     { color: Colors.textMuted, fontSize: FontSize.xs, textAlign: 'right', paddingHorizontal: Spacing.md, paddingBottom: 4 },
   listContent:      { padding: Spacing.md, paddingTop: 8 },
+  gridRow:          { gap: 0 },
   loadMoreBox:      { padding: Spacing.lg, alignItems: 'center' },
   empty:            { alignItems: 'center', paddingTop: 60, gap: 12 },
   emptyText:        { color: Colors.textMuted, fontSize: FontSize.md },
