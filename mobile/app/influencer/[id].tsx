@@ -14,20 +14,10 @@ import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
 import { getTier, formatFollowers, formatPrice, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
-import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
+import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
 const { width } = Dimensions.get('window')
 const COVER_H = 200
-
-const PLATFORM_LABEL: Record<string, string> = {
-  instagram: 'انستقرام',
-  tiktok: 'تيك توك',
-  youtube: 'يوتيوب',
-  snapchat: 'سناب شات',
-  twitter: 'تويتر',
-  x: 'تويتر/X',
-  facebook: 'فيسبوك',
-}
 
 export default function InfluencerDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -49,12 +39,12 @@ export default function InfluencerDetail() {
     )
   }
 
-  const tier = getTier(inf.followers)
+  const tier = getTier(inf.totalFollowers)
   const tierColor = TierColors[tier] || Colors.textMuted
-  const platform = inf.platform?.toLowerCase() || ''
-  const platformColor = PlatformColors[platform] || Colors.accent
-  const platformLabel = PLATFORM_LABEL[platform] || inf.platform || ''
   const isPro = effectivePlan === 'pro' || effectivePlan === 'admin'
+  const platforms = Object.entries(inf.platforms || {})
+  // 0 = balanced, 1 = mostly-male audience, 2 = mostly-female audience.
+  const femalePct = inf.followersGender === 2 ? 70 : inf.followersGender === 1 ? 30 : 50
 
   return (
     <SafeAreaView style={s.screen} edges={['top']}>
@@ -62,8 +52,8 @@ export default function InfluencerDetail() {
 
         {/* Cover */}
         <View style={s.coverBox}>
-          {inf.cover_url ? (
-            <Image source={{ uri: inf.cover_url }} style={s.cover} resizeMode="cover" />
+          {inf.cover ? (
+            <Image source={{ uri: inf.cover }} style={s.cover} resizeMode="cover" />
           ) : (
             <View style={[s.cover, { backgroundColor: Colors.s3 }]} />
           )}
@@ -77,8 +67,8 @@ export default function InfluencerDetail() {
 
         {/* Avatar + name */}
         <View style={s.heroSection}>
-          {inf.avatar_url ? (
-            <Image source={{ uri: inf.avatar_url }} style={s.avatar} />
+          {inf.avatar ? (
+            <Image source={{ uri: inf.avatar }} style={s.avatar} />
           ) : (
             <View style={[s.avatar, s.avatarFallback]}>
               <Text style={s.avatarInitial}>{inf.name?.[0] || '?'}</Text>
@@ -87,7 +77,7 @@ export default function InfluencerDetail() {
 
           <View style={s.heroInfo}>
             <View style={s.nameRow}>
-              {inf.verified && <Text style={{ color: Colors.accent, marginLeft: 4 }}>✓</Text>}
+              {inf.source === 'verified' && <Text style={{ color: Colors.accent, marginLeft: 4 }}>✓</Text>}
               <Text style={s.nameText}>{inf.name}</Text>
             </View>
             {inf.specialization ? (
@@ -97,9 +87,16 @@ export default function InfluencerDetail() {
               <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
                 <Text style={[s.badgeText, { color: tierColor }]}>{tier}</Text>
               </View>
-              <View style={[s.badge, { backgroundColor: platformColor + '22', borderColor: platformColor }]}>
-                <Text style={[s.badgeText, { color: platformColor }]}>{platformLabel}</Text>
-              </View>
+              {inf.rank ? (
+                <View style={[s.badge, { backgroundColor: Colors.s2, borderColor: Colors.border }]}>
+                  <Text style={[s.badgeText, { color: Colors.textMuted }]}>#{inf.rank}</Text>
+                </View>
+              ) : null}
+              {inf.rangeLabel ? (
+                <View style={[s.badge, { backgroundColor: Colors.s2, borderColor: Colors.border }]}>
+                  <Text style={[s.badgeText, { color: Colors.textMuted }]}>{inf.rangeLabel}</Text>
+                </View>
+              ) : null}
             </View>
           </View>
         </View>
@@ -107,20 +104,21 @@ export default function InfluencerDetail() {
         <View style={s.body}>
           {/* Main stats */}
           <View style={s.statsRow}>
-            <StatBox label="المتابعون" value={formatFollowers(inf.followers)} />
-            {isPro && inf.engagement_rate != null && (
-              <StatBox
-                label="التفاعل"
-                value={`${inf.engagement_rate.toFixed(1)}%`}
-                color={Colors.green}
-              />
-            )}
-            {isPro && inf.posts_per_week != null && (
-              <StatBox label="بوست/أسبوع" value={`${inf.posts_per_week}`} />
-            )}
-            {isPro && inf.avg_likes != null && (
-              <StatBox label="إعجابات" value={formatFollowers(inf.avg_likes)} />
-            )}
+            <StatBox label="إجمالي المتابعين" value={inf.totalFormatted || formatFollowers(inf.totalFollowers)} />
+            <StatBox label="المنصات" value={String(platforms.length)} />
+            <StatBox
+              label="الجنس"
+              value={inf.gender === 'female' ? 'أنثى' : inf.gender === 'male' ? 'ذكر' : '—'}
+            />
+          </View>
+
+          {/* Audience gender distribution */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>توزيع الجمهور</Text>
+            <View style={s.genderRow}>
+              <GenderBar label="إناث" pct={femalePct} color={Colors.purple} />
+              <GenderBar label="ذكور" pct={100 - femalePct} color={Colors.accent} />
+            </View>
           </View>
 
           {/* Bio */}
@@ -131,50 +129,32 @@ export default function InfluencerDetail() {
             </View>
           ) : null}
 
-          {/* Profile URL */}
-          {isPro && inf.profile_url ? (
-            <TouchableOpacity
-              style={s.profileLinkBtn}
-              onPress={() => Linking.openURL(inf.profile_url!)}
-            >
-              <Text style={s.profileLinkText}>عرض الملف الشخصي ←</Text>
-            </TouchableOpacity>
-          ) : null}
-
-          {/* Prices */}
-          {isPro && inf.prices ? (
+          {/* Follower age ranges */}
+          {inf.followersAges?.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>الأسعار</Text>
-              <View style={s.priceGrid}>
-                {inf.prices.story != null && (
-                  <PriceBox label="ستوري" value={formatPrice(inf.prices.story)} />
-                )}
-                {inf.prices.post != null && (
-                  <PriceBox label="بوست" value={formatPrice(inf.prices.post)} />
-                )}
-                {inf.prices.reel != null && (
-                  <PriceBox label="ريل" value={formatPrice(inf.prices.reel)} />
-                )}
-                {inf.prices.video != null && (
-                  <PriceBox label="فيديو" value={formatPrice(inf.prices.video)} />
-                )}
+              <Text style={s.sectionTitle}>أعمار المتابعين</Text>
+              <View style={s.tagWrap}>
+                {inf.followersAges.map(a => (
+                  <View key={a} style={s.tag}>
+                    <Text style={s.tagText}>{a}</Text>
+                  </View>
+                ))}
               </View>
             </View>
-          ) : !isPro ? (
+          ) : null}
+
+          {/* Platforms */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>المنصات</Text>
+            {platforms.map(([name, p]) => (
+              <PlatformCard key={name} name={name} data={p} isPro={isPro} />
+            ))}
+          </View>
+
+          {!isPro ? (
             <View style={s.lockedBox}>
               <Text style={s.lockedIcon}>🔒</Text>
-              <Text style={s.lockedText}>الأسعار والإحصاءات التفصيلية متاحة لمشتركي برو فقط</Text>
-            </View>
-          ) : null}
-
-          {/* Audience gender */}
-          {isPro && inf.followers_gender ? (
-            <View style={s.section}>
-              <Text style={s.sectionTitle}>الجمهور</Text>
-              <View style={s.genderRow}>
-                <GenderBar label="إناث" pct={inf.followers_gender.female || 0} color={Colors.purple} />
-                <GenderBar label="ذكور" pct={inf.followers_gender.male || 0} color={Colors.accent} />
-              </View>
+              <Text style={s.lockedText}>الأسعار والإحصاءات التفصيلية وروابط الملفات متاحة لمشتركي برو فقط</Text>
             </View>
           ) : null}
 
@@ -213,7 +193,7 @@ export default function InfluencerDetail() {
               <View style={s.tagWrap}>
                 {inf.regions.map(r => (
                   <View key={r} style={[s.tag, { backgroundColor: Colors.accent + '22' }]}>
-                    <Text style={[s.tagText, { color: Colors.accent }]}>{r}</Text>
+                    <Text style={[s.tagText, { color: Colors.accent }]}>📍 {r}</Text>
                   </View>
                 ))}
               </View>
@@ -222,6 +202,53 @@ export default function InfluencerDetail() {
         </View>
       </ScrollView>
     </SafeAreaView>
+  )
+}
+
+function PlatformCard({ name, data: p, isPro }: { name: string; data: Influencer['platforms'][string]; isPro: boolean }) {
+  const color = PlatformColors[name] || Colors.accent
+  const stats: { label: string; value: string }[] = []
+  if (p.avgLikes != null) stats.push({ label: 'متوسط الإعجابات', value: formatFollowers(p.avgLikes) })
+  if (p.avgComments != null) stats.push({ label: 'متوسط التعليقات', value: String(p.avgComments) })
+  if (p.engagementRate != null) stats.push({ label: 'التفاعل', value: `${p.engagementRate}%` })
+  if (p.postsPerWeek != null) stats.push({ label: 'بوست/أسبوع', value: String(p.postsPerWeek) })
+  const prices = p.prices ? Object.entries(p.prices) : []
+
+  return (
+    <View style={[s.platformCard, { borderColor: color + '55' }]}>
+      <View style={s.platformHead}>
+        <View style={s.platformHeadLeft}>
+          <Text style={{ fontSize: 20 }}>{PlatformIcons[name] || '🔗'}</Text>
+          <Text style={[s.platformName, { color }]}>{name}</Text>
+        </View>
+        <Text style={s.platformFollowers}>{p.followers}</Text>
+      </View>
+
+      {isPro && p.url ? (
+        <TouchableOpacity style={s.profileLinkBtn} onPress={() => Linking.openURL(p.url!)}>
+          <Text style={s.profileLinkText}>عرض الملف الشخصي ←</Text>
+        </TouchableOpacity>
+      ) : null}
+
+      {stats.length ? (
+        <View style={s.platformStatsRow}>
+          {stats.map(st => (
+            <View key={st.label} style={s.platformStat}>
+              <Text style={s.platformStatValue}>{st.value}</Text>
+              <Text style={s.platformStatLabel}>{st.label}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+
+      {prices.length ? (
+        <View style={s.priceGrid}>
+          {prices.map(([label, value]) => (
+            <PriceBox key={label} label={label} value={formatPrice(value)} />
+          ))}
+        </View>
+      ) : null}
+    </View>
   )
 }
 
@@ -297,7 +324,7 @@ const s = StyleSheet.create({
   nameRow:        { flexDirection: 'row-reverse', alignItems: 'center', gap: 4 },
   nameText:       { color: Colors.text, fontSize: FontSize.lg, fontWeight: '800', textAlign: 'right' },
   specText:       { color: Colors.textMuted, fontSize: FontSize.sm, textAlign: 'right', marginTop: 2 },
-  badgeRow:       { flexDirection: 'row-reverse', gap: 6, marginTop: 8 },
+  badgeRow:       { flexDirection: 'row-reverse', gap: 6, marginTop: 8, flexWrap: 'wrap' },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -327,23 +354,54 @@ const s = StyleSheet.create({
   section:        { marginBottom: Spacing.md },
   sectionTitle:   { color: Colors.textMuted, fontSize: FontSize.sm, fontWeight: '700', textAlign: 'right', marginBottom: 10 },
   bioText:        { color: Colors.text, fontSize: FontSize.sm, lineHeight: 22, textAlign: 'right' },
+  platformCard: {
+    backgroundColor: Colors.s1,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    padding: Spacing.sm,
+    marginBottom: 8,
+  },
+  platformHead: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  platformHeadLeft: { flexDirection: 'row-reverse', alignItems: 'center', gap: 6 },
+  platformName:    { fontSize: FontSize.md, fontWeight: '700' },
+  platformFollowers: { color: Colors.text, fontSize: FontSize.md, fontWeight: '800' },
   profileLinkBtn: {
     backgroundColor: Colors.accent + '22',
     borderRadius: Radius.md,
     padding: Spacing.sm,
     alignItems: 'center',
-    marginBottom: Spacing.md,
+    marginTop: Spacing.sm,
     borderWidth: 1,
     borderColor: Colors.accent,
   },
   profileLinkText: { color: Colors.accent, fontWeight: '600', fontSize: FontSize.sm },
+  platformStatsRow: {
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: Spacing.sm,
+  },
+  platformStat: {
+    minWidth: 70,
+    backgroundColor: Colors.s2,
+    borderRadius: Radius.sm,
+    padding: 8,
+    alignItems: 'center',
+  },
+  platformStatValue: { color: Colors.text, fontSize: FontSize.sm, fontWeight: '700' },
+  platformStatLabel: { color: Colors.textMuted, fontSize: FontSize.xs, marginTop: 2 },
   priceGrid: {
     flexDirection: 'row-reverse',
     flexWrap: 'wrap',
     gap: 8,
+    marginTop: Spacing.sm,
   },
   priceBox: {
-    width: '48%',
+    minWidth: '31%',
     backgroundColor: Colors.s2,
     borderRadius: Radius.sm,
     padding: Spacing.sm,
@@ -351,7 +409,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  priceValue:     { color: Colors.gold, fontSize: FontSize.md, fontWeight: '800' },
+  priceValue:     { color: Colors.gold, fontSize: FontSize.sm, fontWeight: '800' },
   priceLabel:     { color: Colors.textMuted, fontSize: FontSize.xs, marginTop: 2 },
   lockedBox: {
     backgroundColor: Colors.s2,
