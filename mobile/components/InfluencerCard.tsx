@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function InfluencerCard({ influencer: inf, onPress }: Props) {
-  const { tf, t, lang } = useLanguage()
+  const { tf, tfList, t, lang } = useLanguage()
   const tier = getTier(inf.totalFollowers)
   const tierLabel = translateTier(tier, lang)
   const tierColor = TierColors[tier] || Colors.textMuted
@@ -23,6 +23,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
   const avatarUrl = resolveImageUrl(inf.avatar)
   const name = tf(inf, 'name')
   const specialization = tf(inf, 'specialization')
+  const tags = tfList(inf, 'tags')
 
   function handlePress() {
     cacheInfluencer(inf)
@@ -72,9 +73,9 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
       </View>
 
       {/* Tags */}
-      {inf.tags?.length ? (
+      {tags.length ? (
         <View style={[s.tagRow, { flexDirection: flexRow(lang) }]}>
-          {inf.tags.slice(0, 3).map(tag => (
+          {tags.slice(0, 3).map(tag => (
             <View key={tag} style={s.tag}>
               <Text style={s.tagText}>#{tag}</Text>
             </View>
