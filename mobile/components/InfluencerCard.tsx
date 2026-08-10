@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { getTier, formatFollowers, getPrimaryPlatform, resolveImageUrl, Influencer } from '@/lib/api'
 import { useLanguage } from '@/context/LanguageContext'
-import { translateTier } from '@/lib/i18n'
+import { translateTier, translatePlatform } from '@/lib/i18n'
 import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
@@ -19,6 +19,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
   const primary = getPrimaryPlatform(inf)
   const platformLabel = primary?.[0] || ''
   const platformColor = PlatformColors[platformLabel] || Colors.accent
+  const platformDisplay = translatePlatform(platformLabel, lang)
   const avatarUrl = resolveImageUrl(inf.avatar)
   const name = tf(inf, 'name')
   const specialization = tf(inf, 'specialization')
@@ -47,7 +48,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
             </View>
             {platformLabel ? (
               <View style={[s.badge, { backgroundColor: platformColor + '22', borderColor: platformColor }]}>
-                <Text style={[s.badgeText, { color: platformColor }]}>{platformLabel}</Text>
+                <Text style={[s.badgeText, { color: platformColor }]}>{platformDisplay}</Text>
               </View>
             ) : null}
           </View>

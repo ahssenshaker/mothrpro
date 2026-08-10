@@ -1,8 +1,11 @@
 import { Tabs } from 'expo-router'
 import { Colors } from '@/constants/theme'
 import { Ionicons } from '@expo/vector-icons'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function MainLayout() {
+  const { t } = useLanguage()
+
   return (
     <Tabs
       screenOptions={{
@@ -25,7 +28,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'المؤثرون',
+          title: t('home'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
@@ -34,7 +37,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'حسابي',
+          title: t('profile'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle" size={size} color={color} />
           ),

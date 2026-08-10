@@ -16,7 +16,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { getTier, formatFollowers, formatPrice, formatPriceRange, getDisplayPrices, resolveImageUrl, unlockInfluencer, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
-import { translateTier } from '@/lib/i18n'
+import { translateTier, translatePlatform, translatePriceLabel } from '@/lib/i18n'
 import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
@@ -320,7 +320,7 @@ function PlatformCard({ name, data: p, isPro, t, lang }: { name: string; data: I
       <View style={[s.platformHead, { flexDirection: flexRow(lang) }]}>
         <View style={[s.platformHeadLeft, { flexDirection: flexRow(lang) }]}>
           <Text style={{ fontSize: 20 }}>{PlatformIcons[name] || '🔗'}</Text>
-          <Text style={[s.platformName, { color }]}>{name}</Text>
+          <Text style={[s.platformName, { color }]}>{translatePlatform(name, lang)}</Text>
         </View>
         <Text style={s.platformFollowers}>{p.followers}</Text>
       </View>
@@ -349,7 +349,7 @@ function PlatformCard({ name, data: p, isPro, t, lang }: { name: string; data: I
             {prices.map(([label, value]) => (
               <PriceBox
                 key={label}
-                label={label}
+                label={translatePriceLabel(label, lang)}
                 value={isEstimate ? formatPriceRange(Number(value)) : formatPrice(value)}
               />
             ))}
