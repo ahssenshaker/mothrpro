@@ -279,18 +279,24 @@ export function formatFollowers(n?: number | null): string {
 
 // Price values are free-form strings the admin typed in (e.g. "5000"), keyed
 // by an arbitrary label (e.g. "صورة", "فيديو") - not a fixed set of fields.
-export function formatPrice(value?: string | number | null): string {
+// 'ar-SA' renders Eastern Arabic-Indic digits (٠-٩), so the locale (and the
+// currency suffix) must follow the app language, not stay hardcoded.
+export function formatPrice(value?: string | number | null, lang: 'ar' | 'en' = 'ar'): string {
   if (!value && value !== 0) return '—'
   const n = Number(value)
   if (!Number.isFinite(n)) return String(value)
-  return `${n.toLocaleString('ar-SA')} ر.س`
+  const locale = lang === 'en' ? 'en-US' : 'ar-SA'
+  const suffix = lang === 'en' ? 'SAR' : 'ر.س'
+  return `${n.toLocaleString(locale)} ${suffix}`
 }
 
-// Matches web's estimated-price display: floor(n*0.85)-ceil(n*1.15) ر.س
-export function formatPriceRange(value: number): string {
-  const low = Math.floor(value * 0.85).toLocaleString('ar-SA')
-  const high = Math.ceil(value * 1.15).toLocaleString('ar-SA')
-  return `${low}–${high} ر.س`
+// Matches web's estimated-price display: floor(n*0.85)-ceil(n*1.15) SAR
+export function formatPriceRange(value: number, lang: 'ar' | 'en' = 'ar'): string {
+  const locale = lang === 'en' ? 'en-US' : 'ar-SA'
+  const suffix = lang === 'en' ? 'SAR' : 'ر.س'
+  const low = Math.floor(value * 0.85).toLocaleString(locale)
+  const high = Math.ceil(value * 1.15).toLocaleString(locale)
+  return `${low}–${high} ${suffix}`
 }
 
 // Mirrors estimatePrices() in index.html - when an influencer has no real

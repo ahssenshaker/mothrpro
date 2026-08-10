@@ -130,7 +130,9 @@ export default function DirectoryScreen() {
         inf.specialization?.toLowerCase().includes(q) ||
         inf.specialization_en?.toLowerCase().includes(q) ||
         inf.tags?.some(t => t.toLowerCase().includes(q)) ||
-        inf.categories?.some(c => c.toLowerCase().includes(q)),
+        inf.tags_en?.some(t => t.toLowerCase().includes(q)) ||
+        inf.categories?.some(c => c.toLowerCase().includes(q)) ||
+        inf.categories_en?.some(c => c.toLowerCase().includes(q)),
       )
     }
 

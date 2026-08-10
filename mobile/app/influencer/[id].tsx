@@ -350,7 +350,7 @@ function PlatformCard({ name, data: p, isPro, t, lang }: { name: string; data: I
               <PriceBox
                 key={label}
                 label={translatePriceLabel(label, lang)}
-                value={isEstimate ? formatPriceRange(Number(value)) : formatPrice(value)}
+                value={isEstimate ? formatPriceRange(Number(value), lang) : formatPrice(value, lang)}
               />
             ))}
           </View>
