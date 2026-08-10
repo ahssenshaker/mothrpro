@@ -1,0 +1,43 @@
+name: Scan Contact Info
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Number of influencers to scan (leave empty for all)'
+        required: false
+        default: ''
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Run contact scan
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.limit }}" ]; then
+            node scripts/scan-contact-info.mjs --limit=${{ github.event.inputs.limit }}
+          else
+            node scripts/scan-contact-info.mjs
+          fi
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: contact-report
+          path: assets/influencers/_contact_report.json
+          retention-days: 30
