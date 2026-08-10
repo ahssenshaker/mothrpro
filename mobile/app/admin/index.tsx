@@ -87,9 +87,14 @@ export default function AdminListScreen() {
           <Ionicons name="close" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={s.headerTitle}>لوحة تحكم الأدمن</Text>
-        <TouchableOpacity onPress={openNew}>
-          <Ionicons name="add-circle" size={26} color={Colors.gold} />
-        </TouchableOpacity>
+        <View style={s.headerActions}>
+          <TouchableOpacity onPress={() => router.push('/admin/users')}>
+            <Ionicons name="people" size={24} color={Colors.purple} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={openNew}>
+            <Ionicons name="add-circle" size={26} color={Colors.gold} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ImportExportBar items={items} onImported={load} />
@@ -154,6 +159,7 @@ const s = StyleSheet.create({
     borderBottomColor: Colors.border,
   },
   headerTitle: { color: Colors.gold, fontSize: FontSize.lg, fontWeight: '800' },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   search: {
     margin: Spacing.md,
     backgroundColor: Colors.s2,

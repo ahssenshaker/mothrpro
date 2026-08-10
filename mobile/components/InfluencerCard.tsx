@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { getTier, formatFollowers, getPrimaryPlatform, resolveImageUrl, Influencer } from '@/lib/api'
 import { useLanguage } from '@/context/LanguageContext'
 import { translateTier } from '@/lib/i18n'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
 
@@ -29,18 +30,18 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
 
   return (
     <TouchableOpacity style={s.card} onPress={handlePress} activeOpacity={0.75}>
-      <View style={s.row}>
-        {/* Text Info (RTL: text on left, avatar on right) */}
+      <View style={[s.row, { flexDirection: flexRow(lang) }]}>
+        {/* Text info on the reading-start side, avatar on the reading-end side */}
         <View style={s.info}>
-          <View style={s.nameRow}>
+          <View style={[s.nameRow, { flexDirection: flexRow(lang) }]}>
             {inf.source === 'verified' && <Text style={s.verified}> ✓</Text>}
-            <Text style={s.name} numberOfLines={1}>{name}</Text>
+            <Text style={[s.name, { textAlign: textAlignFor(lang) }]} numberOfLines={1}>{name}</Text>
           </View>
           {specialization ? (
-            <Text style={s.spec} numberOfLines={1}>{specialization}</Text>
+            <Text style={[s.spec, { textAlign: textAlignFor(lang) }]} numberOfLines={1}>{specialization}</Text>
           ) : null}
 
-          <View style={s.badgeRow}>
+          <View style={[s.badgeRow, { flexDirection: flexRow(lang) }]}>
             <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
               <Text style={[s.badgeText, { color: tierColor }]}>{tierLabel}</Text>
             </View>
@@ -51,7 +52,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
             ) : null}
           </View>
 
-          <Text style={s.followers}>
+          <Text style={[s.followers, { textAlign: textAlignFor(lang) }]}>
             {inf.totalFormatted || formatFollowers(inf.totalFollowers)}{' '}
             <Text style={s.followersLabel}>{t('followers')}</Text>
           </Text>
@@ -71,7 +72,7 @@ export default function InfluencerCard({ influencer: inf, onPress }: Props) {
 
       {/* Tags */}
       {inf.tags?.length ? (
-        <View style={s.tagRow}>
+        <View style={[s.tagRow, { flexDirection: flexRow(lang) }]}>
           {inf.tags.slice(0, 3).map(tag => (
             <View key={tag} style={s.tag}>
               <Text style={s.tagText}>#{tag}</Text>

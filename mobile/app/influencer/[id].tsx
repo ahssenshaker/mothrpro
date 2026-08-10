@@ -14,9 +14,10 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
-import { getTier, formatFollowers, formatPrice, resolveImageUrl, unlockInfluencer, Influencer } from '@/lib/api'
+import { getTier, formatFollowers, formatPrice, formatPriceRange, getDisplayPrices, resolveImageUrl, unlockInfluencer, Influencer } from '@/lib/api'
 import { getCachedInfluencer } from '@/lib/influencerCache'
 import { translateTier } from '@/lib/i18n'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors, PlatformIcons } from '@/constants/theme'
 
 const { width } = Dimensions.get('window')
@@ -94,7 +95,7 @@ export default function InfluencerDetail() {
             </TouchableOpacity>
           </View>
 
-          <View style={s.heroSection}>
+          <View style={[s.heroSection, { flexDirection: flexRow(lang) }]}>
             {avatarUrl ? (
               <Image source={{ uri: avatarUrl }} style={s.avatar} />
             ) : (
@@ -103,9 +104,9 @@ export default function InfluencerDetail() {
               </View>
             )}
             <View style={s.heroInfo}>
-              <Text style={s.nameText}>{name}</Text>
-              {specialization ? <Text style={s.specText}>{specialization}</Text> : null}
-              <View style={s.badgeRow}>
+              <Text style={[s.nameText, { textAlign: textAlignFor(lang) }]}>{name}</Text>
+              {specialization ? <Text style={[s.specText, { textAlign: textAlignFor(lang) }]}>{specialization}</Text> : null}
+              <View style={[s.badgeRow, { flexDirection: flexRow(lang) }]}>
                 <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
                   <Text style={[s.badgeText, { color: tierColor }]}>{translateTier(tier, lang)}</Text>
                 </View>
@@ -165,7 +166,7 @@ export default function InfluencerDetail() {
         </View>
 
         {/* Avatar + name */}
-        <View style={s.heroSection}>
+        <View style={[s.heroSection, { flexDirection: flexRow(lang) }]}>
           {avatarUrl ? (
             <Image source={{ uri: avatarUrl }} style={s.avatar} />
           ) : (
@@ -175,14 +176,14 @@ export default function InfluencerDetail() {
           )}
 
           <View style={s.heroInfo}>
-            <View style={s.nameRow}>
+            <View style={[s.nameRow, { flexDirection: flexRow(lang) }]}>
               {inf.source === 'verified' && <Text style={{ color: Colors.accent, marginLeft: 4 }}>✓</Text>}
-              <Text style={s.nameText}>{name}</Text>
+              <Text style={[s.nameText, { textAlign: textAlignFor(lang) }]}>{name}</Text>
             </View>
             {specialization ? (
-              <Text style={s.specText}>{specialization}</Text>
+              <Text style={[s.specText, { textAlign: textAlignFor(lang) }]}>{specialization}</Text>
             ) : null}
-            <View style={s.badgeRow}>
+            <View style={[s.badgeRow, { flexDirection: flexRow(lang) }]}>
               <View style={[s.badge, { backgroundColor: tierColor + '22', borderColor: tierColor }]}>
                 <Text style={[s.badgeText, { color: tierColor }]}>{translateTier(tier, lang)}</Text>
               </View>
@@ -202,7 +203,7 @@ export default function InfluencerDetail() {
 
         <View style={s.body}>
           {/* Main stats */}
-          <View style={s.statsRow}>
+          <View style={[s.statsRow, { flexDirection: flexRow(lang) }]}>
             <StatBox label={t('totalFollowers')} value={inf.totalFormatted || formatFollowers(inf.totalFollowers)} />
             <StatBox label={t('platforms')} value={String(platforms.length)} />
             <StatBox
@@ -213,26 +214,26 @@ export default function InfluencerDetail() {
 
           {/* Audience gender distribution */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>{t('audienceGender')}</Text>
+            <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('audienceGender')}</Text>
             <View style={s.genderRow}>
-              <GenderBar label={t('female')} pct={femalePct} color={Colors.purple} />
-              <GenderBar label={t('male')} pct={100 - femalePct} color={Colors.accent} />
+              <GenderBar label={t('female')} pct={femalePct} color={Colors.purple} lang={lang} />
+              <GenderBar label={t('male')} pct={100 - femalePct} color={Colors.accent} lang={lang} />
             </View>
           </View>
 
           {/* Bio */}
           {intro ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>{t('bio')}</Text>
-              <Text style={s.bioText}>{intro}</Text>
+              <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('bio')}</Text>
+              <Text style={[s.bioText, { textAlign: textAlignFor(lang) }]}>{intro}</Text>
             </View>
           ) : null}
 
           {/* Follower age ranges */}
           {inf.followersAges?.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>{t('followerAges')}</Text>
-              <View style={s.tagWrap}>
+              <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('followerAges')}</Text>
+              <View style={[s.tagWrap, { flexDirection: flexRow(lang) }]}>
                 {inf.followersAges.map(a => (
                   <View key={a} style={s.tag}>
                     <Text style={s.tagText}>{a}</Text>
@@ -244,9 +245,9 @@ export default function InfluencerDetail() {
 
           {/* Platforms */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>{t('platforms')}</Text>
+            <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('platforms')}</Text>
             {platforms.map(([name, p]) => (
-              <PlatformCard key={name} name={name} data={p} isPro={isPro} t={t} />
+              <PlatformCard key={name} name={name} data={p} isPro={isPro} t={t} lang={lang} />
             ))}
           </View>
 
@@ -260,8 +261,8 @@ export default function InfluencerDetail() {
           {/* Categories */}
           {categories.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>{t('categories')}</Text>
-              <View style={s.tagWrap}>
+              <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('categories')}</Text>
+              <View style={[s.tagWrap, { flexDirection: flexRow(lang) }]}>
                 {categories.map(c => (
                   <View key={c} style={s.tag}>
                     <Text style={s.tagText}>{c}</Text>
@@ -274,8 +275,8 @@ export default function InfluencerDetail() {
           {/* Tags */}
           {tags.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>{t('tags')}</Text>
-              <View style={s.tagWrap}>
+              <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('tags')}</Text>
+              <View style={[s.tagWrap, { flexDirection: flexRow(lang) }]}>
                 {tags.map(tg => (
                   <View key={tg} style={[s.tag, { backgroundColor: Colors.s3 }]}>
                     <Text style={s.tagText}>#{tg}</Text>
@@ -288,8 +289,8 @@ export default function InfluencerDetail() {
           {/* Regions */}
           {regions.length ? (
             <View style={s.section}>
-              <Text style={s.sectionTitle}>{t('regions')}</Text>
-              <View style={s.tagWrap}>
+              <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('regions')}</Text>
+              <View style={[s.tagWrap, { flexDirection: flexRow(lang) }]}>
                 {regions.map(r => (
                   <View key={r} style={[s.tag, { backgroundColor: Colors.accent + '22' }]}>
                     <Text style={[s.tagText, { color: Colors.accent }]}>📍 {r}</Text>
@@ -304,19 +305,20 @@ export default function InfluencerDetail() {
   )
 }
 
-function PlatformCard({ name, data: p, isPro, t }: { name: string; data: Influencer['platforms'][string]; isPro: boolean; t: (key: import('@/lib/i18n').TKey) => string }) {
+function PlatformCard({ name, data: p, isPro, t, lang }: { name: string; data: Influencer['platforms'][string]; isPro: boolean; t: (key: import('@/lib/i18n').TKey) => string; lang: import('@/lib/i18n').Lang }) {
   const color = PlatformColors[name] || Colors.accent
   const stats: { label: string; value: string }[] = []
   if (p.avgLikes != null) stats.push({ label: t('avgLikes'), value: formatFollowers(p.avgLikes) })
   if (p.avgComments != null) stats.push({ label: t('avgComments'), value: String(p.avgComments) })
   if (p.engagementRate != null) stats.push({ label: t('engagementShort'), value: `${p.engagementRate}%` })
   if (p.postsPerWeek != null) stats.push({ label: t('postsWeek'), value: String(p.postsPerWeek) })
-  const prices = p.prices ? Object.entries(p.prices) : []
+  const { prices: dispPrices, isEstimate } = getDisplayPrices(name, p)
+  const prices = Object.entries(dispPrices)
 
   return (
     <View style={[s.platformCard, { borderColor: color + '55' }]}>
-      <View style={s.platformHead}>
-        <View style={s.platformHeadLeft}>
+      <View style={[s.platformHead, { flexDirection: flexRow(lang) }]}>
+        <View style={[s.platformHeadLeft, { flexDirection: flexRow(lang) }]}>
           <Text style={{ fontSize: 20 }}>{PlatformIcons[name] || '🔗'}</Text>
           <Text style={[s.platformName, { color }]}>{name}</Text>
         </View>
@@ -330,7 +332,7 @@ function PlatformCard({ name, data: p, isPro, t }: { name: string; data: Influen
       ) : null}
 
       {stats.length ? (
-        <View style={s.platformStatsRow}>
+        <View style={[s.platformStatsRow, { flexDirection: flexRow(lang) }]}>
           {stats.map(st => (
             <View key={st.label} style={s.platformStat}>
               <Text style={s.platformStatValue}>{st.value}</Text>
@@ -341,11 +343,18 @@ function PlatformCard({ name, data: p, isPro, t }: { name: string; data: Influen
       ) : null}
 
       {prices.length ? (
-        <View style={s.priceGrid}>
-          {prices.map(([label, value]) => (
-            <PriceBox key={label} label={label} value={formatPrice(value)} />
-          ))}
-        </View>
+        <>
+          {isEstimate ? <Text style={[s.estNotice, { textAlign: textAlignFor(lang) }]}>{t('estimatedPriceNotice')}</Text> : null}
+          <View style={[s.priceGrid, { flexDirection: flexRow(lang) }]}>
+            {prices.map(([label, value]) => (
+              <PriceBox
+                key={label}
+                label={label}
+                value={isEstimate ? formatPriceRange(Number(value)) : formatPrice(value)}
+              />
+            ))}
+          </View>
+        </>
       ) : null}
     </View>
   )
@@ -369,14 +378,14 @@ function PriceBox({ label, value }: { label: string; value: string }) {
   )
 }
 
-function GenderBar({ label, pct, color }: { label: string; pct: number; color: string }) {
+function GenderBar({ label, pct, color, lang }: { label: string; pct: number; color: string; lang: import('@/lib/i18n').Lang }) {
   return (
     <View style={s.genderItem}>
-      <Text style={[s.genderPct, { color }]}>{Math.round(pct)}%</Text>
+      <Text style={[s.genderPct, { color, textAlign: textAlignFor(lang) }]}>{Math.round(pct)}%</Text>
       <View style={s.genderBarBg}>
         <View style={[s.genderBarFill, { width: `${pct}%`, backgroundColor: color }]} />
       </View>
-      <Text style={s.genderLabel}>{label}</Text>
+      <Text style={[s.genderLabel, { textAlign: textAlignFor(lang) }]}>{label}</Text>
     </View>
   )
 }
@@ -493,6 +502,15 @@ const s = StyleSheet.create({
   },
   platformStatValue: { color: Colors.text, fontSize: FontSize.sm, fontWeight: '700' },
   platformStatLabel: { color: Colors.textMuted, fontSize: FontSize.xs, marginTop: 2 },
+  estNotice: {
+    color: Colors.accent,
+    fontSize: FontSize.xs,
+    textAlign: 'right',
+    marginTop: Spacing.sm,
+    backgroundColor: Colors.accent + '11',
+    borderRadius: Radius.sm,
+    padding: 8,
+  },
   priceGrid: {
     flexDirection: 'row-reverse',
     flexWrap: 'wrap',

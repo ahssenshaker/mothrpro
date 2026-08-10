@@ -12,6 +12,7 @@ import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors } from '@
 import { useState } from 'react'
 import { useLanguage } from '@/context/LanguageContext'
 import { translateTier } from '@/lib/i18n'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 
 export interface Filters {
   tier: string
@@ -91,7 +92,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
         <View style={s.handle} />
 
         {/* Header */}
-        <View style={s.header}>
+        <View style={[s.header, { flexDirection: flexRow(lang) }]}>
           <TouchableOpacity onPress={reset}>
             <Text style={s.resetText}>{t('reset')}</Text>
           </TouchableOpacity>
@@ -103,8 +104,8 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
 
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Sort */}
-          <Text style={s.sectionTitle}>{t('sort')}</Text>
-          <View style={s.chipRow}>
+          <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('sort')}</Text>
+          <View style={[s.chipRow, { flexDirection: flexRow(lang) }]}>
             {SORTS.map(opt => (
               <Chip
                 key={opt.value}
@@ -117,8 +118,8 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Tier */}
-          <Text style={s.sectionTitle}>{t('tier')}</Text>
-          <View style={s.chipRow}>
+          <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('tier')}</Text>
+          <View style={[s.chipRow, { flexDirection: flexRow(lang) }]}>
             {TIERS.map(tier => (
               <Chip
                 key={tier || 'all'}
@@ -131,8 +132,8 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Platform */}
-          <Text style={s.sectionTitle}>{t('platform')}</Text>
-          <View style={s.chipRow}>
+          <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('platform')}</Text>
+          <View style={[s.chipRow, { flexDirection: flexRow(lang) }]}>
             {PLATFORMS.map(p => (
               <Chip
                 key={p || 'all'}
@@ -145,8 +146,8 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Gender */}
-          <Text style={s.sectionTitle}>{t('gender')}</Text>
-          <View style={s.chipRow}>
+          <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('gender')}</Text>
+          <View style={[s.chipRow, { flexDirection: flexRow(lang) }]}>
             {[
               { value: '', label: t('all') },
               { value: 'male', label: t('maleOption') },
@@ -163,11 +164,11 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
 
           {/* Price range — Pro only */}
-          <View style={s.priceTitleRow}>
-            <Text style={s.sectionTitle}>{t('priceRange')}</Text>
+          <View style={[s.priceTitleRow, { flexDirection: flexRow(lang) }]}>
+            <Text style={[s.sectionTitle, { textAlign: textAlignFor(lang) }]}>{t('priceRange')}</Text>
             {!isPro && <Text style={s.lockIcon}>🔒</Text>}
           </View>
-          <View style={s.priceRow}>
+          <View style={[s.priceRow, { flexDirection: flexRow(lang) }]}>
             <TextInput
               style={s.priceInput}
               value={local.priceMax}
@@ -193,7 +194,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
           </View>
           {!isPro && (
             <TouchableOpacity onPress={onUpgradeRequest}>
-              <Text style={s.priceGateText}>🔒 {t('priceGateText')}</Text>
+              <Text style={[s.priceGateText, { textAlign: textAlignFor(lang) }]}>🔒 {t('priceGateText')}</Text>
             </TouchableOpacity>
           )}
 

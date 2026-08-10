@@ -15,6 +15,8 @@ async function sendPlanEmail(email, action) {
     revoke:    'تم إيقاف اشتراكك في مؤثر برو',
     'set-admin': 'تمت ترقيتك كمشرف في مؤثر برو',
   }
+  // 'activate-annual' and 'grant-credits' reuse the 'activate'/no-email
+  // behavior below rather than adding new templates.
   const bodies = {
     activate: `<div dir="rtl" style="font-family:sans-serif;max-width:480px;margin:auto">
       <h2 style="color:#63b3ed">مرحباً بك في مؤثر برو Pro ✨</h2>
@@ -101,8 +103,8 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true })
     }
 
-    if (action === 'activate' || action === 'set-admin') {
-      let findQuery = supabase.from('subscribers').select('id, email')
+    if (action === 'activate' || action === 'activate-annual' || action === 'set-admin') {
+      let findQuery = supabase.from('subscribers').select('id, email, credits_remaining')
       if (id) {
         findQuery = findQuery.eq('id', id)
       } else if (email) {
@@ -113,10 +115,18 @@ export default async function handler(req, res) {
       const { data: sub, error: findErr } = await findQuery.single()
       if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
 
-      // Clear expires_at so a former trial user gets a permanent subscription
-      const updates = action === 'activate'
-        ? { plan: 'pro', activated_at: new Date().toISOString(), expires_at: null }
-        : { plan: 'admin', expires_at: null }
+      // 'activate' = Pro Plus (lifetime, expires_at cleared).
+      // 'activate-annual' = Pro (renews yearly, expires_at set 1 year out).
+      // Both clear any leftover trial/credits state from a prior plan.
+      const oneYearOut = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      const updates =
+        action === 'set-admin'
+          ? { plan: 'admin', expires_at: null }
+          : {
+              plan: 'pro',
+              activated_at: new Date().toISOString(),
+              expires_at: action === 'activate-annual' ? oneYearOut : null,
+            }
 
       const { error: updateErr } = await supabase
         .from('subscribers')
@@ -124,26 +134,59 @@ export default async function handler(req, res) {
         .eq('id', sub.id)
       if (updateErr) return res.status(500).json({ error: updateErr.message })
 
-      await sendPlanEmail(sub.email, action)
+      await sendPlanEmail(sub.email, action === 'activate-annual' ? 'activate' : action)
+      return res.status(200).json({ ok: true })
+    }
+
+    // Manual admin grant - matches the paid credits plan's pack size (10
+    // unlocks). Additive if the subscriber already has credits, so granting
+    // again tops them up instead of resetting to 10.
+    if (action === 'grant-credits') {
+      const CREDIT_PACK_SIZE = 10
+      let findQuery = supabase.from('subscribers').select('id, email, plan, credits_remaining')
+      if (id) {
+        findQuery = findQuery.eq('id', id)
+      } else if (email) {
+        findQuery = findQuery.eq('email', email.toLowerCase().trim())
+      } else {
+        return res.status(400).json({ error: 'id or email required' })
+      }
+      const { data: sub, error: findErr } = await findQuery.single()
+      if (findErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
+
+      const currentCredits = sub.plan === 'credits' ? (sub.credits_remaining || 0) : 0
+      const { error: updateErr } = await supabase
+        .from('subscribers')
+        .update({
+          plan: 'credits',
+          activated_at: new Date().toISOString(),
+          expires_at: null,
+          credits_remaining: currentCredits + CREDIT_PACK_SIZE,
+        })
+        .eq('id', sub.id)
+      if (updateErr) return res.status(500).json({ error: updateErr.message })
       return res.status(200).json({ ok: true })
     }
 
     if (action === 'revoke') {
-      if (!id) return res.status(400).json({ error: 'id required' })
-
-      const { data: sub } = await supabase
-        .from('subscribers')
-        .select('email')
-        .eq('id', id)
-        .single()
+      let findQuery = supabase.from('subscribers').select('id, email')
+      if (id) {
+        findQuery = findQuery.eq('id', id)
+      } else if (email) {
+        findQuery = findQuery.eq('email', email.toLowerCase().trim())
+      } else {
+        return res.status(400).json({ error: 'id or email required' })
+      }
+      const { data: sub } = await findQuery.single()
+      if (!sub) return res.status(404).json({ error: 'Subscriber not found' })
 
       const { error: updateErr } = await supabase
         .from('subscribers')
         .update({ plan: 'free' })
-        .eq('id', id)
+        .eq('id', sub.id)
       if (updateErr) return res.status(500).json({ error: updateErr.message })
 
-      await sendPlanEmail(sub?.email, 'revoke')
+      await sendPlanEmail(sub.email, 'revoke')
       return res.status(200).json({ ok: true })
     }
 
