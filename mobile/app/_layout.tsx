@@ -1,14 +1,22 @@
 import { useEffect } from 'react'
+import { View, StyleSheet } from 'react-native'
 import { Stack, useRouter, useSegments } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import * as Linking from 'expo-linking'
+import * as SplashScreen from 'expo-splash-screen'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 import { LanguageProvider } from '@/context/LanguageContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import LoadingScreen from '@/components/LoadingScreen'
 import { supabase } from '@/lib/supabase'
 import { Colors } from '@/constants/theme'
+
+// Keeps the native splash up until our own animated LoadingScreen has
+// mounted and taken over, so there's no blank flash between the native
+// splash disappearing and the JS bundle being ready to render.
+SplashScreen.preventAutoHideAsync().catch(() => {})
 
 function NavigationGuard() {
   const { session, loading } = useAuth()
@@ -28,6 +36,48 @@ function NavigationGuard() {
   usePasswordRecoveryLink()
 
   return null
+}
+
+// Gates the Stack behind the auth session/subscriber check so the app never
+// flashes the login screen (or a blank frame) before redirecting a
+// logged-in user to the directory - shows the branded loading animation
+// for that gap instead.
+function AppGate() {
+  const { loading } = useAuth()
+
+  useEffect(() => {
+    if (!loading) SplashScreen.hideAsync().catch(() => {})
+  }, [loading])
+
+  return (
+    <>
+      <NavigationGuard />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: Colors.bg },
+          animation: 'slide_from_right',
+        }}
+      >
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(main)" />
+        <Stack.Screen
+          name="influencer/[id]"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="admin" options={{ presentation: 'modal' }} />
+      </Stack>
+      {loading ? (
+        <View style={StyleSheet.absoluteFill}>
+          <LoadingScreen />
+        </View>
+      ) : null}
+    </>
+  )
 }
 
 // Handles moatherpro://auth-callback#access_token=...&type=... links tapped
@@ -68,26 +118,7 @@ export default function RootLayout() {
         <LanguageProvider>
           <AuthProvider>
             <StatusBar style="light" />
-            <NavigationGuard />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: Colors.bg },
-                animation: 'slide_from_right',
-              }}
-            >
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(main)" />
-              <Stack.Screen
-                name="influencer/[id]"
-                options={{
-                  presentation: 'modal',
-                  animation: 'slide_from_bottom',
-                }}
-              />
-              <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="admin" options={{ presentation: 'modal' }} />
-            </Stack>
+            <AppGate />
           </AuthProvider>
         </LanguageProvider>
       </SafeAreaProvider>

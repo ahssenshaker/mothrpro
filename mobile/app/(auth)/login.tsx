@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { supabase } from '@/lib/supabase'
 import * as Linking from 'expo-linking'
+import LoadingScreen from '@/components/LoadingScreen'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 export default function LoginScreen() {
@@ -45,6 +46,10 @@ export default function LoginScreen() {
     setError('')
     try {
       await signIn(email.trim().toLowerCase(), password)
+      // On success, stay "loading" (the branded overlay below) until
+      // NavigationGuard redirects away once the session/subscriber finish
+      // resolving - clearing it here would flash the form re-enabled for a
+      // moment right before the screen unmounts.
     } catch (e: any) {
       const msg = e?.message || ''
       if (msg.includes('Invalid login')) {
@@ -54,7 +59,6 @@ export default function LoginScreen() {
       } else {
         setError(t('loginErrorGeneric'))
       }
-    } finally {
       setLoading(false)
     }
   }
@@ -66,7 +70,6 @@ export default function LoginScreen() {
       await signInWithGoogle()
     } catch (e: any) {
       setError(e?.message || t('googleLoginFailed'))
-    } finally {
       setGoogleLoading(false)
     }
   }
@@ -96,6 +99,10 @@ export default function LoginScreen() {
     } finally {
       setResetLoading(false)
     }
+  }
+
+  if (loading || googleLoading) {
+    return <LoadingScreen />
   }
 
   return (

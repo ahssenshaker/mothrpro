@@ -11,7 +11,7 @@ import {
 import { Colors, Spacing, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { useState } from 'react'
 import { useLanguage } from '@/context/LanguageContext'
-import { translateTier } from '@/lib/i18n'
+import { translateTier, translatePlatform } from '@/lib/i18n'
 import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 
 export interface Filters {
@@ -34,17 +34,10 @@ interface Props {
 
 const TIERS = ['', 'نانو', 'ميكرو', 'ماكرو', 'ميجا', 'ألفا']
 // These match the actual platform names stored in influencers.platforms
-// (see index.html's PI map), not English slugs.
+// (see index.html's PI map), not English slugs - translatePlatform() maps
+// them to a display label without changing the underlying filter value.
 const PLATFORMS = ['', 'انستقرام', 'تيك توك', 'يوتيوب', 'سناب شات', 'تويتر/X', 'فيسبوك']
-const PLATFORM_LABELS: Record<string, string> = {
-  '': 'الكل',
-  'انستقرام': 'انستقرام',
-  'تيك توك': 'تيك توك',
-  'يوتيوب': 'يوتيوب',
-  'سناب شات': 'سناب شات',
-  'تويتر/X': 'تويتر/X',
-  'فيسبوك': 'فيسبوك',
-}
+
 export default function FilterSheet({ visible, filters, isPro, onApply, onClose, onUpgradeRequest }: Props) {
   const { t, lang } = useLanguage()
   const [local, setLocal] = useState<Filters>({ ...filters })
@@ -137,7 +130,7 @@ export default function FilterSheet({ visible, filters, isPro, onApply, onClose,
             {PLATFORMS.map(p => (
               <Chip
                 key={p || 'all'}
-                label={p ? PLATFORM_LABELS[p] : t('all')}
+                label={p ? translatePlatform(p, lang) : t('all')}
                 active={local.platform === p}
                 color={p ? PlatformColors[p] : Colors.textMuted}
                 onPress={() => setLocal(f => ({ ...f, platform: p }))}

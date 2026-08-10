@@ -190,6 +190,52 @@ export function translateTier(tierAr: string, lang: Lang): string {
   return key ? translate(key, lang) : tierAr
 }
 
+// Platform names stored in influencers.platforms are the actual Arabic
+// object keys (see constants/theme.ts's PlatformColors/PlatformIcons) - this
+// only affects the displayed label, never the lookup key itself.
+const PLATFORM_EN: Record<string, string> = {
+  'انستقرام': 'Instagram',
+  'تيك توك': 'TikTok',
+  'يوتيوب': 'YouTube',
+  'سناب شات': 'Snapchat',
+  'تويتر/X': 'Twitter/X',
+  'فيسبوك': 'Facebook',
+}
+
+export function translatePlatform(nameAr: string, lang: Lang): string {
+  if (lang !== 'en') return nameAr
+  return PLATFORM_EN[nameAr] || nameAr
+}
+
+// Price-item labels are mostly free text an admin typed into the web admin
+// panel (no _en counterpart in the schema, so arbitrary ones can't be
+// translated) - but estimatePrices() (lib/api.ts) always uses one of this
+// fixed set, and real prices commonly reuse the same conventional terms, so
+// translate on match and fall back to the original text otherwise.
+const PRICE_LABEL_EN: Record<string, string> = {
+  'تغطية مع حضور': 'Coverage with appearance',
+  'تغطية بدون حضور': 'Coverage without appearance',
+  'فيديو/ريلز': 'Video/Reels',
+  'صورة': 'Photo',
+  'ستورى': 'Story',
+  'إعلان مباشر': 'Direct ad',
+  'إعلان غير مباشر': 'Indirect ad',
+  'فيديو مباشر': 'Direct video',
+  'فيديو غير مباشر': 'Indirect video',
+  'تغريدة': 'Tweet',
+  'إعادة تغريدة': 'Retweet',
+  'فيديو': 'Video',
+  'بوست': 'Post',
+  'ريلز': 'Reels',
+  'قصة': 'Story',
+  'منشن': 'Mention',
+}
+
+export function translatePriceLabel(labelAr: string, lang: Lang): string {
+  if (lang !== 'en') return labelAr
+  return PRICE_LABEL_EN[labelAr.trim()] || labelAr
+}
+
 // Content for the onboarding tour (components/TourGuide.tsx) - mirrors
 // TOUR_STEPS_AR / TOUR_STEPS_EN in index.html. Kept separate from T since
 // this content is shown once and isn't reused as short UI labels elsewhere.
