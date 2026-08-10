@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { getTier, formatFollowers, getPrimaryPlatform, resolveImageUrl, Influencer } from '@/lib/api'
 import { useLanguage } from '@/context/LanguageContext'
 import { translateTier } from '@/lib/i18n'
+import { flexRow } from '@/lib/rtl'
 import { Colors, FontSize, Radius, TierColors, PlatformColors } from '@/constants/theme'
 import { cacheInfluencer } from '@/lib/influencerCache'
 
@@ -36,7 +37,7 @@ export default function InfluencerGridCard({ influencer: inf, onPress }: Props) 
         </View>
       )}
 
-      <View style={s.nameRow}>
+      <View style={[s.nameRow, { flexDirection: flexRow(lang) }]}>
         {inf.source === 'verified' && <Text style={s.verified}>✓ </Text>}
         <Text style={s.name} numberOfLines={1}>{name}</Text>
       </View>

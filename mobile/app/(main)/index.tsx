@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Image,
   StyleSheet,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -15,7 +16,8 @@ import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
-import { fetchInfluencers, getTier, getPrimaryPlatform, Influencer } from '@/lib/api'
+import { fetchInfluencers, fetchCount, getTier, getPrimaryPlatform, getDisplayPrices, Influencer } from '@/lib/api'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 import InfluencerCard from '@/components/InfluencerCard'
 import InfluencerGridCard from '@/components/InfluencerGridCard'
@@ -54,6 +56,11 @@ export default function DirectoryScreen() {
   const [showTour, setShowTour] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [totalCount, setTotalCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetchCount().then(res => setTotalCount(res.count)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!session?.user?.id) return
@@ -140,8 +147,12 @@ export default function DirectoryScreen() {
       const min = Number(filters.priceMin) || 0
       const max = Number(filters.priceMax) || 0
       list = list.filter(inf => {
-        const allPrices = Object.values(inf.platforms || {})
-          .flatMap(p => Object.values(p.prices || {}))
+        // Falls back to the same follower-based price estimate shown on the
+        // detail screen for platforms with no real prices set, so
+        // estimated-only influencers can still match a price range instead
+        // of being silently excluded because their real prices object is empty.
+        const allPrices = Object.entries(inf.platforms || {})
+          .flatMap(([name, p]) => Object.values(getDisplayPrices(name, p).prices))
           .map(Number)
           .filter(v => v > 0)
         if (!allPrices.length) return false
@@ -214,9 +225,14 @@ export default function DirectoryScreen() {
             </TouchableOpacity>
           ) : null}
         </View>
-        <View>
-          <Text style={s.headerTitle}>⭐ {t('appName')}</Text>
-          <Text style={s.headerCount}>{influencers.length} {t('influencersCount')}</Text>
+        <View style={[s.headerBrand, { flexDirection: flexRow(lang) }]}>
+          <Image source={require('@/assets/logo.png')} style={s.headerLogo} resizeMode="contain" />
+          <View>
+            <Text style={s.headerTitle}>{t('appName')}</Text>
+            <Text style={s.headerCount}>
+              {filtered.length}/{totalCount ?? influencers.length} {t('influencersCount')}
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -260,7 +276,7 @@ export default function DirectoryScreen() {
 
       {/* Results count */}
       {search || activeFilters > 0 ? (
-        <Text style={s.resultsCount}>{filtered.length} {t('resultsCount')}</Text>
+        <Text style={[s.resultsCount, { textAlign: textAlignFor(lang) }]}>{filtered.length} {t('resultsCount')}</Text>
       ) : null}
 
       {/* List */}
@@ -343,6 +359,8 @@ const s = StyleSheet.create({
   headerTitle:     { color: Colors.gold, fontSize: FontSize.lg, fontWeight: '800' },
   headerCount:     { color: Colors.textMuted, fontSize: FontSize.sm },
   headerLeft:      { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  headerBrand:     { flexDirection: 'row-reverse', alignItems: 'center', gap: 8 },
+  headerLogo:      { width: 30, height: 30 },
   helpBtn: {
     width: 28,
     height: 28,

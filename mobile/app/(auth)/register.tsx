@@ -90,9 +90,9 @@ export default function RegisterScreen() {
           </View>
 
           <View style={s.card}>
-            <Text style={s.cardTitle}>{t('createAccountTitle')}</Text>
+            <Text style={[s.cardTitle, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('createAccountTitle')}</Text>
 
-            <Text style={s.label}>{t('email')}</Text>
+            <Text style={[s.label, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('email')}</Text>
             <TextInput
               style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={email}
@@ -104,7 +104,7 @@ export default function RegisterScreen() {
               textContentType="emailAddress"
             />
 
-            <Text style={s.label}>{t('password')}</Text>
+            <Text style={[s.label, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('password')}</Text>
             <TextInput
               style={s.input}
               value={password}
@@ -112,10 +112,10 @@ export default function RegisterScreen() {
               placeholder={t('minSixChars')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
-              textAlign="right"
+              textAlign={lang === 'ar' ? 'right' : 'left'}
             />
 
-            <Text style={s.label}>{t('confirmPassword')}</Text>
+            <Text style={[s.label, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('confirmPassword')}</Text>
             <TextInput
               style={s.input}
               value={confirm}
@@ -123,7 +123,7 @@ export default function RegisterScreen() {
               placeholder={t('reenterPassword')}
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
-              textAlign="right"
+              textAlign={lang === 'ar' ? 'right' : 'left'}
             />
 
             {error ? <Text style={s.error}>{error}</Text> : null}

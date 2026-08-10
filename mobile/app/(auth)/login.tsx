@@ -122,9 +122,9 @@ export default function LoginScreen() {
 
           {/* Card */}
           <View style={s.card}>
-            <Text style={s.cardTitle}>{t('loginBtn')}</Text>
+            <Text style={[s.cardTitle, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('loginBtn')}</Text>
 
-            <Text style={s.label}>{t('email')}</Text>
+            <Text style={[s.label, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('email')}</Text>
             <TextInput
               style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={email}
@@ -136,7 +136,7 @@ export default function LoginScreen() {
               textContentType="emailAddress"
             />
 
-            <Text style={s.label}>{t('password')}</Text>
+            <Text style={[s.label, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('password')}</Text>
             <TextInput
               style={s.input}
               value={password}
@@ -145,7 +145,7 @@ export default function LoginScreen() {
               placeholderTextColor={Colors.textMuted}
               secureTextEntry
               textContentType="password"
-              textAlign="right"
+              textAlign={lang === 'ar' ? 'right' : 'left'}
             />
 
             {error ? <Text style={s.error}>{error}</Text> : null}
@@ -202,7 +202,7 @@ export default function LoginScreen() {
       <Modal visible={resetVisible} transparent animationType="fade" onRequestClose={() => setResetVisible(false)}>
         <View style={s.modalBackdrop}>
           <View style={s.modalCard}>
-            <Text style={s.modalTitle}>{t('resetPasswordTitle')}</Text>
+            <Text style={[s.modalTitle, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('resetPasswordTitle')}</Text>
             <TextInput
               style={[s.input, { textAlign: lang === 'ar' ? 'right' : 'left' }]}
               value={resetEmail}

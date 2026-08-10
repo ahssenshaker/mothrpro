@@ -98,7 +98,7 @@ export default function ProfileScreen() {
 
         {/* Subscription card */}
         <View style={s.card}>
-          <Text style={s.cardTitle}>{t('subscriptionDetails')}</Text>
+          <Text style={[s.cardTitle, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('subscriptionDetails')}</Text>
           <Row label={t('plan')} value={planLabel} valueColor={planColor} />
           {subscriber?.activated_at && (
             <Row label={t('memberSinceShort')} value={fmt(subscriber.activated_at, lang)} />
@@ -133,10 +133,10 @@ export default function ProfileScreen() {
         {/* Pro features */}
         {(effectivePlan === 'pro' || effectivePlan === 'admin') && (
           <View style={s.card}>
-            <Text style={s.cardTitle}>{t('proFeaturesTitle')}</Text>
+            <Text style={[s.cardTitle, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{t('proFeaturesTitle')}</Text>
             {[t('proFeature1'), t('proFeature2'), t('proFeature3'), t('proFeature4'), t('proFeature5')].map(f => (
               <View key={f} style={s.featureRow}>
-                <Text style={s.featureText}>{f}</Text>
+                <Text style={[s.featureText, { textAlign: lang === 'ar' ? 'right' : 'left' }]}>{f}</Text>
                 <Text style={{ color: Colors.green }}>✓</Text>
               </View>
             ))}

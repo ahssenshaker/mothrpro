@@ -154,6 +154,7 @@ export const T = {
   savePasswordBtn: { ar: 'حفظ كلمة المرور الجديدة',          en: 'Save New Password' },
   couldNotLoadData: { ar: 'تعذّر تحميل البيانات',            en: 'Could not load data' },
   loadingInfluencers: { ar: 'جاري تحميل المؤثرين...',        en: 'Loading influencers...' },
+  estimatedPriceNotice: { ar: '💡 النطاق السعري',            en: '💡 Price Range' },
 } as const
 
 export type TKey = keyof typeof T

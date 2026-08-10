@@ -2,7 +2,8 @@ import { useState, ReactNode } from 'react'
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native'
 import { Colors, Spacing, FontSize, Radius, TierColors } from '@/constants/theme'
 import { useLanguage } from '@/context/LanguageContext'
-import { tt, translateTier } from '@/lib/i18n'
+import { tt, translateTier, Lang } from '@/lib/i18n'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 
 // Mirrors TOUR_STEPS_AR in index.html (uploaded 2026-08-09) — same 5 steps,
 // content re-expressed as RN views instead of raw HTML.
@@ -133,9 +134,9 @@ function Tag({ label }: { label: string }) {
   )
 }
 
-function TierRow({ label, color, desc }: { label: string; color: string; desc: string }) {
+function TierRow({ label, color, desc, lang }: { label: string; color: string; desc: string; lang: Lang }) {
   return (
-    <View style={s.tierRow}>
+    <View style={[s.tierRow, { flexDirection: flexRow(lang) }]}>
       <View style={[s.tierTag, { borderColor: color }]}>
         <Text style={[s.tierTagText, { color }]}>{label}</Text>
       </View>
@@ -144,25 +145,25 @@ function TierRow({ label, color, desc }: { label: string; color: string; desc: s
   )
 }
 
-function EngRow({ label, value, color }: { label: string; value: string; color: string }) {
+function EngRow({ label, value, color, lang }: { label: string; value: string; color: string; lang: Lang }) {
   return (
-    <View style={s.engRow}>
+    <View style={[s.engRow, { flexDirection: flexRow(lang) }]}>
       <Text style={s.engLabel}>{label}</Text>
       <Text style={[s.engValue, { color }]}>{value}</Text>
     </View>
   )
 }
 
-function SourceRow({ icon, label }: { icon: string; label: string }) {
+function SourceRow({ icon, label, lang }: { icon: string; label: string; lang: Lang }) {
   return (
-    <View style={s.sourceRow}>
+    <View style={[s.sourceRow, { flexDirection: flexRow(lang) }]}>
       <Text style={{ fontSize: 16 }}>{icon}</Text>
-      <Text style={s.sourceText}>{label}</Text>
+      <Text style={[s.sourceText, { textAlign: textAlignFor(lang) }]}>{label}</Text>
     </View>
   )
 }
 
-function buildSteps(lang: 'ar' | 'en'): Step[] {
+function buildSteps(lang: Lang): Step[] {
   const t = (key: Parameters<typeof tt>[0]) => tt(key, lang)
   return [
     {
@@ -171,8 +172,8 @@ function buildSteps(lang: 'ar' | 'en'): Step[] {
       sub: t('step1Sub'),
       content: (
         <View>
-          <Text style={s.paragraph}>{t('step1Intro')}</Text>
-          <View style={s.tagWrap}>
+          <Text style={[s.paragraph, { textAlign: textAlignFor(lang) }]}>{t('step1Intro')}</Text>
+          <View style={[s.tagWrap, { flexDirection: flexRow(lang) }]}>
             <Tag label={t('tag1')} />
             <Tag label={t('tag2')} />
             <Tag label={t('tag3')} />
@@ -187,11 +188,11 @@ function buildSteps(lang: 'ar' | 'en'): Step[] {
       sub: t('step2Sub'),
       content: (
         <View style={{ gap: 9 }}>
-          <TierRow label={`🔥 ${translateTier('ألفا', lang)}`} color={TierColors['ألفا']} desc={t('tierAlphaDesc')} />
-          <TierRow label={`⭐ ${translateTier('ميجا', lang)}`} color={TierColors['ميجا']} desc={t('tierMegaDesc')} />
-          <TierRow label={`💠 ${translateTier('ماكرو', lang)}`} color={TierColors['ماكرو']} desc={t('tierMacroDesc')} />
-          <TierRow label={`🔹 ${translateTier('ميكرو', lang)}`} color={TierColors['ميكرو']} desc={t('tierMicroDesc')} />
-          <TierRow label={`🔸 ${translateTier('نانو', lang)}`} color={TierColors['نانو']} desc={t('tierNanoDesc')} />
+          <TierRow label={`🔥 ${translateTier('ألفا', lang)}`} color={TierColors['ألفا']} desc={t('tierAlphaDesc')} lang={lang} />
+          <TierRow label={`⭐ ${translateTier('ميجا', lang)}`} color={TierColors['ميجا']} desc={t('tierMegaDesc')} lang={lang} />
+          <TierRow label={`💠 ${translateTier('ماكرو', lang)}`} color={TierColors['ماكرو']} desc={t('tierMacroDesc')} lang={lang} />
+          <TierRow label={`🔹 ${translateTier('ميكرو', lang)}`} color={TierColors['ميكرو']} desc={t('tierMicroDesc')} lang={lang} />
+          <TierRow label={`🔸 ${translateTier('نانو', lang)}`} color={TierColors['نانو']} desc={t('tierNanoDesc')} lang={lang} />
         </View>
       ),
     },
@@ -201,14 +202,14 @@ function buildSteps(lang: 'ar' | 'en'): Step[] {
       sub: t('step3Sub'),
       content: (
         <View>
-          <Text style={s.paragraph}>{t('formula')}</Text>
+          <Text style={[s.paragraph, { textAlign: textAlignFor(lang) }]}>{t('formula')}</Text>
           <View style={s.engBox}>
-            <EngRow label={t('excellent')} value={t('excellentValue')} color={Colors.green} />
-            <EngRow label={t('good')} value={t('goodValue')} color={Colors.gold} />
-            <EngRow label={t('low')} value={t('lowValue')} color={Colors.red} />
+            <EngRow label={t('excellent')} value={t('excellentValue')} color={Colors.green} lang={lang} />
+            <EngRow label={t('good')} value={t('goodValue')} color={Colors.gold} lang={lang} />
+            <EngRow label={t('low')} value={t('lowValue')} color={Colors.red} lang={lang} />
           </View>
           <View style={s.noteBox}>
-            <Text style={s.noteText}>{t('engNote')}</Text>
+            <Text style={[s.noteText, { textAlign: textAlignFor(lang) }]}>{t('engNote')}</Text>
           </View>
         </View>
       ),
@@ -219,14 +220,14 @@ function buildSteps(lang: 'ar' | 'en'): Step[] {
       sub: t('step4Sub'),
       content: (
         <View>
-          <Text style={s.paragraph}>{t('pricesFrom')}</Text>
+          <Text style={[s.paragraph, { textAlign: textAlignFor(lang) }]}>{t('pricesFrom')}</Text>
           <View style={{ gap: 8, marginTop: 12 }}>
-            <SourceRow icon="📋" label={t('source1')} />
-            <SourceRow icon="🤝" label={t('source2')} />
-            <SourceRow icon="📊" label={t('source3')} />
+            <SourceRow icon="📋" label={t('source1')} lang={lang} />
+            <SourceRow icon="🤝" label={t('source2')} lang={lang} />
+            <SourceRow icon="📊" label={t('source3')} lang={lang} />
           </View>
           <View style={s.lockBox}>
-            <Text style={s.lockText}>{t('lockText')}</Text>
+            <Text style={[s.lockText, { textAlign: textAlignFor(lang) }]}>{t('lockText')}</Text>
           </View>
         </View>
       ),
@@ -237,10 +238,10 @@ function buildSteps(lang: 'ar' | 'en'): Step[] {
       sub: t('step5Sub'),
       content: (
         <View style={{ gap: 10 }}>
-          <SourceRow icon="🔍" label={t('search1')} />
-          <SourceRow icon="📱" label={t('search2')} />
-          <SourceRow icon="🏷️" label={t('search3')} />
-          <SourceRow icon="💰" label={t('search4')} />
+          <SourceRow icon="🔍" label={t('search1')} lang={lang} />
+          <SourceRow icon="📱" label={t('search2')} lang={lang} />
+          <SourceRow icon="🏷️" label={t('search3')} lang={lang} />
+          <SourceRow icon="💰" label={t('search4')} lang={lang} />
         </View>
       ),
     },

@@ -5,6 +5,7 @@ import * as Linking from 'expo-linking'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { PLANS, Plan, buildCheckoutUrl } from '@/lib/plans'
+import { flexRow, textAlign as textAlignFor } from '@/lib/rtl'
 import { Colors, Spacing, FontSize, Radius } from '@/constants/theme'
 
 interface Props {
@@ -43,7 +44,7 @@ export default function UpgradeModal({ visible, onClose }: Props) {
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={s.backdrop}>
         <View style={s.sheet}>
-          <View style={s.header}>
+          <View style={[s.header, { flexDirection: flexRow(lang) }]}>
             <TouchableOpacity onPress={onClose}>
               <Text style={s.closeText}>✕</Text>
             </TouchableOpacity>
@@ -69,7 +70,7 @@ export default function UpgradeModal({ visible, onClose }: Props) {
                 <Text style={s.period}>{lang === 'en' ? plan.periodEn : plan.period}</Text>
                 <View style={s.feats}>
                   {(lang === 'en' ? plan.featuresEn : plan.features).map(f => (
-                    <Text key={f} style={s.featText}>• {f}</Text>
+                    <Text key={f} style={[s.featText, { textAlign: textAlignFor(lang) }]}>• {f}</Text>
                   ))}
                 </View>
                 <TouchableOpacity

@@ -191,6 +191,68 @@ export async function fetchAllInfluencers(accessToken: string): Promise<Influenc
   return all
 }
 
+// Matches the real `subscribers` table (supabase/migrations/002_subscribers.sql
+// + 005_add_credits_columns.sql) and api/subscribers.js's response shape.
+export interface Subscriber {
+  id: string
+  email: string
+  plan: 'free' | 'pro' | 'pending' | 'admin' | 'credits'
+  activated_at?: string | null
+  expires_at?: string | null
+  credits_remaining?: number | null
+  unlocked_ids?: string[] | null
+}
+
+// Admin-only. api/subscribers.js enforces the admin check server-side from
+// the JWT - fails with 403 for anyone else.
+export async function fetchAllSubscribers(accessToken: string): Promise<Subscriber[]> {
+  const all: Subscriber[] = []
+  let page = 1
+  while (true) {
+    const res = await fetch(
+      `${API_BASE}/api/subscribers?page=${page}&limit=100`,
+      { headers: makeHeaders(accessToken) },
+    )
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      throw new Error(`fetch subscribers failed: HTTP ${res.status} ${body}`.slice(0, 300))
+    }
+    const json = (await res.json()) as { data: Subscriber[]; total: number; page: number; limit: number }
+    all.push(...json.data)
+    if (all.length >= json.total || !json.data.length) break
+    page++
+  }
+  return all
+}
+
+export type SubscriberAction = 'grant-trial' | 'activate' | 'activate-annual' | 'grant-credits' | 'set-admin' | 'revoke'
+
+export async function subscriberAction(
+  accessToken: string,
+  action: SubscriberAction,
+  target: { id?: string; email?: string },
+) {
+  const res = await fetch(`${API_BASE}/api/subscribers`, {
+    method: 'POST',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ action, ...target }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الإجراء')
+  return json
+}
+
+export async function deleteSubscriber(accessToken: string, userId: string) {
+  const res = await fetch(`${API_BASE}/api/delete-user`, {
+    method: 'DELETE',
+    headers: makeHeaders(accessToken),
+    body: JSON.stringify({ userId }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'فشل الحذف')
+  return json
+}
+
 export async function fetchCount() {
   const res = await fetch(`${API_BASE}/api/count`, {
     headers: { 'X-App-Key': MOBILE_APP_KEY },
@@ -217,9 +279,70 @@ export function formatFollowers(n?: number | null): string {
 
 // Price values are free-form strings the admin typed in (e.g. "5000"), keyed
 // by an arbitrary label (e.g. "صورة", "فيديو") - not a fixed set of fields.
-export function formatPrice(value?: string | null): string {
-  if (!value) return '—'
+export function formatPrice(value?: string | number | null): string {
+  if (!value && value !== 0) return '—'
   const n = Number(value)
-  if (!Number.isFinite(n)) return value
+  if (!Number.isFinite(n)) return String(value)
   return `${n.toLocaleString('ar-SA')} ر.س`
+}
+
+// Matches web's estimated-price display: floor(n*0.85)-ceil(n*1.15) ر.س
+export function formatPriceRange(value: number): string {
+  const low = Math.floor(value * 0.85).toLocaleString('ar-SA')
+  const high = Math.ceil(value * 1.15).toLocaleString('ar-SA')
+  return `${low}–${high} ر.س`
+}
+
+// Mirrors estimatePrices() in index.html - when an influencer has no real
+// prices set for a platform, the web falls back to a follower-count-based
+// estimate (shown as an approximate range) instead of showing nothing. The
+// mobile app previously had no equivalent, so influencers without real
+// pricing had an empty prices object and were silently excluded from the
+// Pro price-range filter entirely, and showed no pricing on their detail
+// page - not just an "estimated" label, but nothing at all.
+export function estimatePrices(platform: string, followersNum?: number | null): Record<string, number> {
+  const f = Number(followersNum) || 0
+  const alpha = f >= 5_000_000
+  const mega = f >= 1_000_000
+  const macro = f >= 100_000
+  if (platform === 'سناب شات') {
+    if (alpha) return { 'تغطية مع حضور': 200000, 'تغطية بدون حضور': 120000 }
+    if (mega) return { 'تغطية مع حضور': 70000, 'تغطية بدون حضور': 40000 }
+    if (macro) return { 'تغطية مع حضور': 18000, 'تغطية بدون حضور': 10000 }
+    return { 'تغطية مع حضور': 4000, 'تغطية بدون حضور': 2500 }
+  }
+  if (platform === 'انستقرام') {
+    if (alpha) return { 'فيديو/ريلز': 150000, 'صورة': 80000, 'ستورى': 40000 }
+    if (mega) return { 'فيديو/ريلز': 45000, 'صورة': 22000, 'ستورى': 12000 }
+    if (macro) return { 'فيديو/ريلز': 9000, 'صورة': 4500, 'ستورى': 2500 }
+    return { 'فيديو/ريلز': 1800, 'صورة': 900, 'ستورى': 450 }
+  }
+  if (platform === 'يوتيوب') {
+    if (alpha) return { 'إعلان مباشر': 350000, 'إعلان غير مباشر': 150000 }
+    if (mega) return { 'إعلان مباشر': 80000, 'إعلان غير مباشر': 35000 }
+    if (macro) return { 'إعلان مباشر': 18000, 'إعلان غير مباشر': 8000 }
+    return { 'إعلان مباشر': 4000, 'إعلان غير مباشر': 2000 }
+  }
+  if (platform === 'تيك توك') {
+    if (alpha) return { 'فيديو مباشر': 100000, 'فيديو غير مباشر': 50000 }
+    if (mega) return { 'فيديو مباشر': 30000, 'فيديو غير مباشر': 15000 }
+    if (macro) return { 'فيديو مباشر': 7000, 'فيديو غير مباشر': 3500 }
+    return { 'فيديو مباشر': 1500, 'فيديو غير مباشر': 800 }
+  }
+  if (platform === 'تويتر/X') {
+    if (alpha) return { 'تغريدة': 18000, 'إعادة تغريدة': 8000 }
+    if (mega) return { 'تغريدة': 6000, 'إعادة تغريدة': 3000 }
+    if (macro) return { 'تغريدة': 1500, 'إعادة تغريدة': 700 }
+    return { 'تغريدة': 400, 'إعادة تغريدة': 200 }
+  }
+  return {}
+}
+
+// Real prices when set, otherwise the estimated fallback - matches the web's
+// dispPrices logic (index.html openModal()).
+export function getDisplayPrices(platform: string, p: PlatformData): { prices: Record<string, string | number>; isEstimate: boolean } {
+  const real = p.prices || {}
+  if (Object.keys(real).length > 0) return { prices: real, isEstimate: false }
+  const est = estimatePrices(platform, p.followersNum)
+  return { prices: est, isEstimate: Object.keys(est).length > 0 }
 }
