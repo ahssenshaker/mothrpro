@@ -1,5 +1,15 @@
 {
-  "fixed": [],
+  "fixed": [
+    {
+      "name": "نور ستارز",
+      "id": "1783000246840",
+      "platform": "يوتيوب",
+      "newUrl": "https://www.youtube.com/@Narobeauty",
+      "newCount": 16900000,
+      "oldUrl": "https://www.youtube.com/@noorstars",
+      "storedCount": 25000000
+    }
+  ],
   "blocked": [
     {
       "name": "أسيل عمران",
@@ -77,12 +87,6 @@
       "name": "نور ستارز",
       "id": "1783000246840",
       "platform": "تيك توك",
-      "wasAlreadyBlocked": true
-    },
-    {
-      "name": "نور ستارز",
-      "id": "1783000246840",
-      "platform": "يوتيوب",
       "wasAlreadyBlocked": true
     },
     {
