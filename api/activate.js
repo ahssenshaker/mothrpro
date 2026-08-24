@@ -46,5 +46,17 @@ export default async function handler(req, res) {
     return res.status(200).json({ activated: true, plan: 'pro' })
   }
 
+  if (pending.id !== user.id) {
+    // The row's id doesn't match this auth user - the webhook created it with
+    // a fresh random id because it fired before this account's own row existed
+    // (e.g. a new user paying immediately after signup, before this endpoint's
+    // first call finished). The frontend looks the row up by id, so without
+    // this fix the plan/credits silently never appear despite the payment
+    // having gone through. Reconcile the id now.
+    await supabase.from('subscribers').update({ id: user.id }).eq('email', email)
+    console.log('🔧 Reconciled subscriber id mismatch for', email)
+    return res.status(200).json({ activated: true, plan: pending.plan })
+  }
+
   return res.status(200).json({ activated: false, plan: pending.plan })
 }

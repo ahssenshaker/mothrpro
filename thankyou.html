@@ -222,8 +222,12 @@ async function checkActivation() {
   const { data: { session } } = await supa.auth.getSession();
   if (!session) return;
 
+  // Query by email, not id: a webhook that fires before this account's own
+  // subscribers row exists (e.g. a new user paying right after signup)
+  // creates the row with a fresh id instead of the auth user's id, so an
+  // id-keyed lookup here would never see the activation.
   const { data } = await supa.from('subscribers')
-    .select('plan').eq('id', session.user.id).single();
+    .select('plan').eq('email', session.user.email).single();
 
   if (data?.plan === 'pro') {
     clearInterval(checkInterval);
