@@ -69,6 +69,7 @@ function AppGate() {
           }}
         />
         <Stack.Screen name="reset-password" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="payment-success" options={{ presentation: 'modal' }} />
         <Stack.Screen name="admin" options={{ presentation: 'modal' }} />
       </Stack>
       {loading ? (

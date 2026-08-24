@@ -70,7 +70,7 @@ interface AuthContextValue extends AuthState {
   signUp: (email: string, password: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
-  refreshSubscriber: () => Promise<void>
+  refreshSubscriber: () => Promise<Subscriber | null>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -91,13 +91,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', session.user.id)
         .single()
       dispatch({ type: 'SET_SUBSCRIBER', subscriber: data ?? null })
+      return data ?? null
     } catch {
       dispatch({ type: 'SET_SUBSCRIBER', subscriber: null })
+      return null
     }
   }, [])
 
   const refreshSubscriber = useCallback(async () => {
-    if (state.session) await loadSubscriber(state.session)
+    if (state.session) return loadSubscriber(state.session)
+    return null
   }, [state.session, loadSubscriber])
 
   useEffect(() => {

@@ -13,10 +13,13 @@ interface Props {
   onClose: () => void
 }
 
+type PaymentStatus = 'idle' | 'activating' | 'activated' | 'slow'
+
 export default function UpgradeModal({ visible, onClose }: Props) {
-  const { session, refreshSubscriber } = useAuth()
+  const { session, subscriber, refreshSubscriber } = useAuth()
   const { t, lang } = useLanguage()
   const [buyingPlan, setBuyingPlan] = useState<Plan['id'] | null>(null)
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('idle')
 
   async function handleBuy(planId: Plan['id']) {
     setBuyingPlan(planId)
@@ -27,30 +30,69 @@ export default function UpgradeModal({ visible, onClose }: Props) {
       // automatically once Lemon Squeezy navigates to redirect_url - the same
       // moatherpro:// deep-link mechanism as Google sign-in, instead of
       // leaving the user to close the tab manually.
-      await WebBrowser.openAuthSessionAsync(url, redirectUrl)
-      // The webhook that activates the plan runs server-side and may take a
-      // few seconds after the redirect fires, so keep polling briefly.
+      const result = await WebBrowser.openAuthSessionAsync(url, redirectUrl)
+      if (result.type !== 'success') return
+
+      // Show a visible "activating" state instead of silently polling in the
+      // background - the webhook that activates the plan runs server-side
+      // and may take a few seconds after the redirect fires.
+      setPaymentStatus('activating')
+      const prevPlan = subscriber?.plan ?? 'free'
+      const prevCredits = subscriber?.credits_remaining ?? 0
       const start = Date.now()
       const interval = setInterval(async () => {
-        await refreshSubscriber()
-        if (Date.now() - start > 60_000) clearInterval(interval)
-      }, 5_000)
+        const updated = await refreshSubscriber()
+        const s = updated ?? null
+        const activated = s && (s.plan === 'pro' || (s.plan === 'credits' && (prevPlan !== 'credits' || (s.credits_remaining ?? 0) > prevCredits)))
+        if (activated) {
+          clearInterval(interval)
+          setPaymentStatus('activated')
+        } else if (Date.now() - start > 60_000) {
+          clearInterval(interval)
+          setPaymentStatus('slow')
+        }
+      }, 3_000)
     } finally {
       setBuyingPlan(null)
     }
   }
 
+  function handleDone() {
+    setPaymentStatus('idle')
+    onClose()
+  }
+
+  const handleClose = paymentStatus === 'activated' ? handleDone : onClose
+
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={handleClose}>
       <View style={s.backdrop}>
         <View style={s.sheet}>
           <View style={[s.header, { flexDirection: flexRow(lang) }]}>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={handleClose}>
               <Text style={s.closeText}>✕</Text>
             </TouchableOpacity>
             <Text style={s.title}>⭐ {t('appName')}</Text>
             <View style={{ width: 24 }} />
           </View>
+
+          {paymentStatus !== 'idle' ? (
+            <View style={s.successWrap}>
+              <Text style={s.successIcon}>{paymentStatus === 'activated' ? '🎉' : '✅'}</Text>
+              <Text style={s.successTitle}>{t('paymentSuccessTitle')}</Text>
+              <Text style={s.successStatus}>
+                {paymentStatus === 'activating' ? t('paymentActivating') : null}
+                {paymentStatus === 'activated' ? t('paymentActivated') : null}
+                {paymentStatus === 'slow' ? t('paymentActivatingSlow') : null}
+              </Text>
+              {paymentStatus === 'activated' ? (
+                <TouchableOpacity style={[s.buyBtn, s.buyBtnFeatured, { alignSelf: 'stretch', marginTop: Spacing.md }]} onPress={handleDone}>
+                  <Text style={[s.buyBtnText, s.buyBtnTextFeatured]}>{t('paymentDone')}</Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          ) : (
+          <>
           <Text style={s.subtitle}>{t('plansSubtitle')}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -86,6 +128,8 @@ export default function UpgradeModal({ visible, onClose }: Props) {
             ))}
             <Text style={s.footNote}>{t('plansFootNote')}</Text>
           </ScrollView>
+          </>
+          )}
         </View>
       </View>
     </Modal>
@@ -107,6 +151,10 @@ const s = StyleSheet.create({
   closeText: { color: Colors.textMuted, fontSize: FontSize.lg },
   title: { color: Colors.gold, fontSize: FontSize.lg, fontWeight: '800' },
   subtitle: { color: Colors.textMuted, fontSize: FontSize.sm, textAlign: 'center', marginTop: 8, marginBottom: Spacing.md },
+  successWrap: { alignItems: 'center', paddingVertical: Spacing.lg, paddingHorizontal: Spacing.md },
+  successIcon: { fontSize: 56, marginBottom: Spacing.md },
+  successTitle: { color: Colors.text, fontSize: FontSize.lg, fontWeight: '800', textAlign: 'center', marginBottom: 10 },
+  successStatus: { color: Colors.textMuted, fontSize: FontSize.sm, textAlign: 'center', lineHeight: 20 },
   card: {
     backgroundColor: Colors.s2,
     borderRadius: 16,
