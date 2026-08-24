@@ -85,10 +85,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loadSubscriber = useCallback(async (session: Session) => {
     try {
+      // Query by email, not id: a webhook that fires before this account's
+      // own subscribers row exists (e.g. a new user paying right after
+      // signup) creates the row with a fresh id instead of the auth user's
+      // id, so an id-keyed lookup here can miss an otherwise-active plan.
       const { data } = await supabase
         .from('subscribers')
         .select('*')
-        .eq('id', session.user.id)
+        .eq('email', session.user.email)
         .single()
       dispatch({ type: 'SET_SUBSCRIBER', subscriber: data ?? null })
       return data ?? null

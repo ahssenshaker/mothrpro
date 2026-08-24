@@ -1655,10 +1655,14 @@ let userTrialExpiresAt = null;
 async function loadUserPlan() {
   if (!currentUser) return;
   try {
+    // Query by email, not id: a webhook that fires before this account's own
+    // subscribers row exists (e.g. a new user paying right after signup)
+    // creates the row with a fresh id instead of the auth user's id, so an
+    // id-keyed lookup here can miss an otherwise-active subscription.
     const { data } = await supa
       .from('subscribers')
       .select('plan, expires_at, activated_at, credits_remaining, unlocked_ids')
-      .eq('id', currentUser.id)
+      .eq('email', currentUser.email)
       .single();
 
     _subscriberData = data || null;

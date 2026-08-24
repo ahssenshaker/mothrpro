@@ -19,10 +19,17 @@ export default async function handler(req, res) {
   const { influencer_id } = req.body || {}
   if (!influencer_id && influencer_id !== 0) return res.status(400).json({ error: 'influencer_id required' })
 
+  const email = user.email?.toLowerCase().trim()
+  if (!email) return res.status(400).json({ error: 'No email' })
+
+  // Query by email, not id: a webhook that fires before this account's own
+  // subscribers row exists (e.g. a new user paying right after signup)
+  // creates the row with a fresh id instead of the auth user's id, so an
+  // id-keyed lookup here can 404 an otherwise-active credits plan.
   const { data: sub, error: subErr } = await supabase
     .from('subscribers')
     .select('id, plan, credits_remaining, unlocked_ids')
-    .eq('id', user.id)
+    .eq('email', email)
     .single()
 
   if (subErr || !sub) return res.status(404).json({ error: 'Subscriber not found' })
@@ -50,7 +57,7 @@ export default async function handler(req, res) {
   const { error: updateErr } = await supabase
     .from('subscribers')
     .update(updates)
-    .eq('id', user.id)
+    .eq('email', email)
 
   if (updateErr) return res.status(500).json({ error: updateErr.message })
 
