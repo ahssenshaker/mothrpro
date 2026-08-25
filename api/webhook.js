@@ -107,7 +107,7 @@ export default async function handler(req, res) {
   // ─── Find or create subscriber row ───────────────────────────────────────
   const { data: sub } = await supabase
     .from('subscribers')
-    .select('id, plan, credits_remaining, unlocked_ids')
+    .select('id, plan, credits_remaining, unlocked_ids, expires_at')
     .eq('email', accountEmail)
     .single()
 
@@ -120,10 +120,17 @@ export default async function handler(req, res) {
       credits_remaining: currentCredits + 10,
       activated_at: now,
     }
-    // Only set plan to 'credits' if they don't already have a higher plan
-    const higherPlans = ['pro', 'admin']
-    if (!sub || !higherPlans.includes(sub.plan)) {
+    // Only keep an existing 'pro'/'admin' plan if it's still active - an
+    // expired pro (a lapsed trial or annual sub) must not block someone who
+    // just paid for credits from ever being downgraded into the 'credits'
+    // plan, which is what actually makes their paid credits usable.
+    const hasActivePro = sub && (
+      sub.plan === 'admin' ||
+      (sub.plan === 'pro' && (!sub.expires_at || new Date(sub.expires_at) > new Date()))
+    )
+    if (!hasActivePro) {
       updates.plan = 'credits'
+      updates.expires_at = null
     }
 
     if (sub) {
