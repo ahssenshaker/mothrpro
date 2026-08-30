@@ -1,15 +1,5 @@
 {
-  "fixed": [
-    {
-      "name": "نور ستارز",
-      "id": "1783000246840",
-      "platform": "يوتيوب",
-      "newUrl": "https://www.youtube.com/@noorstars",
-      "newCount": 22400000,
-      "oldUrl": "https://www.youtube.com/@Narobeauty",
-      "storedCount": 25000000
-    }
-  ],
+  "fixed": [],
   "blocked": [
     {
       "name": "أسيل عمران",
@@ -88,6 +78,11 @@
       "id": "1783000246840",
       "platform": "تيك توك",
       "wasAlreadyBlocked": true
+    },
+    {
+      "name": "نور ستارز",
+      "id": "1783000246840",
+      "platform": "يوتيوب"
     },
     {
       "name": "فاريال فيري",
