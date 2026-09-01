@@ -665,6 +665,8 @@ padding:7px 10px;
   </symbol>
 </svg>
 
+<!-- SITE CLOSED (temporary) -->
+<div id="siteClosedScreen" class="auth-screen" style="display:none;background:var(--bg,#07090f)"></div>
 <!-- AUTH SCREEN -->
 <div id="authScreen" class="auth-screen" style="display:none">
   <div class="auth-box">
@@ -1826,7 +1828,7 @@ async function handleLogout() {
   });
   ['priceMin','priceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   const sb = document.getElementById('sortBy'); if (sb) sb.value = 'rank';
-  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('siteClosedScreen').style.display = 'flex';
   document.getElementById('userBar').style.display = 'none';
   document.getElementById('grid').innerHTML = '';
   document.getElementById('pagination').innerHTML = '';
@@ -2092,7 +2094,7 @@ function applyProRestrictions() {
     }
   }
   if (!hasToken) {
-    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('siteClosedScreen').style.display = 'flex';
   }
 })();
 
@@ -2106,8 +2108,8 @@ function applyProRestrictions() {
       showDashboard();
     }
   } else {
-    // No valid session — show auth screen (handles expired/cleared tokens)
-    document.getElementById('authScreen').style.display = 'flex';
+    // No valid session — show blank closed screen (handles expired/cleared tokens)
+    document.getElementById('siteClosedScreen').style.display = 'flex';
   }
 })();
 
@@ -2138,7 +2140,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
     });
     ['priceMin','priceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     const sb = document.getElementById('sortBy'); if (sb) sb.value = 'rank';
-    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('siteClosedScreen').style.display = 'flex';
     document.getElementById('userBar').style.display = 'none';
     document.getElementById('grid').innerHTML = '';
     document.getElementById('pagination').innerHTML = '';
@@ -3712,7 +3714,7 @@ async function doUpdatePassword() {
         await loadUserPlan();
         showDashboard();
       } else {
-        document.getElementById('authScreen').style.display = 'flex';
+        document.getElementById('siteClosedScreen').style.display = 'flex';
       }
     }, 2000);
   } catch(e) {
