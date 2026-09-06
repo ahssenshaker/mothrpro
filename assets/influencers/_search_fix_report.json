@@ -82,7 +82,8 @@
     {
       "name": "نور ستارز",
       "id": "1783000246840",
-      "platform": "يوتيوب"
+      "platform": "يوتيوب",
+      "wasAlreadyBlocked": true
     },
     {
       "name": "فاريال فيري",
