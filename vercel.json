@@ -18,6 +18,7 @@
         { "key": "Referrer-Policy",         "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy",      "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "X-Frame-Options",         "value": "DENY" },
+        { "key": "X-Robots-Tag",            "value": "noindex, nofollow" },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://pvafqzhowebbmahbonfm.supabase.co wss://pvafqzhowebbmahbonfm.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://api.resend.com; frame-src https://moatherpro.lemonsqueezy.com; object-src 'none'; base-uri 'self'; form-action 'self';"
